@@ -44,7 +44,9 @@
           "enum": [
             "anthropic",
             "openrouter",
-            "cerebras"
+            "cerebras",
+            "nvidia",
+            "moonshot"
           ],
           "description": "AI provider used by Marie."
         },
@@ -62,6 +64,16 @@
           "type": "string",
           "default": "",
           "description": "Cerebras API key used by Marie."
+        },
+        "marie.nvidiaApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "NVIDIA API key used by Marie."
+        },
+        "marie.moonshotApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Moonshot API key used by Marie."
         }
       }
     },

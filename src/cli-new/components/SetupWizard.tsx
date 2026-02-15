@@ -38,9 +38,14 @@ const providers = [
     description: "Llama models with fast response times",
   },
   {
-    label: "◈ NVIDIA - Moonshot AI",
+    label: "◈ NVIDIA - High Performance",
     value: "nvidia",
-    description: "Access Moonshot/Kimi models",
+    description: "Access NVIDIA-hosted models",
+  },
+  {
+    label: "◈ Moonshot AI - Kimi Cloud",
+    value: "moonshot",
+    description: "Kimi models, excellent Chinese/English understanding",
   },
 ];
 
@@ -108,16 +113,26 @@ const cerebrasModels = [
   },
 ];
 
-const nvidiaModels = [
+const moonshotModels = [
   {
-    label: "★ Moonshot Kimi k2.5",
-    value: "moonshotai/kimi-k2.5",
-    description: "High performance model with thinking capability",
+    label: "★ Kimi k2.5",
+    value: "kimi-k2.5",
+    description: "Latest high-performance model",
+  },
+  {
+    label: "○ Kimi k2 Turbo Preview",
+    value: "kimi-k2-turbo-preview",
+    description: "Fast and balanced",
+  },
+  {
+    label: "○ Moonshot v1 8k",
+    value: "moonshot-v1-8k",
+    description: "Standard v1 model",
   },
   {
     label: "✏️  Enter custom model ID...",
     value: "custom",
-    description: "Custom NVIDIA model",
+    description: "Access other Kimi models",
   },
 ];
 
@@ -261,6 +276,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
       config.cerebrasApiKey = apiKey;
     } else if (provider === "nvidia") {
       config.nvidiaApiKey = apiKey;
+    } else if (provider === "moonshot") {
+      config.moonshotApiKey = apiKey;
     }
     Storage.saveConfig(config);
     setStep("complete");
@@ -279,6 +296,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         return "Cerebras API Key";
       case "nvidia":
         return "NVIDIA API Key";
+      case "moonshot":
+        return "Moonshot API Key";
       default:
         return "API Key";
     }
@@ -294,6 +313,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         return "cloud.cerebras.ai";
       case "nvidia":
         return "build.nvidia.com";
+      case "moonshot":
+        return "platform.moonshot.cn";
       default:
         return "";
     }
@@ -306,7 +327,9 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
       case "cerebras":
         return cerebrasModels;
       case "nvidia":
-        return nvidiaModels;
+        return []; // NVIDIA handles fallback differently or we use a defined list
+      case "moonshot":
+        return moonshotModels;
       default:
         return anthropicModels;
     }

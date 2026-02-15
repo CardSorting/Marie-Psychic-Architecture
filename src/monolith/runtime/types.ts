@@ -7,7 +7,8 @@ export type MarieProviderType =
   | "anthropic"
   | "openrouter"
   | "cerebras"
-  | "nvidia";
+  | "nvidia"
+  | "moonshot";
 
 export interface SessionMetadata {
   id: string;
