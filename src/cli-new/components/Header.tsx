@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
       <Box justifyContent="space-between">
         <Box>
           <Text color={marieTheme.colors.primary} bold>
-            {marieTheme.icons.assistant} Marie
+            {marieTheme.icons.assistant} Psychic
           </Text>
           <Text color={marieTheme.colors.muted}> v0.2.0</Text>
         </Box>

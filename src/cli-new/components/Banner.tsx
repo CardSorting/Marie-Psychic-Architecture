@@ -24,32 +24,32 @@ export const Banner: React.FC<BannerProps> = ({ show = true }) => {
       marginTop={0}
       marginBottom={0}
     >
-      {/* Claude Code inspired artistic banner */}
+      {/* Psychic Art */}
       <Box flexDirection="column" alignItems="center">
         <Text color={marieTheme.colors.primary}>
-          {"   ███╗   ███╗ █████╗ ██████╗ ██╗███████╗"}
+          {"  ██████╗ ███████╗██╗   ██╗ ██████╗██╗  ██╗██╗ ██████╗"}
         </Text>
         <Text color={marieTheme.colors.primary}>
-          {"   ████╗ ████║██╔══██╗██╔══██╗██║██╔════╝"}
+          {"  ██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝██║  ██║██║██╔════╝"}
         </Text>
         <Text color={marieTheme.colors.primary}>
-          {"   ██╔████╔██║███████║██████╔╝██║█████╗  "}
+          {"  ██████╔╝███████╗ ╚████╔╝ ██║     ███████║██║██║     "}
         </Text>
         <Text color={marieTheme.colors.primary}>
-          {"   ██║╚██╔╝██║██╔══██║██╔══██╗██║██╔══╝  "}
+          {"  ██╔═══╝ ╚════██║  ╚██╔╝  ██║     ██╔══██║██║██║     "}
         </Text>
         <Text color={marieTheme.colors.primary}>
-          {"   ██║ ╚═╝ ██║██║  ██║██║  ██║██║███████╗"}
+          {"  ██║     ███████║   ██║   ╚██████╗██║  ██║██║╚██████╗"}
         </Text>
         <Text color={marieTheme.colors.primary}>
-          {"   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝"}
+          {"  ╚═╝     ╚══════╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝ ╚═════╝"}
         </Text>
         <Box marginTop={1}>
           <Text color={marieTheme.colors.secondary}>
-            {"✦ AI Coding Assistant ✦ "}
+            {"✦ Psychic AI Architecture ✦ "}
           </Text>
           <Text color={marieTheme.colors.muted}>
-            {"v0.2.0 · Ready to help"}
+            {"v0.2.0 · Ready to perceive"}
           </Text>
         </Box>
       </Box>
@@ -62,13 +62,13 @@ export const CompactBanner: React.FC = () => {
   return (
     <Box flexDirection="column" alignItems="center" marginY={0}>
       <Text color={marieTheme.colors.primary} bold>
-        {"╔══════════════════════════════════════════╗"}
+        {"╔══════════════════════════════════════════════╗"}
       </Text>
       <Text color={marieTheme.colors.primary} bold>
-        {"║  🌸  Marie  ·  AI Coding Assistant  🌸  ║"}
+        {"║  🔮  Psychic  ·  AI Coding Architecture  🔮  ║"}
       </Text>
       <Text color={marieTheme.colors.primary} bold>
-        {"╚══════════════════════════════════════════╝"}
+        {"╚══════════════════════════════════════════════╝"}
       </Text>
     </Box>
   );

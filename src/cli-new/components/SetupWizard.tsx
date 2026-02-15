@@ -322,7 +322,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         <>
           <Box marginBottom={1}>
             <Text color={marieTheme.colors.primary} bold>
-              🌸 Welcome to Marie CLI
+              🔮 Welcome to Psychic CLI
             </Text>
           </Box>
           <Box marginBottom={1}>
@@ -543,7 +543,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
           </Box>
           <Box marginTop={2}>
             <Text color={marieTheme.colors.secondary}>
-              Starting Marie CLI...
+              Starting Psychic CLI...
             </Text>
           </Box>
         </Box>

@@ -92,7 +92,7 @@
     }
   },
   "bin": {
-    "marie": "./dist/cli-new/index.js"
+    "psychic": "./dist/cli-new/index.js"
   },
   "scripts": {
     "build": "npm run build:extension && npm run build:cli",

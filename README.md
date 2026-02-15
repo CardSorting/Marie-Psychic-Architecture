@@ -82,7 +82,7 @@ npm install -g @noorm/marie-psychic-cli
 ```
 
 ### Quick Start
-1.  **Launch**: Simply type `marie` in your terminal.
+1.  **Launch**: Simply type `psychic` in your terminal.
 2.  **Credentials**: 
     ```bash
     export ANTHROPIC_API_KEY=your_key_here

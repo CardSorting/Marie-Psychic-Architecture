@@ -33,13 +33,10 @@ Follow these steps to set up MariePsychic for local development.
 
 5. **Launch**:
    - Press `F5` in VS Code to open a new "Extension Development Host" window.
-   - Marie will appear in the Activity Bar on the left.
+   - Psychic will appear in the Activity Bar on the left.
 
 ## ⚙️ Configuration
 
-Marie is configured via VS Code Settings (`Cmd+,` or `Ctrl+,`):
-
-- `marie.apiKey`: Your Anthropic API Key.
 - `marie.openrouterApiKey`: Your OpenRouter API Key.
 - `marie.aiProvider`: Choose between `anthropic` or `openrouter`.
 - `marie.model`: Specify the model ID (e.g., `claude-3-5-sonnet-20241022`).
