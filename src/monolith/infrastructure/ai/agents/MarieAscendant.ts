@@ -15,7 +15,7 @@ export class MarieAscendant {
   private lastConfidence: number = 1.2;
   private consecutiveSuccesses: number = 0;
 
-  constructor(private provider: AIProvider) {}
+  constructor(private provider: AIProvider) { }
 
   public async evaluate(
     messages: any[],
@@ -62,12 +62,8 @@ export class MarieAscendant {
         : "";
 
       const contextPrompt = `
-[ASCENSION CONTEXT]
+[GHOST WRITER'S FOCUS]
 Memory Snapshot:
-- Spirit Pressure (Flow): ${state.spiritPressure}/100
-- Victory Streak: ${state.victoryStreak}
-- Karma Drain (Errors): ${state.totalErrorCount}
-- Curse Hotspots: ${hotspots}
 - Recent Echoes: ${state.recentFiles.slice(-5).join(", ")}
 - Protocol: ${profile}
 - Intensity: ${aggression}
@@ -91,6 +87,7 @@ Stop Condition: landed|structural_uncertainty|continuation_required
 Reason: <one concise line integrating Auditor/ISO findings>
 
 Required Actions must be <= ${maxRequiredActions}.`;
+
 
       const providerResponse = await this.provider.createMessage({
         model: ConfigService.getModel(),
