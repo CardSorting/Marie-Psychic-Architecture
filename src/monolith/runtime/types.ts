@@ -36,12 +36,17 @@ export interface RuntimeAutomationPort {
 export interface RuntimeOptions<TAutomation extends RuntimeAutomationPort> {
   config: RuntimeConfigPort;
   sessionStore: RuntimeSessionStorePort;
-  toolRegistrar: (registry: any, automation: TAutomation) => void;
+  toolRegistrar: (
+    registry: any,
+    automation: TAutomation,
+    narrativeAutomation?: any,
+  ) => void;
   providerFactory: (
     providerType: MarieProviderType,
     apiKey: string,
   ) => AIProvider;
   automationService: TAutomation;
+  narrativeAutomationService?: any;
   onProgressEvent?: (event: any) => void;
   onApprovalRequest?: (request: {
     id: string;

@@ -1,6 +1,6 @@
 
-import { MarieEngine } from "../src/monolith/infrastructure/ai/core/MarieEngine";
-import { AscensionState, AscensionDecree } from "../src/monolith/infrastructure/ai/core/MarieAscensionTypes";
+import { MarieEngine } from "../src/monolith/infrastructure/ai/core/MarieEngine.js";
+import { AscensionState, AscensionDecree } from "../src/monolith/infrastructure/ai/core/MarieAscensionTypes.js";
 
 async function verifyGhostwriter() {
     console.log("🧪 Starting Ghostwriter Verification...");

@@ -99,6 +99,8 @@ export interface Motif {
 
 export interface CharacterProfile {
   name: string;
+  archetype: string; // e.g., "The Technomancer"
+  voice: string; // e.g., "Cynical, precise"
   traits: string[];
   motivation: string;
   status: string;

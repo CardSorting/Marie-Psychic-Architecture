@@ -1,4 +1,5 @@
 import path from "path";
+import * as fs from "node:fs/promises";
 import { AIProvider } from "../providers/AIProvider.js";
 import { ToolRegistry } from "../../tools/ToolRegistry.js";
 import { MarieProgressTracker } from "./MarieProgressTracker.js";
@@ -27,6 +28,7 @@ export function getPromptProfileForDepth(
  */
 export class MarieEngine {
   private static readonly CONTENT_BUFFER_MAX_BYTES = 1024 * 1024;
+  private static readonly MEMORY_FILE = ".marie/ghostwriter_memory.json";
   private ascendant: MarieAscendant;
   private state: AscensionState;
   private lockManager: MarieLockManager;
@@ -49,6 +51,7 @@ export class MarieEngine {
   ) {
     this.ascendant = new MarieAscendant(this.provider);
     this.state = this.initializeState();
+    this.loadGhostwriterMemory().catch(e => console.error("Failed to load narrative memory:", e));
     this.lockManager = new MarieLockManager();
     this.toolMender = new MarieToolMender(this.toolRegistry);
     this.reasoningBudget = new ReasoningBudget();
@@ -88,6 +91,32 @@ export class MarieEngine {
         activePOV: undefined
       },
     };
+  }
+
+  private async loadGhostwriterMemory() {
+    try {
+      const data = await fs.readFile(MarieEngine.MEMORY_FILE, "utf-8");
+      const memory = JSON.parse(data);
+      if (this.state) {
+        this.state.ghostwriterMemory = { ...this.state.ghostwriterMemory, ...memory };
+      }
+    } catch (e) {
+      // Memory file might not exist yet
+    }
+  }
+
+  private async saveGhostwriterMemory() {
+    if (!this.state.ghostwriterMemory) return;
+    try {
+      await fs.mkdir(path.dirname(MarieEngine.MEMORY_FILE), { recursive: true });
+      await fs.writeFile(
+        MarieEngine.MEMORY_FILE,
+        JSON.stringify(this.state.ghostwriterMemory, null, 2),
+        "utf-8"
+      );
+    } catch (e) {
+      console.error("Failed to save narrative memory:", e);
+    }
   }
 
   private validatePOV(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
@@ -153,11 +182,13 @@ export class MarieEngine {
   }
 
   private static readonly MOTIF_LEXICONS: Record<string, string[]> = {
-    "Ocean": ["waves", "tide", "ebb", "anchor", "sail", "harbor", "salt", "abyss", "currents", "surf"],
-    "Forest": ["roots", "canopy", "branches", "leaf", "bark", "thicket", "tangle", "moss"],
-    "Desert": ["dune", "mirage", "oasis", "scorch", "sandstorm", "parched", "grit", "dust", "sand"],
     "Military": ["regiment", "formation", "salute", "frontline", "flank", "ordnance", "vanguard", "drill"],
-    "Gothic": ["shadow", "decay", "blood", "crypt", "echo", "obsidian", "shroud", "specter"]
+    "Gothic": ["shadow", "decay", "blood", "crypt", "echo", "obsidian", "shroud", "specter"],
+    "Cyberpunk": ["neon", "chrome", "glitch", "neural", "grid", "synthetic", "hologram", "interface", "jacked", "static"],
+    "Noir": ["rain", "smoke", "alley", "trenchcoat", "shadow", "dame", "shamus", "gritty", "monochrome", "whiskey"],
+    "High Fantasy": ["mana", "rune", "crystal", "dragon", "citadel", "spell", "ancient", "ethereal", "sigil", "artifact"],
+    "Pastoral": ["meadow", "brook", "harvest", "orchard", "breeze", "thatch", "pasture", "gentle", "wheat", "bloom"],
+    "Scholarly": ["parchment", "ink", "tome", "folio", "manuscript", "lexicon", "thesis", "archive", "quill", "erudite"]
   };
 
   private validateVoiceRefraction(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
@@ -679,6 +710,7 @@ export class MarieEngine {
         }
 
         this.toolCallCounter++;
+        await this.saveGhostwriterMemory();
         return {
           type: "tool_result",
           tool_use_id: toolCall.id,

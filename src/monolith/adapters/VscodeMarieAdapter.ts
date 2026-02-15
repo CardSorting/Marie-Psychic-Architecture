@@ -16,6 +16,8 @@ import { RuntimeAdapterBase } from "../runtime/RuntimeAdapterBase.js";
 import { VscodeFileSystemPort } from "../infrastructure/ai/core/VscodeFileSystemPort.js";
 import { MarieGhostService } from "../services/MarieGhostService.js";
 
+import { NarrativeAutomationService } from "../services/NarrativeAutomationService.js";
+
 class VscodeConfigPort implements RuntimeConfigPort {
   getAiProvider(): MarieProviderType {
     return ConfigService.getAiProvider();
@@ -30,7 +32,7 @@ class VscodeConfigPort implements RuntimeConfigPort {
 }
 
 class VscodeSessionStorePort implements RuntimeSessionStorePort {
-  constructor(private readonly context: vscode.ExtensionContext) {}
+  constructor(private readonly context: vscode.ExtensionContext) { }
 
   async getSessions(): Promise<Record<string, any[]>> {
     return (
@@ -78,13 +80,13 @@ class VscodeSessionStorePort implements RuntimeSessionStorePort {
 
 export class Marie
   extends RuntimeAdapterBase<JoyAutomationService>
-  implements vscode.Disposable
-{
+  implements vscode.Disposable {
   constructor(
     private context: vscode.ExtensionContext,
     public readonly joyService: JoyService,
   ) {
     const automationService = new JoyAutomationService(context, joyService);
+    const narrativeAutomationService = new NarrativeAutomationService(context, joyService);
     if (!process.env.MARIE_EXTENSION_TESTS) {
       automationService.startAutonomousHeartbeat();
     }
@@ -95,6 +97,7 @@ export class Marie
       toolRegistrar: registerMarieTools,
       providerFactory: createDefaultProvider,
       automationService,
+      narrativeAutomationService,
       onProgressEvent: (event) => this.joyService.onRunProgress(event as any),
       shouldBypassApprovals: () =>
         ConfigService.getAutonomyMode() !== "balanced",

@@ -39,10 +39,12 @@ import { JoyAutomationService } from "../../services/JoyAutomationService.js";
 import { RitualService, JoyZone } from "../../domain/joy/RitualService.js";
 import { ContextArchiveService } from "../ai/context/ContextArchiveService.js";
 import { LintService } from "../../plumbing/analysis/LintService.js";
+import { NarrativeAutomationService } from "../../services/NarrativeAutomationService.js";
 
 export function registerMarieTools(
   registry: ToolRegistry,
   automationService: JoyAutomationService,
+  narrativeAutomationService?: NarrativeAutomationService,
 ) {
   registerSharedToolDefinitions(registry, {
     resolvePath: (p: string) => p,
@@ -91,8 +93,8 @@ export function registerMarieTools(
       const workingDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
       const p = args.path as string | undefined;
       const cmd = (args.command as string) || "npm run lint";
-      
-      const errors = p 
+
+      const errors = p
         ? await LintService.runLintOnFile(workingDir, p)
         : await LintService.runLint(workingDir, cmd);
 
@@ -124,7 +126,7 @@ export function registerMarieTools(
     execute: async () => {
       const workingDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
       const errors = await LintService.runLint(workingDir);
-      
+
       if (errors.length === 0) {
         return "Marie's systemic audit found no regressions. Stability is absolute. ✨";
       }
@@ -1837,6 +1839,77 @@ export function registerMarieTools(
         // Autonomous Self-Healing Trigger
         return await automationService.executeSelfHealing(p, error.message);
       }
+    },
+  });
+
+  registry.register({
+    name: "update_narrative_context",
+    description:
+      "Surgically update character profiles, world laws, or relationships in the persistent memory. Use this to maintain longtail consistency.",
+    input_schema: {
+      type: "object",
+      properties: {
+        characterBible: { type: "array", items: { type: "object" } },
+        worldLexicon: { type: "object" },
+        activePOV: { type: "string" },
+        proximityMatrix: { type: "object" },
+        researchSeeds: { type: "array", items: { type: "object" } },
+      },
+    },
+    execute: async (args, onProgress) => {
+      // Logic managed by the engine's memory persistence
+      return "Narrative context updated in memory. Consistency reinforced. ✨";
+    },
+  });
+
+  registry.register({
+    name: "audit_narrative_integrity",
+    description:
+      "Run the engine's internal narrative guards (Zoning, POV, Causality, Somatics) against a specific file or section.",
+    input_schema: {
+      type: "object",
+      properties: {
+        path: { type: "string" },
+        section: { type: "string", description: "Optional section heading to audit" },
+      },
+      required: ["path"],
+    },
+    execute: async (args) => {
+      if (!narrativeAutomationService) return "Error: Narrative service not available.";
+      return await narrativeAutomationService.auditIntegrity(getStringArg(args, "path"));
+    },
+  });
+
+  registry.register({
+    name: "perform_narrative_hardening",
+    description:
+      "Orchestrates the multi-phase hardening ritual (Atomic Extraction -> Core Expansion -> Hostile Attack -> Defensive Reconstruction -> Metric Audit).",
+    input_schema: {
+      type: "object",
+      properties: {
+        path: { type: "string" },
+        phase: {
+          type: "string",
+          enum: [
+            "ATOMIC_EXTRACTION",
+            "CORE_EXPANSION",
+            "HOSTILE_ATTACK",
+            "DEFENSIVE_RECONSTRUCTION",
+            "METRIC_AUDIT",
+          ],
+        },
+        intent: { type: "string" },
+        recursive: { type: "boolean", description: "If true, automatically chains Attack -> Defense -> Audit." },
+      },
+      required: ["path", "phase", "intent"],
+    },
+    execute: async (args) => {
+      if (!narrativeAutomationService) return "Error: Narrative service not available.";
+      const phase = getStringArg(args, "phase") as any;
+      const path = getStringArg(args, "path");
+      const intent = getStringArg(args, "intent");
+      const recursive = args.recursive === true;
+      return await narrativeAutomationService.performHardening(path, phase, intent, recursive);
     },
   });
 
