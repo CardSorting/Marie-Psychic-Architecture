@@ -15,7 +15,7 @@ export class MarieAscendant {
   private lastConfidence: number = 1.2;
   private consecutiveSuccesses: number = 0;
 
-  constructor(private provider: AIProvider) {}
+  constructor(private provider: AIProvider) { }
 
   public async evaluate(
     messages: any[],
@@ -24,6 +24,7 @@ export class MarieAscendant {
       profile?: "demo_day" | "balanced" | "recovery";
       aggression?: number;
       maxRequiredActions?: number;
+      novelContext?: string;
     },
   ): Promise<AscensionDecree> {
     try {
@@ -71,6 +72,7 @@ Memory Snapshot:
 - Protocol: ${profile}
 - Intensity: ${aggression}
 - Environment: ${state.environment}
+${options?.novelContext ? `\n[NOVEL PRODUCTION]\n${options.novelContext}\n` : ""}
 ${memorySnapshot}
 
 [SOVEREIGN DUTIES]

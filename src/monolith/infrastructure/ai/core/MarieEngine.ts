@@ -14,6 +14,7 @@ import {
 } from "./MarieAscensionTypes.js";
 import { NarrativeService } from "../narrative/NarrativeService.js";
 import { ChronicleService } from "../narrative/ChronicleService.js";
+import { NovelProductionService } from "../narrative/NovelProductionService.js";
 import { MarieLockManager } from "./MarieLockManager.js";
 import { MarieToolMender } from "./MarieToolMender.js";
 import { MariePulseService } from "./MariePulseService.js";
@@ -39,8 +40,9 @@ export class MarieEngine {
   private state: AscensionState;
   private lockManager: MarieLockManager;
   private toolMender: MarieToolMender;
-  private pulseService: MariePulseService | undefined;
   private chronicleService: ChronicleService;
+  private novelService: NovelProductionService;
+  private pulseService: MariePulseService | undefined; // Restored
   private reasoningBudget: ReasoningBudget;
   private toolCallCounter: number = 0;
   private contentBuffer: string = "";
@@ -64,6 +66,7 @@ export class MarieEngine {
     this.lockManager = new MarieLockManager();
     this.toolMender = new MarieToolMender(this.toolRegistry);
     this.chronicleService = new ChronicleService();
+    this.novelService = new NovelProductionService(process.cwd());
     this.reasoningBudget = new ReasoningBudget();
   }
 
@@ -144,7 +147,7 @@ export class MarieEngine {
     );
     if (!povProfile) return { valid: true };
 
-    // Simple POV Bleed Detection: Check if thoughts/feelings of other characters are present
+
     const otherCharacters =
       memory.characterBible?.filter((c) => c.name !== memory.activePOV) || [];
     for (const other of otherCharacters) {
@@ -445,6 +448,19 @@ export class MarieEngine {
     input: any,
     decree?: AscensionDecree,
   ): { valid: boolean; reason?: string } {
+    // Novel Production Guard: Canon Protection
+    const targetPath = input.path || input.targetFile;
+    if (targetPath && this.novelService.isCanon(targetPath)) {
+      // Unless specific "Retcon" or "Repair" strategy is explicit, we block.
+      // For now, allow REPAIR mode to touch canon, but block others.
+      if (decree?.ghostwriterMode !== "REPAIR" && decree?.ghostwriterMode !== "HARDEN") {
+        return {
+          valid: false,
+          reason: `CANON VIOLATION: '${targetPath}' is part of the Immutable Universe (Volume 1). Use REPAIR/HARDEN mode to perform a Retcon.`
+        };
+      }
+    }
+
     if (!decree?.ghostwriterMode) return { valid: true };
 
     const targetContent = input.content || input.replacementContent || "";
@@ -465,7 +481,7 @@ export class MarieEngine {
     }
 
     // Zone Isolation Logic
-    const targetPath = input.path || input.targetFile;
+    // targetPath is already defined at top of method
     if (targetPath) {
       const boundary = memory.sectionBoundaries.find((b) =>
         targetPath.includes(b.heading),
@@ -1058,7 +1074,8 @@ export class MarieEngine {
       messages.push({ role: "user", content: toolResultBlocks });
 
       // ASCENSION EVALUATION: Determine next trajectory
-      const decree = await this.ascendant.evaluate(messages, this.state);
+      const novelContext = this.novelService.getActiveContext();
+      const decree = await this.ascendant.evaluate(messages, this.state, { novelContext });
       this.state.lastDecree = decree;
 
       tracker.emitEvent({
