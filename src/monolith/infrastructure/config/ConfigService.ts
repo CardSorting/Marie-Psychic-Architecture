@@ -115,6 +115,8 @@ export class ConfigService {
     if (vscode) {
       return vscode.workspace.getConfiguration("marie").get<string>("apiKey");
     }
+    const provider = this.getAiProvider();
+    if (provider === "nvidia") return process.env.NVIDIA_API_KEY;
     return process.env.ANTHROPIC_API_KEY;
   }
 
@@ -138,19 +140,32 @@ export class ConfigService {
     return process.env.CEREBRAS_API_KEY;
   }
 
-  static getAiProvider(): "anthropic" | "openrouter" | "cerebras" {
+  static getNvidiaApiKey(): string | undefined {
+    const vscode = getVscode();
+    if (vscode) {
+      return vscode.workspace
+        .getConfiguration("marie")
+        .get<string>("nvidiaApiKey");
+    }
+    return process.env.NVIDIA_API_KEY;
+  }
+
+  static getAiProvider(): "anthropic" | "openrouter" | "cerebras" | "nvidia" {
     const vscode = getVscode();
     if (vscode) {
       return vscode.workspace
         .getConfiguration("marie")
         .get<
-          "anthropic" | "openrouter" | "cerebras"
+          "anthropic" | "openrouter" | "cerebras" | "nvidia"
         >("aiProvider", "anthropic");
     }
     const config = getCliConfig();
     return (
-      (config.aiProvider as "anthropic" | "openrouter" | "cerebras") ||
-      "anthropic"
+      (config.aiProvider as
+        | "anthropic"
+        | "openrouter"
+        | "cerebras"
+        | "nvidia") || "anthropic"
     );
   }
 

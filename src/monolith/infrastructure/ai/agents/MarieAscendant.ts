@@ -15,7 +15,7 @@ export class MarieAscendant {
   private lastConfidence: number = 1.2;
   private consecutiveSuccesses: number = 0;
 
-  constructor(private provider: AIProvider) { }
+  constructor(private provider: AIProvider) {}
 
   public async evaluate(
     messages: any[],
@@ -41,22 +41,24 @@ export class MarieAscendant {
           .join(", ") || "None";
 
       const memory = state.ghostwriterMemory;
-      const memorySnapshot = memory ? `
+      const memorySnapshot = memory
+        ? `
 [STRUCTURAL MEMORY]
 - Thesis Claims: ${memory.thesisClaims.length > 0 ? memory.thesisClaims.join(" | ") : "None defined"}
 - Defined Variables: ${memory.definedVariables.length > 0 ? memory.definedVariables.join(" | ") : "None defined"}
-- Active Zones/Boundaries: ${memory.sectionBoundaries.length > 0 ? memory.sectionBoundaries.map(b => `${b.heading}(${b.zone})`).join(" | ") : "None detected"}
-- Character Bible: ${memory.characterBible ? memory.characterBible.map(c => `${c.name}(Psychic: ${c.psychicState?.chrono?.dilationFactor || 1}, Tension: ${c.somatic?.tension || 0})`).join(" | ") : "Empty"}
+- Active Zones/Boundaries: ${memory.sectionBoundaries.length > 0 ? memory.sectionBoundaries.map((b) => `${b.heading}(${b.zone})`).join(" | ") : "None detected"}
+- Character Bible: ${memory.characterBible ? memory.characterBible.map((c) => `${c.name}(Psychic: ${c.psychicState?.chrono?.dilationFactor || 1}, Tension: ${c.somatic?.tension || 0})`).join(" | ") : "Empty"}
 - Relationship Proximity: ${memory.proximityMatrix ? "Active" : "Standard"}
-- Motif Library: ${memory.motifLibrary ? memory.motifLibrary.map(m => m.symbol).join(" | ") : "None"}
+- Motif Library: ${memory.motifLibrary ? memory.motifLibrary.map((m) => m.symbol).join(" | ") : "None"}
 - Current Environment: ${memory.currentEnvironment || "Neutral"}
 - Archeological Anchors: ${memory.archeologicalAnchors ? memory.archeologicalAnchors.length : 0} active
-- Research Seeds: ${memory.researchSeeds ? memory.researchSeeds.filter(s => !s.woven).length : 0} unwoven
+- Research Seeds: ${memory.researchSeeds ? memory.researchSeeds.filter((s) => !s.woven).length : 0} unwoven
 - Active POV: ${memory.activePOV || "Unknown"}
 - Scene Subtext: ${memory.currentSceneSubtext || "Direct"}
 - Semantic Alignment: ${memory.semanticVector?.thesisAlignment || 1.0}
 - Downgraded Hypotheses: ${memory.downgradedHypotheses.length > 0 ? memory.downgradedHypotheses.join(" | ") : "None"}
-` : "";
+`
+        : "";
 
       const contextPrompt = `
 [ASCENSION CONTEXT]

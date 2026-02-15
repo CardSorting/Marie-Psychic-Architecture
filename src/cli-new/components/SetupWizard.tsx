@@ -37,6 +37,11 @@ const providers = [
     value: "cerebras",
     description: "Llama models with fast response times",
   },
+  {
+    label: "◈ NVIDIA - Moonshot AI",
+    value: "nvidia",
+    description: "Access Moonshot/Kimi models",
+  },
 ];
 
 const anthropicModels = [
@@ -103,6 +108,19 @@ const cerebrasModels = [
   },
 ];
 
+const nvidiaModels = [
+  {
+    label: "★ Moonshot Kimi k2.5",
+    value: "moonshotai/kimi-k2.5",
+    description: "High performance model with thinking capability",
+  },
+  {
+    label: "✏️  Enter custom model ID...",
+    value: "custom",
+    description: "Custom NVIDIA model",
+  },
+];
+
 const HelpBox = () => (
   <Box
     flexDirection="column"
@@ -138,6 +156,9 @@ function validateApiKey(
   }
   if (provider === "openrouter" && !key.startsWith("sk-or")) {
     return { valid: true }; // Allow various OpenRouter key formats
+  }
+  if (provider === "nvidia" && !key.startsWith("nvapi-")) {
+    return { valid: true }; // Allow various NVIDIA key formats
   }
   return { valid: true };
 }
@@ -238,6 +259,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
       config.openrouterApiKey = apiKey;
     } else if (provider === "cerebras") {
       config.cerebrasApiKey = apiKey;
+    } else if (provider === "nvidia") {
+      config.nvidiaApiKey = apiKey;
     }
     Storage.saveConfig(config);
     setStep("complete");
@@ -254,6 +277,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         return "OpenRouter API Key";
       case "cerebras":
         return "Cerebras API Key";
+      case "nvidia":
+        return "NVIDIA API Key";
       default:
         return "API Key";
     }
@@ -267,6 +292,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         return "openrouter.com/keys";
       case "cerebras":
         return "cloud.cerebras.ai";
+      case "nvidia":
+        return "build.nvidia.com";
       default:
         return "";
     }
@@ -278,6 +305,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete }) => {
         return openrouterModels;
       case "cerebras":
         return cerebrasModels;
+      case "nvidia":
+        return nvidiaModels;
       default:
         return anthropicModels;
     }

@@ -20,6 +20,7 @@ interface AppProps {
 
 export const App: React.FC<AppProps> = ({ workingDir }) => {
   const { exit } = useApp();
+  const { stdout } = useStdout();
   const [viewMode, setViewMode] = useState<ViewMode>("chat");
   const [showSetup, setShowSetup] = useState(false);
 
@@ -185,8 +186,6 @@ export const App: React.FC<AppProps> = ({ workingDir }) => {
     );
   }
 
-  const { stdout } = useStdout();
-
   return (
     <Box flexDirection="column" height={stdout?.rows || 24}>
       <Header
@@ -208,7 +207,8 @@ export const App: React.FC<AppProps> = ({ workingDir }) => {
 
       <Box marginTop={0}>
         <Text color={marieTheme.colors.muted} dimColor italic>
-          Ctrl+C Cancel • Ctrl+S Sessions • Ctrl+N New • /autonomy [balanced|high|ascension] • /config Settings • /help
+          Ctrl+C Cancel • Ctrl+S Sessions • Ctrl+N New • /autonomy
+          [balanced|high|ascension] • /config Settings • /help
         </Text>
       </Box>
     </Box>

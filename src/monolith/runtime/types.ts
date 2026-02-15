@@ -3,7 +3,11 @@ import { AIProvider } from "../infrastructure/ai/providers/AIProvider.js";
 import { FileSystemPort } from "../infrastructure/ai/core/FileSystemPort.js";
 import { GhostPort } from "../infrastructure/ai/core/GhostPort.js";
 
-export type MarieProviderType = "anthropic" | "openrouter" | "cerebras";
+export type MarieProviderType =
+  | "anthropic"
+  | "openrouter"
+  | "cerebras"
+  | "nvidia";
 
 export interface SessionMetadata {
   id: string;

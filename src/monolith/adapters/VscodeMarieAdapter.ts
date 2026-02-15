@@ -27,12 +27,13 @@ class VscodeConfigPort implements RuntimeConfigPort {
     if (provider === "openrouter")
       return ConfigService.getOpenRouterApiKey() || "";
     if (provider === "cerebras") return ConfigService.getCerebrasApiKey() || "";
+    if (provider === "nvidia") return ConfigService.getNvidiaApiKey() || "";
     return ConfigService.getApiKey() || "";
   }
 }
 
 class VscodeSessionStorePort implements RuntimeSessionStorePort {
-  constructor(private readonly context: vscode.ExtensionContext) { }
+  constructor(private readonly context: vscode.ExtensionContext) {}
 
   async getSessions(): Promise<Record<string, any[]>> {
     return (
@@ -80,13 +81,17 @@ class VscodeSessionStorePort implements RuntimeSessionStorePort {
 
 export class Marie
   extends RuntimeAdapterBase<JoyAutomationService>
-  implements vscode.Disposable {
+  implements vscode.Disposable
+{
   constructor(
     private context: vscode.ExtensionContext,
     public readonly joyService: JoyService,
   ) {
     const automationService = new JoyAutomationService(context, joyService);
-    const narrativeAutomationService = new NarrativeAutomationService(context, joyService);
+    const narrativeAutomationService = new NarrativeAutomationService(
+      context,
+      joyService,
+    );
     if (!process.env.MARIE_EXTENSION_TESTS) {
       automationService.startAutonomousHeartbeat();
     }

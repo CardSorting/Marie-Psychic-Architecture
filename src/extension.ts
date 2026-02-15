@@ -22,7 +22,7 @@ class MarieWebviewHost {
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly marieInstance: Marie,
-  ) { }
+  ) {}
 
   public attach(webview: vscode.Webview): void {
     this.webviews.add(webview);
@@ -202,7 +202,9 @@ class MarieWebviewHost {
 
   private async setProvider(rawProvider: string): Promise<void> {
     const provider =
-      rawProvider === "openrouter" || rawProvider === "cerebras"
+      rawProvider === "openrouter" ||
+      rawProvider === "cerebras" ||
+      rawProvider === "nvidia"
         ? rawProvider
         : "anthropic";
     const cfg = vscode.workspace.getConfiguration("marie");
@@ -218,6 +220,9 @@ class MarieWebviewHost {
     } else if (provider === "cerebras") {
       // For Cerebras, use Llama
       newModel = "llama3.1-8b";
+    } else if (provider === "nvidia") {
+      // For NVIDIA, use Moonshot
+      newModel = "moonshotai/kimi-k2.5";
     } else {
       // For Anthropic, use the default Claude model
       newModel = "claude-3-5-sonnet-20241022";
@@ -258,6 +263,9 @@ class MarieWebviewHost {
     } else if (provider === "cerebras") {
       // Cerebras accepts llama-* models
       return model.startsWith("llama-");
+    } else if (provider === "nvidia") {
+      // NVIDIA accepts moonshotai/* or other nvidia hosted models
+      return model.includes("/");
     }
     return false;
   }
@@ -274,7 +282,9 @@ class MarieWebviewHost {
 
   private async setApiKey(rawProvider: string, rawKey: string): Promise<void> {
     const provider =
-      rawProvider === "openrouter" || rawProvider === "cerebras"
+      rawProvider === "openrouter" ||
+      rawProvider === "cerebras" ||
+      rawProvider === "nvidia"
         ? rawProvider
         : "anthropic";
     const apiKey = rawKey.trim();
@@ -286,7 +296,9 @@ class MarieWebviewHost {
         ? "openrouterApiKey"
         : provider === "cerebras"
           ? "cerebrasApiKey"
-          : "apiKey";
+          : provider === "nvidia"
+            ? "nvidiaApiKey"
+            : "apiKey";
 
     await cfg.update(settingKey, apiKey, vscode.ConfigurationTarget.Global);
     this.marieInstance.updateSettings();
@@ -322,7 +334,9 @@ class MarieWebviewHost {
         ? ConfigService.getOpenRouterApiKey()
         : provider === "cerebras"
           ? ConfigService.getCerebrasApiKey()
-          : ConfigService.getApiKey();
+          : provider === "nvidia"
+            ? ConfigService.getNvidiaApiKey()
+            : ConfigService.getApiKey();
     return {
       provider,
       model: ConfigService.getModel(),
@@ -330,7 +344,8 @@ class MarieWebviewHost {
       hasAnyApiKey: Boolean(
         ConfigService.getApiKey() ||
         ConfigService.getOpenRouterApiKey() ||
-        ConfigService.getCerebrasApiKey(),
+        ConfigService.getCerebrasApiKey() ||
+        ConfigService.getNvidiaApiKey(),
       ),
       hasProviderApiKey: Boolean(providerKey),
     };

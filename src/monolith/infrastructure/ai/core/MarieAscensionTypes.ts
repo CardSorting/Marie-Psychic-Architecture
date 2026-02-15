@@ -17,7 +17,10 @@ export type SpiritMood =
   | "FLUIDITY"
   | "HESITATION";
 export type SpiritUrgency = "LOW" | "MEDIUM" | "HIGH";
-export type AscensionStopCondition = "landed" | "structural_uncertainty" | "continuation_required";
+export type AscensionStopCondition =
+  | "landed"
+  | "structural_uncertainty"
+  | "continuation_required";
 
 export type GhostwriterMode =
   | "EXPAND"
@@ -121,7 +124,13 @@ export interface WorldLexicon {
   geography: string[];
 }
 
-export type NarrativeZone = "CORE_ARGUMENT" | "SUPPORT" | "PLUMBING" | "THEMATIC" | "NARRATIVE" | "SENSORY";
+export type NarrativeZone =
+  | "CORE_ARGUMENT"
+  | "SUPPORT"
+  | "PLUMBING"
+  | "THEMATIC"
+  | "NARRATIVE"
+  | "SENSORY";
 
 export interface SectionBoundary {
   heading: string;

@@ -85,12 +85,19 @@ export function registerMarieTools(
     input_schema: {
       type: "object",
       properties: {
-        path: { type: "string", description: "Optional path to a specific file to lint" },
-        command: { type: "string", description: "Optional custom lint command" },
+        path: {
+          type: "string",
+          description: "Optional path to a specific file to lint",
+        },
+        command: {
+          type: "string",
+          description: "Optional custom lint command",
+        },
       },
     },
     execute: async (args) => {
-      const workingDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
+      const workingDir =
+        vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
       const p = args.path as string | undefined;
       const cmd = (args.command as string) || "npm run lint";
 
@@ -124,7 +131,8 @@ export function registerMarieTools(
     isDestructive: true,
     input_schema: { type: "object", properties: {} },
     execute: async () => {
-      const workingDir = vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
+      const workingDir =
+        vscode.workspace.workspaceFolders?.[0].uri.fsPath || process.cwd();
       const errors = await LintService.runLint(workingDir);
 
       if (errors.length === 0) {
@@ -132,8 +140,8 @@ export function registerMarieTools(
       }
 
       let result = `# 🧬 Autonomous Recovery Protocol\n\nDetected **${errors.length}** stability alerts in the codebase.\n\n`;
-      const files = Array.from(new Set(errors.map(e => e.file)));
-      result += `**Impacted Files**:\n${files.map(f => `- ${f}`).join("\n")}\n\n`;
+      const files = Array.from(new Set(errors.map((e) => e.file)));
+      result += `**Impacted Files**:\n${files.map((f) => `- ${f}`).join("\n")}\n\n`;
       result += `**Trajectory**: Use 'resolve_lint_errors' to view the full triage report and begin surgical remediation.`;
       return result;
     },
@@ -1870,13 +1878,19 @@ export function registerMarieTools(
       type: "object",
       properties: {
         path: { type: "string" },
-        section: { type: "string", description: "Optional section heading to audit" },
+        section: {
+          type: "string",
+          description: "Optional section heading to audit",
+        },
       },
       required: ["path"],
     },
     execute: async (args) => {
-      if (!narrativeAutomationService) return "Error: Narrative service not available.";
-      return await narrativeAutomationService.auditIntegrity(getStringArg(args, "path"));
+      if (!narrativeAutomationService)
+        return "Error: Narrative service not available.";
+      return await narrativeAutomationService.auditIntegrity(
+        getStringArg(args, "path"),
+      );
     },
   });
 
@@ -1899,17 +1913,27 @@ export function registerMarieTools(
           ],
         },
         intent: { type: "string" },
-        recursive: { type: "boolean", description: "If true, automatically chains Attack -> Defense -> Audit." },
+        recursive: {
+          type: "boolean",
+          description:
+            "If true, automatically chains Attack -> Defense -> Audit.",
+        },
       },
       required: ["path", "phase", "intent"],
     },
     execute: async (args) => {
-      if (!narrativeAutomationService) return "Error: Narrative service not available.";
+      if (!narrativeAutomationService)
+        return "Error: Narrative service not available.";
       const phase = getStringArg(args, "phase") as any;
       const path = getStringArg(args, "path");
       const intent = getStringArg(args, "intent");
       const recursive = args.recursive === true;
-      return await narrativeAutomationService.performHardening(path, phase, intent, recursive);
+      return await narrativeAutomationService.performHardening(
+        path,
+        phase,
+        intent,
+        recursive,
+      );
     },
   });
 

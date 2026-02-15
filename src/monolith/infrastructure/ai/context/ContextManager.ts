@@ -134,20 +134,34 @@ export class ContextManager {
         let ghostNote = "";
         if (state.ghostwriterMemory) {
           const {
-            thesisClaims, definedVariables, sectionBoundaries, downgradedHypotheses,
-            characterBible, worldLexicon, activePOV,
-            proximityMatrix, motifLibrary, researchSeeds, currentSceneSubtext,
-            archeologicalAnchors, currentEnvironment, semanticVector
+            thesisClaims,
+            definedVariables,
+            sectionBoundaries,
+            downgradedHypotheses,
+            characterBible,
+            worldLexicon,
+            activePOV,
+            proximityMatrix,
+            motifLibrary,
+            researchSeeds,
+            currentSceneSubtext,
+            archeologicalAnchors,
+            currentEnvironment,
+            semanticVector,
           } = state.ghostwriterMemory;
 
-          const charNote = characterBible ? `, Characters: ${characterBible.map(c => `${c.name}(Tension: ${c.somatic?.tension || 0})`).join(" | ")}` : "";
-          const lexNote = worldLexicon ? `, Lexicon: ${Object.keys(worldLexicon.terms).join(" | ")}` : "";
+          const charNote = characterBible
+            ? `, Characters: ${characterBible.map((c) => `${c.name}(Tension: ${c.somatic?.tension || 0})`).join(" | ")}`
+            : "";
+          const lexNote = worldLexicon
+            ? `, Lexicon: ${Object.keys(worldLexicon.terms).join(" | ")}`
+            : "";
           const povNote = activePOV ? `, POV: ${activePOV}` : "";
           const resNote = `\n[RESONANCE] Proximity: ${proximityMatrix ? "Active" : "Standard"}, Motifs: ${motifLibrary?.length || 0}, Seeds: ${researchSeeds?.length || 0}`;
           const visNote = `\n[VISCERAL] Archeology: ${archeologicalAnchors?.length || 0} active, Subtext: ${currentSceneSubtext || "None"}, Env: ${currentEnvironment || "Neutral"}`;
           const psychNote = `\n[PSYCHIC] Alignment: ${semanticVector?.thesisAlignment || 1.0}, Drift: ${semanticVector?.driftDetected ? "ALERT" : "Stable"}`;
 
-          ghostNote = `\n[GHOSTWRITER MEMORY] Mode: ${ghostMode}, Zones: ${sectionBoundaries.map(b => `${b.heading}(${b.zone})`).join(" | ")}${charNote}${lexNote}${povNote}${resNote}${visNote}${psychNote}`;
+          ghostNote = `\n[GHOSTWRITER MEMORY] Mode: ${ghostMode}, Zones: ${sectionBoundaries.map((b) => `${b.heading}(${b.zone})`).join(" | ")}${charNote}${lexNote}${povNote}${resNote}${visNote}${psychNote}`;
         }
 
         ascensionNote = `[ASCENSION STATE] Strategy: ${strategy}, Mood: ${state.mood}, Spirit Pressure (Flow): ${state.spiritPressure}/100, Victory Streak: ${state.victoryStreak}${hotspots ? `, Hotspots: ${hotspots}` : ""}, Last Intent: ${strategyReason}${ghostNote}\n\n`;

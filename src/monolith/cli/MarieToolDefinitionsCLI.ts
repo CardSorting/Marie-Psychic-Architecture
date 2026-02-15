@@ -464,7 +464,8 @@ export function registerMarieToolsCLI(
       properties: {
         command: {
           type: "string",
-          description: "Optional custom lint command (defaults to npm run lint)",
+          description:
+            "Optional custom lint command (defaults to npm run lint)",
         },
       },
     },

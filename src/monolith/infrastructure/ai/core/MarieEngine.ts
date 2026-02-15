@@ -7,7 +7,11 @@ import { MarieSession, MarieSessionPromptProfile } from "./MarieSession.js";
 import { MarieEventDispatcher } from "./MarieEventDispatcher.js";
 import { MarieToolProcessor } from "./MarieToolProcessor.js";
 import { MarieAscendant } from "../agents/MarieAscendant.js";
-import { AscensionState, AscensionDecree, GhostwriterMemory } from "./MarieAscensionTypes.js";
+import {
+  AscensionState,
+  AscensionDecree,
+  GhostwriterMemory,
+} from "./MarieAscensionTypes.js";
 import { MarieLockManager } from "./MarieLockManager.js";
 import { MarieToolMender } from "./MarieToolMender.js";
 import { MariePulseService } from "./MariePulseService.js";
@@ -51,7 +55,9 @@ export class MarieEngine {
   ) {
     this.ascendant = new MarieAscendant(this.provider);
     this.state = this.initializeState();
-    this.loadGhostwriterMemory().catch(e => console.error("Failed to load narrative memory:", e));
+    this.loadGhostwriterMemory().catch((e) =>
+      console.error("Failed to load narrative memory:", e),
+    );
     this.lockManager = new MarieLockManager();
     this.toolMender = new MarieToolMender(this.toolRegistry);
     this.reasoningBudget = new ReasoningBudget();
@@ -86,9 +92,9 @@ export class MarieEngine {
         worldLexicon: {
           terms: {},
           laws: [],
-          geography: []
+          geography: [],
         },
-        activePOV: undefined
+        activePOV: undefined,
       },
     };
   }
@@ -98,7 +104,10 @@ export class MarieEngine {
       const data = await fs.readFile(MarieEngine.MEMORY_FILE, "utf-8");
       const memory = JSON.parse(data);
       if (this.state) {
-        this.state.ghostwriterMemory = { ...this.state.ghostwriterMemory, ...memory };
+        this.state.ghostwriterMemory = {
+          ...this.state.ghostwriterMemory,
+          ...memory,
+        };
       }
     } catch (e) {
       // Memory file might not exist yet
@@ -108,46 +117,66 @@ export class MarieEngine {
   private async saveGhostwriterMemory() {
     if (!this.state.ghostwriterMemory) return;
     try {
-      await fs.mkdir(path.dirname(MarieEngine.MEMORY_FILE), { recursive: true });
+      await fs.mkdir(path.dirname(MarieEngine.MEMORY_FILE), {
+        recursive: true,
+      });
       await fs.writeFile(
         MarieEngine.MEMORY_FILE,
         JSON.stringify(this.state.ghostwriterMemory, null, 2),
-        "utf-8"
+        "utf-8",
       );
     } catch (e) {
       console.error("Failed to save narrative memory:", e);
     }
   }
 
-  private validatePOV(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validatePOV(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV) return { valid: true };
-    const povProfile = memory.characterBible?.find(c => c.name === memory.activePOV);
+    const povProfile = memory.characterBible?.find(
+      (c) => c.name === memory.activePOV,
+    );
     if (!povProfile) return { valid: true };
 
     // Simple POV Bleed Detection: Check if thoughts/feelings of other characters are present
-    const otherCharacters = memory.characterBible?.filter(c => c.name !== memory.activePOV) || [];
+    const otherCharacters =
+      memory.characterBible?.filter((c) => c.name !== memory.activePOV) || [];
     for (const other of otherCharacters) {
-      const thoughtRegex = new RegExp(`${other.name}\\s+(thought|felt|knew|realized|remembered)`, 'i');
+      const thoughtRegex = new RegExp(
+        `${other.name}\\s+(thought|felt|knew|realized|remembered)`,
+        "i",
+      );
       if (thoughtRegex.test(content)) {
         return {
           valid: false,
-          reason: `POV Violation: Detected POV bleeding into '${other.name}''s internal state. Active POV is '${memory.activePOV}'.`
+          reason: `POV Violation: Detected POV bleeding into '${other.name}''s internal state. Active POV is '${memory.activePOV}'.`,
         };
       }
     }
     return { valid: true };
   }
 
-  private validateCausality(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateCausality(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.characterBible) return { valid: true };
 
     for (const char of memory.characterBible) {
-      if (char.status.toLowerCase().includes("dead") || char.status.toLowerCase().includes("unconscious")) {
-        const actionRegex = new RegExp(`${char.name}\\s+(said|spoke|ran|jumped|shouted)`, 'i');
+      if (
+        char.status.toLowerCase().includes("dead") ||
+        char.status.toLowerCase().includes("unconscious")
+      ) {
+        const actionRegex = new RegExp(
+          `${char.name}\\s+(said|spoke|ran|jumped|shouted)`,
+          "i",
+        );
         if (actionRegex.test(content)) {
           return {
             valid: false,
-            reason: `Causality Violation: Character '${char.name}' (Status: ${char.status}) is attempting a physical action.`
+            reason: `Causality Violation: Character '${char.name}' (Status: ${char.status}) is attempting a physical action.`,
           };
         }
       }
@@ -155,25 +184,41 @@ export class MarieEngine {
     return { valid: true };
   }
 
-  private validateIntimacy(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
-    if (!memory.activePOV || !memory.proximityMatrix || !memory.characterBible) return { valid: true };
-    const charNames = memory.characterBible.map(c => c.name);
-    const presentChars = charNames.filter(name => content.includes(name) && name !== memory.activePOV);
+  private validateIntimacy(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
+    if (!memory.activePOV || !memory.proximityMatrix || !memory.characterBible)
+      return { valid: true };
+    const charNames = memory.characterBible.map((c) => c.name);
+    const presentChars = charNames.filter(
+      (name) => content.includes(name) && name !== memory.activePOV,
+    );
 
     for (const other of presentChars) {
-      const proximity = memory.proximityMatrix[memory.activePOV]?.[other] || memory.proximityMatrix[other]?.[memory.activePOV];
+      const proximity =
+        memory.proximityMatrix[memory.activePOV]?.[other] ||
+        memory.proximityMatrix[other]?.[memory.activePOV];
       if (proximity) {
         // High Tension / Low Intimacy: Check for overly formal or overly affectionate dialogue
-        if (proximity.tension > 0.8 && (content.includes("love") || content.includes("dear") || content.includes("darling"))) {
+        if (
+          proximity.tension > 0.8 &&
+          (content.includes("love") ||
+            content.includes("dear") ||
+            content.includes("darling"))
+        ) {
           return {
             valid: false,
-            reason: `Intimacy Violation: Detected affectionate register between '${memory.activePOV}' and '${other}' despite high tension (${proximity.tension}).`
+            reason: `Intimacy Violation: Detected affectionate register between '${memory.activePOV}' and '${other}' despite high tension (${proximity.tension}).`,
           };
         }
-        if (proximity.intimacy < 0.2 && /kissed|hugged|caressed/i.test(content)) {
+        if (
+          proximity.intimacy < 0.2 &&
+          /kissed|hugged|caressed/i.test(content)
+        ) {
           return {
             valid: false,
-            reason: `Intimacy Violation: Detected high-intimacy physical contact between '${memory.activePOV}' and '${other}' despite low intimacy (${proximity.intimacy}).`
+            reason: `Intimacy Violation: Detected high-intimacy physical contact between '${memory.activePOV}' and '${other}' despite low intimacy (${proximity.intimacy}).`,
           };
         }
       }
@@ -182,36 +227,114 @@ export class MarieEngine {
   }
 
   private static readonly MOTIF_LEXICONS: Record<string, string[]> = {
-    "Military": ["regiment", "formation", "salute", "frontline", "flank", "ordnance", "vanguard", "drill"],
-    "Gothic": ["shadow", "decay", "blood", "crypt", "echo", "obsidian", "shroud", "specter"],
-    "Cyberpunk": ["neon", "chrome", "glitch", "neural", "grid", "synthetic", "hologram", "interface", "jacked", "static"],
-    "Noir": ["rain", "smoke", "alley", "trenchcoat", "shadow", "dame", "shamus", "gritty", "monochrome", "whiskey"],
-    "High Fantasy": ["mana", "rune", "crystal", "dragon", "citadel", "spell", "ancient", "ethereal", "sigil", "artifact"],
-    "Pastoral": ["meadow", "brook", "harvest", "orchard", "breeze", "thatch", "pasture", "gentle", "wheat", "bloom"],
-    "Scholarly": ["parchment", "ink", "tome", "folio", "manuscript", "lexicon", "thesis", "archive", "quill", "erudite"]
+    Military: [
+      "regiment",
+      "formation",
+      "salute",
+      "frontline",
+      "flank",
+      "ordnance",
+      "vanguard",
+      "drill",
+    ],
+    Gothic: [
+      "shadow",
+      "decay",
+      "blood",
+      "crypt",
+      "echo",
+      "obsidian",
+      "shroud",
+      "specter",
+    ],
+    Cyberpunk: [
+      "neon",
+      "chrome",
+      "glitch",
+      "neural",
+      "grid",
+      "synthetic",
+      "hologram",
+      "interface",
+      "jacked",
+      "static",
+    ],
+    Noir: [
+      "rain",
+      "smoke",
+      "alley",
+      "trenchcoat",
+      "shadow",
+      "dame",
+      "shamus",
+      "gritty",
+      "monochrome",
+      "whiskey",
+    ],
+    "High Fantasy": [
+      "mana",
+      "rune",
+      "crystal",
+      "dragon",
+      "citadel",
+      "spell",
+      "ancient",
+      "ethereal",
+      "sigil",
+      "artifact",
+    ],
+    Pastoral: [
+      "meadow",
+      "brook",
+      "harvest",
+      "orchard",
+      "breeze",
+      "thatch",
+      "pasture",
+      "gentle",
+      "wheat",
+      "bloom",
+    ],
+    Scholarly: [
+      "parchment",
+      "ink",
+      "tome",
+      "folio",
+      "manuscript",
+      "lexicon",
+      "thesis",
+      "archive",
+      "quill",
+      "erudite",
+    ],
   };
 
-  private validateVoiceRefraction(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateVoiceRefraction(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV || !memory.characterBible) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov || pov.motifs.length === 0) return { valid: true };
 
     const env = memory.currentEnvironment || "Neutral";
     const lowerContent = content.toLowerCase();
 
-    for (const [motifName, keywords] of Object.entries(MarieEngine.MOTIF_LEXICONS)) {
-      const foundKeywords = keywords.filter(k => lowerContent.includes(k));
+    for (const [motifName, keywords] of Object.entries(
+      MarieEngine.MOTIF_LEXICONS,
+    )) {
+      const foundKeywords = keywords.filter((k) => lowerContent.includes(k));
 
       if (foundKeywords.length > 0) {
         const hasMotif = pov.motifs.includes(motifName);
         const matchesEnv = env.toLowerCase().includes(motifName.toLowerCase());
 
-        // 1. Voice Clash: Using imagery from a motif the character doesn't have, 
+        // 1. Voice Clash: Using imagery from a motif the character doesn't have,
         // especially if it's not present in the environment.
         if (!hasMotif && !matchesEnv && foundKeywords.length >= 2) {
           return {
             valid: false,
-            reason: `Voice Refraction Clash: Character '${pov.name}' is using metaphors from the '${motifName}' motif, which they do not possess.`
+            reason: `Voice Refraction Clash: Character '${pov.name}' is using metaphors from the '${motifName}' motif, which they do not possess.`,
           };
         }
 
@@ -219,14 +342,22 @@ export class MarieEngine {
         // "If motifs contain 'Ocean', being in a desert shouldn't use 'Sand dunes as waves' unless intentional"
         // This flags when your own motif is used to describe an alien setting in a surface-level way.
         if (hasMotif && !matchesEnv && env !== "Neutral") {
-          const envKeywords = MarieEngine.MOTIF_LEXICONS[env] || [env.toLowerCase()];
-          const lazyRegex = new RegExp(`\\b(${keywords.join("|")})[^.!?]*?\\s+(?:like|as|than|for)\\s+(?:the\\s+)?\\b(${envKeywords.join("|")})`, "i");
-          const inverseLazyRegex = new RegExp(`\\b(${envKeywords.join("|")})[^.!?]*?\\s+(?:like|as|than|for)\\s+(?:the\\s+)?\\b(${keywords.join("|")})`, "i");
+          const envKeywords = MarieEngine.MOTIF_LEXICONS[env] || [
+            env.toLowerCase(),
+          ];
+          const lazyRegex = new RegExp(
+            `\\b(${keywords.join("|")})[^.!?]*?\\s+(?:like|as|than|for)\\s+(?:the\\s+)?\\b(${envKeywords.join("|")})`,
+            "i",
+          );
+          const inverseLazyRegex = new RegExp(
+            `\\b(${envKeywords.join("|")})[^.!?]*?\\s+(?:like|as|than|for)\\s+(?:the\\s+)?\\b(${keywords.join("|")})`,
+            "i",
+          );
 
           if (lazyRegex.test(content) || inverseLazyRegex.test(content)) {
             return {
               valid: false,
-              reason: `Voice Refraction Alert: Lazy motif bridge detected. Character '${pov.name}' is using their '${motifName}' motif to describe the '${env}' setting with a surface-level simile. Deeper refraction required.`
+              reason: `Voice Refraction Alert: Lazy motif bridge detected. Character '${pov.name}' is using their '${motifName}' motif to describe the '${env}' setting with a surface-level simile. Deeper refraction required.`,
             };
           }
         }
@@ -236,49 +367,68 @@ export class MarieEngine {
     return { valid: true };
   }
 
-  private validateSomatics(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateSomatics(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV || !memory.characterBible) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov || !pov.somatic) return { valid: true };
 
     // Somatic Rhythm Check: High tension/pulse should use shorter sentences
     if (pov.somatic.tension > 0.8 || pov.somatic.pulse > 120) {
-      const sentences = content.split(/[.!?]/).filter(s => s.trim().length > 0);
-      const avgLength = sentences.reduce((acc, s) => acc + s.split(' ').length, 0) / (sentences.length || 1);
+      const sentences = content
+        .split(/[.!?]/)
+        .filter((s) => s.trim().length > 0);
+      const avgLength =
+        sentences.reduce((acc, s) => acc + s.split(" ").length, 0) /
+        (sentences.length || 1);
 
       if (avgLength > 15) {
         return {
           valid: false,
-          reason: `Somatic Violation: Prose rhythm is too fluid (${avgLength.toFixed(1)} words/sent) for '${memory.activePOV}''s high tension (${pov.somatic.tension}). Fragmentation required.`
+          reason: `Somatic Violation: Prose rhythm is too fluid (${avgLength.toFixed(1)} words/sent) for '${memory.activePOV}''s high tension (${pov.somatic.tension}). Fragmentation required.`,
         };
       }
     }
     return { valid: true };
   }
 
-  private validateArcheology(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateArcheology(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.archeologicalAnchors) return { valid: true };
 
     for (const anchor of memory.archeologicalAnchors) {
-      if (content.includes(anchor.objectPath) && anchor.lexiconTags.length > 0) {
+      if (
+        content.includes(anchor.objectPath) &&
+        anchor.lexiconTags.length > 0
+      ) {
         // Soft check for lexicon alignment
       }
     }
     return { valid: true };
   }
 
-  private validateRefraction(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateRefraction(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV || !memory.characterBible) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov || pov.biases.length === 0) return { valid: true };
 
     for (const bias of pov.biases) {
       if (bias.intensity > 0.8) {
         // E.g., if bias is "Grief" and distortion is "All light is cold", check for "warm light" in Z2
-        if (bias.name.toLowerCase() === "grief" && /warm|golden|cheerful/i.test(content)) {
+        if (
+          bias.name.toLowerCase() === "grief" &&
+          /warm|golden|cheerful/i.test(content)
+        ) {
           return {
             valid: false,
-            reason: `Refraction Violation: POV '${memory.activePOV}' is experiencing extreme Grief (${bias.intensity}); cheerful sensory cues conflict with their distorted perception.`
+            reason: `Refraction Violation: POV '${memory.activePOV}' is experiencing extreme Grief (${bias.intensity}); cheerful sensory cues conflict with their distorted perception.`,
           };
         }
       }
@@ -305,7 +455,8 @@ export class MarieEngine {
     ) {
       return {
         valid: false,
-        reason: "Zoning Violation: Detected illegal summarization in non-COMPRESS mode.",
+        reason:
+          "Zoning Violation: Detected illegal summarization in non-COMPRESS mode.",
       };
     }
 
@@ -317,16 +468,26 @@ export class MarieEngine {
       );
       if (boundary) {
         if (boundary.zone === "CORE_ARGUMENT" || boundary.zone === "THEMATIC") {
-          if (/implement|method|function|class|const|let|var/i.test(targetContent) && boundary.zone === "CORE_ARGUMENT") {
+          if (
+            /implement|method|function|class|const|let|var/i.test(
+              targetContent,
+            ) &&
+            boundary.zone === "CORE_ARGUMENT"
+          ) {
             return {
               valid: false,
-              reason: "Zone Isolation Violation: Core Argument cannot contain implementation details.",
+              reason:
+                "Zone Isolation Violation: Core Argument cannot contain implementation details.",
             };
           }
-          if (/said|spoke|Dialogue|“|”|"/i.test(targetContent) && boundary.zone === "THEMATIC") {
+          if (
+            /said|spoke|Dialogue|“|”|"/i.test(targetContent) &&
+            boundary.zone === "THEMATIC"
+          ) {
             return {
               valid: false,
-              reason: "Zone Isolation Violation: Thematic zone (Z0) cannot contain raw dialogue.",
+              reason:
+                "Zone Isolation Violation: Thematic zone (Z0) cannot contain raw dialogue.",
             };
           }
         }
@@ -338,18 +499,28 @@ export class MarieEngine {
           ) {
             return {
               valid: false,
-              reason: "Zone Isolation Violation: Support sections cannot introduce new thesis claims.",
+              reason:
+                "Zone Isolation Violation: Support sections cannot introduce new thesis claims.",
             };
           }
-          if (/thought|felt/i.test(targetContent) && boundary.zone === "NARRATIVE") {
+          if (
+            /thought|felt/i.test(targetContent) &&
+            boundary.zone === "NARRATIVE"
+          ) {
             // POV check is handled separately, but Narrative flow should focus on action/sequencing
           }
         }
         if (boundary.zone === "PLUMBING" || boundary.zone === "SENSORY") {
-          if (/should|must|beautiful|important|vital|crucial/i.test(targetContent) && boundary.zone === "PLUMBING") {
+          if (
+            /should|must|beautiful|important|vital|crucial/i.test(
+              targetContent,
+            ) &&
+            boundary.zone === "PLUMBING"
+          ) {
             return {
               valid: false,
-              reason: "Zone Isolation Violation: Plumbing sections cannot use rhetorical logic.",
+              reason:
+                "Zone Isolation Violation: Plumbing sections cannot use rhetorical logic.",
             };
           }
         }
@@ -386,7 +557,10 @@ export class MarieEngine {
     const synesthesiaRes = this.validateSynesthesia(targetContent, memory);
     if (!synesthesiaRes.valid) return synesthesiaRes;
 
-    const intimacyFieldRes = this.validateUnifiedIntimacy(targetContent, memory);
+    const intimacyFieldRes = this.validateUnifiedIntimacy(
+      targetContent,
+      memory,
+    );
     if (!intimacyFieldRes.valid) return intimacyFieldRes;
 
     return { valid: true };
@@ -403,13 +577,18 @@ export class MarieEngine {
       const nameMatches = targetContent.match(/([A-Z][a-z]+)/g);
       if (nameMatches) {
         for (const name of nameMatches) {
-          if (!memory.characterBible.some(c => c.name === name) &&
+          if (
+            !memory.characterBible.some((c) => c.name === name) &&
             !["I", "A", "The", "He", "She", "It", "They"].includes(name) &&
-            !targetContent.includes(`// genesis: ${name}`)) {
-            if (targetContent.includes(`${name} entered`) || targetContent.includes(`${name} said`)) {
+            !targetContent.includes(`// genesis: ${name}`)
+          ) {
+            if (
+              targetContent.includes(`${name} entered`) ||
+              targetContent.includes(`${name} said`)
+            ) {
               return {
                 valid: false,
-                reason: `Drift Guard: Potential character '${name}' intro detected without Genesis permit.`
+                reason: `Drift Guard: Potential character '${name}' intro detected without Genesis permit.`,
               };
             }
           }
@@ -419,17 +598,25 @@ export class MarieEngine {
 
     // World Lexicon & Research Seeds
     if (memory.worldLexicon) {
-      for (const [term, definition] of Object.entries(memory.worldLexicon.terms)) {
-        if (targetContent.includes(term) && !targetContent.includes(definition.substring(0, 10))) {
+      for (const [term, definition] of Object.entries(
+        memory.worldLexicon.terms,
+      )) {
+        if (
+          targetContent.includes(term) &&
+          !targetContent.includes(definition.substring(0, 10))
+        ) {
           // Potential contradiction
         }
       }
     }
 
     if (memory.researchSeeds) {
-      const unwovenSeeds = memory.researchSeeds.filter(s => !s.woven);
+      const unwovenSeeds = memory.researchSeeds.filter((s) => !s.woven);
       for (const seed of unwovenSeeds) {
-        if (targetContent.includes(seed.id) || targetContent.includes(seed.data.substring(0, 20))) {
+        if (
+          targetContent.includes(seed.id) ||
+          targetContent.includes(seed.data.substring(0, 20))
+        ) {
           // Seed found
         }
       }
@@ -437,14 +624,19 @@ export class MarieEngine {
 
     if (memory.archeologicalAnchors) {
       for (const anchor of memory.archeologicalAnchors) {
-        if (targetContent.includes(anchor.objectPath) && !targetContent.includes(anchor.history.substring(0, 15))) {
+        if (
+          targetContent.includes(anchor.objectPath) &&
+          !targetContent.includes(anchor.history.substring(0, 15))
+        ) {
           // Potential missed historical weight
         }
       }
     }
 
     // Code Drift
-    const varMatches = targetContent.match(/(?:const|let|var)\s+([a-zA-Z0-9_]+)\s*=/g);
+    const varMatches = targetContent.match(
+      /(?:const|let|var)\s+([a-zA-Z0-9_]+)\s*=/g,
+    );
     if (varMatches) {
       for (const match of varMatches) {
         const varName = match.split(/\s+/)[1];
@@ -505,7 +697,7 @@ export class MarieEngine {
       }
     }
 
-    let resolveTurn: () => void = () => { };
+    let resolveTurn: () => void = () => {};
     MarieEngine.activeTurn = new Promise<void>((resolve) => {
       resolveTurn = resolve;
     });
@@ -588,7 +780,7 @@ export class MarieEngine {
     // Decay spirit pressure if stale
     if (
       Date.now() -
-      (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
+        (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
       300000
     ) {
       this.state.spiritPressure = Math.max(30, this.state.spiritPressure - 10);
@@ -889,7 +1081,9 @@ export class MarieEngine {
         saveHistory(tracker.getRun()).catch((e) =>
           console.error("History Save Error:", e),
         );
-        return currentAccumulatedContent + "\n\nOutput: “Continuation required.”";
+        return (
+          currentAccumulatedContent + "\n\nOutput: “Continuation required.”"
+        );
       }
 
       if (decree.strategy === "PANIC") {
@@ -1217,9 +1411,12 @@ Do not attempt to continue the previous objective until the garden has been rest
     }
   }
 
-  private validateChrono(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateChrono(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV || !memory.characterBible) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov || !pov.psychicState?.chrono) return { valid: true };
 
     const chrono = pov.psychicState.chrono;
@@ -1229,29 +1426,35 @@ Do not attempt to continue the previous objective until the garden has been rest
     if (chrono.dilationFactor > 1.5 && words < 12) {
       return {
         valid: false,
-        reason: `Chrono Violation: Time is ${chrono.tempo} (Factor: ${chrono.dilationFactor}) for '${pov.name}', but the prose is too brisk (${words} words). Dilated time requires higher narrative density.`
+        reason: `Chrono Violation: Time is ${chrono.tempo} (Factor: ${chrono.dilationFactor}) for '${pov.name}', but the prose is too brisk (${words} words). Dilated time requires higher narrative density.`,
       };
     }
 
     return { valid: true };
   }
 
-  private validateSynesthesia(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateSynesthesia(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.activePOV || !memory.characterBible) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov) return { valid: true };
 
     const lowerContent = content.toLowerCase();
-    const sensoryCrossRegex = /(smell|scent|fragrance|odor)\s+of\b[^.!?]+(sound|bell|note|color|light|blue|red|gold)/i;
+    const sensoryCrossRegex =
+      /(smell|scent|fragrance|odor)\s+of\b[^.!?]+(sound|bell|note|color|light|blue|red|gold)/i;
 
     if (sensoryCrossRegex.test(lowerContent)) {
       const tension = pov.somatic?.tension || 0;
-      const isSynesthesiaActive = pov.psychicState?.synesthesia && pov.psychicState.synesthesia.length > 0;
+      const isSynesthesiaActive =
+        pov.psychicState?.synesthesia &&
+        pov.psychicState.synesthesia.length > 0;
 
       if (tension < 0.8 && !isSynesthesiaActive) {
         return {
           valid: false,
-          reason: `Synesthesia Violation: Detected cross-sensory metaphor in '${pov.name}''s POV despite low somatic tension (${tension}) and no active synesthetic map. Sensorial crossing must be earned by trauma, intensity, or extreme intimacy.`
+          reason: `Synesthesia Violation: Detected cross-sensory metaphor in '${pov.name}''s POV despite low somatic tension (${tension}) and no active synesthetic map. Sensorial crossing must be earned by trauma, intensity, or extreme intimacy.`,
         };
       }
     }
@@ -1259,9 +1462,13 @@ Do not attempt to continue the previous objective until the garden has been rest
     return { valid: true };
   }
 
-  private validateUnifiedIntimacy(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
-    if (!memory.activePOV || !memory.characterBible || !memory.proximityMatrix) return { valid: true };
-    const pov = memory.characterBible.find(c => c.name === memory.activePOV);
+  private validateUnifiedIntimacy(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
+    if (!memory.activePOV || !memory.characterBible || !memory.proximityMatrix)
+      return { valid: true };
+    const pov = memory.characterBible.find((c) => c.name === memory.activePOV);
     if (!pov) return { valid: true };
 
     for (const other of memory.characterBible) {
@@ -1278,10 +1485,15 @@ Do not attempt to continue the previous objective until the garden has been rest
           if (motifRegex.test(content) && content.includes(other.name)) {
             const mentionIndex = content.indexOf(other.name);
             const motifMatch = content.toLowerCase().match(motifRegex);
-            if (motifMatch && Math.abs(mentionIndex - content.toLowerCase().indexOf(motifMatch[0])) < 50) {
+            if (
+              motifMatch &&
+              Math.abs(
+                mentionIndex - content.toLowerCase().indexOf(motifMatch[0]),
+              ) < 50
+            ) {
               return {
                 valid: false,
-                reason: `Unified intimacy Violation: Motif '${motif}' from '${pov.name}' is bleeding into '${other.name}''s description, but intimacy is too low (${proximity.intimacy}). Shared psychic space requires Intimacy > 0.7.`
+                reason: `Unified intimacy Violation: Motif '${motif}' from '${pov.name}' is bleeding into '${other.name}''s description, but intimacy is too low (${proximity.intimacy}). Shared psychic space requires Intimacy > 0.7.`,
               };
             }
           }
@@ -1292,19 +1504,24 @@ Do not attempt to continue the previous objective until the garden has been rest
     return { valid: true };
   }
 
-  private validateSemanticDrift(content: string, memory: GhostwriterMemory): { valid: boolean; reason?: string } {
+  private validateSemanticDrift(
+    content: string,
+    memory: GhostwriterMemory,
+  ): { valid: boolean; reason?: string } {
     if (!memory.semanticVector) return { valid: true };
     const vector = memory.semanticVector;
 
     // If drift is detected or alignment is low, we auditor the keywords
     if (vector.thesisAlignment < 0.4) {
       const lowerContent = content.toLowerCase();
-      const hasCoreKeyword = vector.coreKeywords.some(k => lowerContent.includes(k.toLowerCase()));
+      const hasCoreKeyword = vector.coreKeywords.some((k) =>
+        lowerContent.includes(k.toLowerCase()),
+      );
 
       if (!hasCoreKeyword) {
         return {
           valid: false,
-          reason: `Semantic Drift Violation: Current prose alignment is critical (${vector.thesisAlignment}). Deployed content fails to utilize core thematic keywords (${vector.coreKeywords.slice(0, 3).join(", ")}). Thesis fracture imminent.`
+          reason: `Semantic Drift Violation: Current prose alignment is critical (${vector.thesisAlignment}). Deployed content fails to utilize core thematic keywords (${vector.coreKeywords.slice(0, 3).join(", ")}). Thesis fracture imminent.`,
         };
       }
     }
