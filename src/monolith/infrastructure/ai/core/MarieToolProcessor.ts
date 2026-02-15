@@ -3,7 +3,13 @@ import { ToolRegistry } from "../../tools/ToolRegistry.js";
 import * as path from "path";
 import { createRequire } from "module";
 
-const require = createRequire(import.meta.url);
+// Helper to safely get require in both CJS and ESM environments
+function getRequire() {
+  if (typeof require === "function") {
+    return require;
+  }
+  return createRequire(import.meta.url);
+}
 
 // Lazy-load vscode to avoid CLI errors
 
@@ -13,7 +19,8 @@ function getVscode(): typeof vscodeTypes | null {
   if (!hasAttemptedVscodeLoad) {
     hasAttemptedVscodeLoad = true;
     try {
-      vscodeModule = require("vscode") as typeof vscodeTypes;
+      const req = getRequire();
+      vscodeModule = req("vscode") as typeof vscodeTypes;
     } catch {
       vscodeModule = null;
     }
@@ -52,7 +59,7 @@ export class MarieToolProcessor {
     ) => Promise<boolean>,
     private state: AscensionState,
     private fs?: FileSystemPort,
-  ) {}
+  ) { }
 
   public async process(
     toolCall: { id: string; name: string; input: any; repaired?: boolean },
