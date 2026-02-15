@@ -5,6 +5,7 @@ Even the most mindful agents stumble. MariePsychic is equipped with **Sovereign 
 ---
 
 ## 🩹 Sovereign Recovery
+
 If a high-order tool (e.g., `execute_semantic_rename`, `execute_semantic_move`) fails due to LSP issues or syntax errors, Marie does not enter a blind retry loop.
 
 1. **Diagnosis**: Marie calls `diagnose_action_failure` to understand the root cause (e.g., missing imports, syntax errors in the file).
@@ -14,6 +15,7 @@ If a high-order tool (e.g., `execute_semantic_rename`, `execute_semantic_move`) 
 ---
 
 ## 🧘 Reflection Protocol
+
 Failure is a moment for mindfulness, not frustration.
 
 - **Analyze Before Action**: Errors in terminal commands or tool calls must be analyzed (Exit Code, stderr) before the next attempt.
@@ -23,6 +25,7 @@ Failure is a moment for mindfulness, not frustration.
 ---
 
 ## 🐉 Technical Debt & Technical "Letting Go"
+
 Complexity is managed through the ritual of discarding what no longer sparks joy.
 
 - **Safe Compost**: Before a file is deleted via `discard_file`, a workspace-wide audit is performed. If any "Downstream Echos" (references) remain, the ritual is refused until the dependencies are resolved.
@@ -31,10 +34,12 @@ Complexity is managed through the ritual of discarding what no longer sparks joy
 ---
 
 ## 📈 Roadmap Augmentation
+
 When "Hidden Complexity" is discovered (e.g., a simple bug fix that reveals a deep architectural flaw), Marie uses `augment_roadmap`.
 
 - **Intentional Insertion**: New "Passes" are added to the strategic plan to handle the new complexity.
 - **Transparency**: The reason for the augmentation is recorded in the telemetry and the final Bloom Report.
 
 ---
-*Verified and Documented with Love. ✨*
+
+_Verified and Documented with Love. ✨_

@@ -14,7 +14,7 @@ Thank you for your interest in making MariePsychic even more joyful! We welcome 
 2. **Follow Standards**: Adhere to the [KonMari Standards](konmari-standards.md) and [Joy Zoning Protocol](../JOY_ZONING.md).
 3. **Test Mindfully**: Ensure your changes don't introduce clutter or break the Downward Flow Law.
 4. **Joyful Commits**: Use our commit message pattern: `[Type]: [Summary] [Emoji]`.
-   - *Example*: `Feature: Implement breath-work animation 🌬️`
+   - _Example_: `Feature: Implement breath-work animation 🌬️`
 
 ## 🧹 Code Quality
 
@@ -27,4 +27,5 @@ Thank you for your interest in making MariePsychic even more joyful! We welcome 
 We are building a compassionate community of developers. Be kind, be patient, and help others find joy in their work.
 
 ---
-*Verified and Documented with Love. ✨*
+
+_Verified and Documented with Love. ✨_

@@ -25,7 +25,8 @@ class CliConfigPort implements RuntimeConfigPort {
 
   getApiKey(provider: MarieProviderType): string {
     const config = Storage.getConfig();
-    if (provider === "openrouter") return (config as any).openrouterApiKey || "";
+    if (provider === "openrouter")
+      return (config as any).openrouterApiKey || "";
     if (provider === "cerebras") return (config as any).cerebrasApiKey || "";
     if (provider === "nvidia") return (config as any).nvidiaApiKey || "";
     if (provider === "moonshot") return (config as any).moonshotApiKey || "";

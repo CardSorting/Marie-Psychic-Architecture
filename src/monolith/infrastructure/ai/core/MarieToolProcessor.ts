@@ -59,7 +59,7 @@ export class MarieToolProcessor {
     ) => Promise<boolean>,
     private state: AscensionState,
     private fs?: FileSystemPort,
-  ) { }
+  ) {}
 
   public async process(
     toolCall: { id: string; name: string; input: any; repaired?: boolean },

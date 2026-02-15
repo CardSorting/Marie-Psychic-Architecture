@@ -108,7 +108,10 @@ export class MarieEngine {
       }
       if (this.state && this.state.ghostwriterMemory) {
         // Enchant memory with archeology (Async)
-        NarrativeService.enrichMemory(this.state.ghostwriterMemory, process.cwd()).then((m) => {
+        NarrativeService.enrichMemory(
+          this.state.ghostwriterMemory,
+          process.cwd(),
+        ).then((m) => {
           if (this.state) this.state.ghostwriterMemory = m;
         });
       }
@@ -116,7 +119,10 @@ export class MarieEngine {
       // Memory file might not exist yet
       if (this.state && this.state.ghostwriterMemory) {
         // Initialize fresh if load failed but we have default
-        NarrativeService.enrichMemory(this.state.ghostwriterMemory, process.cwd()).then((m) => {
+        NarrativeService.enrichMemory(
+          this.state.ghostwriterMemory,
+          process.cwd(),
+        ).then((m) => {
           if (this.state) this.state.ghostwriterMemory = m;
         });
       }
@@ -148,7 +154,6 @@ export class MarieEngine {
       (c) => c.name === memory.activePOV,
     );
     if (!povProfile) return { valid: true };
-
 
     const otherCharacters =
       memory.characterBible?.filter((c) => c.name !== memory.activePOV) || [];
@@ -455,10 +460,13 @@ export class MarieEngine {
     if (targetPath) {
       // 1. Full Canon: File is in a completed chapter
       if (this.novelService.isCanon(targetPath)) {
-        if (decree?.ghostwriterMode !== "REPAIR" && decree?.ghostwriterMode !== "HARDEN") {
+        if (
+          decree?.ghostwriterMode !== "REPAIR" &&
+          decree?.ghostwriterMode !== "HARDEN"
+        ) {
           return {
             valid: false,
-            reason: `CANON VIOLATION: '${targetPath}' is part of the Immutable Universe. Use REPAIR/HARDEN mode to perform a Retcon.`
+            reason: `CANON VIOLATION: '${targetPath}' is part of the Immutable Universe. Use REPAIR/HARDEN mode to perform a Retcon.`,
           };
         }
       }
@@ -469,7 +477,7 @@ export class MarieEngine {
         if (decree?.ghostwriterMode !== "REPAIR") {
           return {
             valid: false,
-            reason: `SEMI-CANON VIOLATION: '${targetPath}' was locked by the ${passLock.lockedBy} pass. Previous passes are immutable. Build on top, don't rewrite.`
+            reason: `SEMI-CANON VIOLATION: '${targetPath}' was locked by the ${passLock.lockedBy} pass. Previous passes are immutable. Build on top, don't rewrite.`,
           };
         }
       }
@@ -731,7 +739,7 @@ export class MarieEngine {
       }
     }
 
-    let resolveTurn: () => void = () => { };
+    let resolveTurn: () => void = () => {};
     MarieEngine.activeTurn = new Promise<void>((resolve) => {
       resolveTurn = resolve;
     });
@@ -814,7 +822,7 @@ export class MarieEngine {
     // Decay spirit pressure if stale
     if (
       Date.now() -
-      (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
+        (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
       300000
     ) {
       this.state.spiritPressure = Math.max(30, this.state.spiritPressure - 10);
@@ -1092,7 +1100,9 @@ export class MarieEngine {
 
       if (ConfigService.isAscensionEnabled()) {
         const novelContext = this.novelService.getActiveContext();
-        decree = await this.ascendant.evaluate(messages, this.state, { novelContext });
+        decree = await this.ascendant.evaluate(messages, this.state, {
+          novelContext,
+        });
 
         tracker.emitEvent({
           type: "reasoning",
@@ -1112,7 +1122,7 @@ export class MarieEngine {
           blockedBy: [],
           stopCondition: "landed",
           profile: "balanced",
-          raw: "{}"
+          raw: "{}",
         };
       }
 

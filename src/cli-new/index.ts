@@ -42,7 +42,8 @@ const MainApp: React.FC = () => {
 
 // Check for one-shot message flag
 const messageArgIndex = process.argv.indexOf("--message");
-const initialMessage = messageArgIndex !== -1 ? process.argv[messageArgIndex + 1] : null;
+const initialMessage =
+  messageArgIndex !== -1 ? process.argv[messageArgIndex + 1] : null;
 
 if (initialMessage) {
   const { MarieCLI } = await import("../monolith/adapters/CliMarieAdapter.js");
@@ -52,7 +53,8 @@ if (initialMessage) {
   // We need a simple way to wait for the message to complete
   await marie.handleMessage(initialMessage, {
     onStream: (chunk) => process.stdout.write(chunk),
-    onTool: (tool) => process.stdout.write(`\n🛠️ Calling tool: ${tool.name}...\n`),
+    onTool: (tool) =>
+      process.stdout.write(`\n🛠️ Calling tool: ${tool.name}...\n`),
     onEvent: (event) => {
       if (event.type === "run_error") {
         process.stderr.write(`\n❌ Error: ${event.message}\n`);
@@ -60,7 +62,7 @@ if (initialMessage) {
       if (event.type === "reasoning") {
         process.stdout.write(`\n💭 ${event.text}\n`);
       }
-    }
+    },
   });
 
   process.stdout.write("\n✅ Done.\n");

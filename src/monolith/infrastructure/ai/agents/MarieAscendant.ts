@@ -15,7 +15,7 @@ export class MarieAscendant {
   private lastConfidence: number = 1.2;
   private consecutiveSuccesses: number = 0;
 
-  constructor(private provider: AIProvider) { }
+  constructor(private provider: AIProvider) {}
 
   public async evaluate(
     messages: any[],

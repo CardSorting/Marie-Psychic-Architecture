@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { UiConfig } from "../types.js";
 import { CloseIcon, SettingsIcon } from "./Icons.js";
 

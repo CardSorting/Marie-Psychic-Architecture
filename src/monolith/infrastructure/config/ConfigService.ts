@@ -85,7 +85,10 @@ function getCliConfig(): Record<string, unknown> {
 
     // Debug logging for CLI mode troubleshooting
     if (process.env.MARIE_DEBUG === "true") {
-      console.log(`[ConfigService] Loaded CLI config from ${configPath}:`, parsed);
+      console.log(
+        `[ConfigService] Loaded CLI config from ${configPath}:`,
+        parsed,
+      );
     }
 
     return parsed || {};
@@ -127,9 +130,13 @@ export class ConfigService {
       return vscode.workspace.getConfiguration("marie").get<string>("apiKey");
     }
     const provider = this.getAiProvider();
-    if (provider === "nvidia") return process.env.NVIDIA_API_KEY;
-    if (provider === "moonshot") return process.env.MOONSHOT_API_KEY;
-    return process.env.ANTHROPIC_API_KEY;
+    if (provider === "nvidia") return this.getNvidiaApiKey();
+    if (provider === "moonshot") return this.getMoonshotApiKey();
+    if (provider === "openrouter") return this.getOpenRouterApiKey();
+
+    // For Anthropic, check config then env
+    const config = getCliConfig();
+    return (config.apiKey as string) || process.env.ANTHROPIC_API_KEY;
   }
 
   static getOpenRouterApiKey(): string | undefined {
@@ -139,7 +146,10 @@ export class ConfigService {
         .getConfiguration("marie")
         .get<string>("openrouterApiKey");
     }
-    return process.env.OPENROUTER_API_KEY;
+    const config = getCliConfig();
+    return (
+      (config.openrouterApiKey as string) || process.env.OPENROUTER_API_KEY
+    );
   }
 
   static getCerebrasApiKey(): string | undefined {
@@ -311,7 +321,9 @@ export class ConfigService {
         .get<boolean>("ascensionEnabled", true);
     }
     const config = getCliConfig();
-    return typeof config.ascensionEnabled === "boolean" ? config.ascensionEnabled : true;
+    return typeof config.ascensionEnabled === "boolean"
+      ? config.ascensionEnabled
+      : true;
   }
 
   static getAscensionProfile(): "demo_day" | "balanced" | "recovery" {

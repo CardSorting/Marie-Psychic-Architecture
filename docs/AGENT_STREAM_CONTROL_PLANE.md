@@ -9,6 +9,7 @@ The current swarm architecture has strong agent specialization, but turn executi
 ## New components
 
 ### 1) Contracts
+
 - `src/infrastructure/ai/core/AgentStreamContracts.ts`
 - Defines:
   - `AgentIntentClass`
@@ -18,24 +19,29 @@ The current swarm architecture has strong agent specialization, but turn executi
   - `AgentTurnContext`
 
 ### 2) Policy Engine
+
 - `src/infrastructure/ai/core/AgentStreamPolicyEngine.ts`
 - Computes spawn score and admission decisions using configurable thresholds.
 
 ### 3) Intent Scheduler
+
 - `src/infrastructure/ai/core/AgentIntentScheduler.ts`
 - Produces deterministic spawn plans from turn context + intent requests.
 
 ### 4) Stream Manager
+
 - `src/infrastructure/ai/core/AgentStreamManager.ts`
 - Tracks active isolated stream handles, timeouts, cancellation, and lifecycle state.
 
 ### 5) Merge Arbiter
+
 - `src/infrastructure/ai/core/AgentMergeArbiter.ts`
 - Single-writer staging + deterministic acceptance/rejection ordering for agent envelopes.
 
 ## Event model additions
 
 `src/domain/marie/MarieTypes.ts` now includes:
+
 - `StreamIdentity`
 - `agent_stream_lifecycle` event
 - `agent_envelope` event
@@ -45,6 +51,7 @@ These are backward-compatible additions for future multi-stream event routing.
 ## Config flags added
 
 In `ConfigService`:
+
 - `isAgentStreamsEnabled()`
 - `getAgentStreamMaxConcurrent()`
 - `getAgentStreamSpawnThreshold()`
@@ -73,6 +80,7 @@ Defaults are conservative and safe.
 ## Engine integration (non-invasive)
 
 `MarieEngine` now initializes and runs a **preview-only control-plane pass** each turn:
+
 - Builds intent requests (currently QASRE + ISO9001 examples)
 - Runs scheduler + policy
 - Stages preview envelopes through arbiter

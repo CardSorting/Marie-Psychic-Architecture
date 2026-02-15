@@ -3,6 +3,7 @@
 Follow these steps to set up MariePsychic for local development.
 
 ## 📋 Prerequisites
+
 - **Node.js**: v18 or higher.
 - **VS Code**: v1.84.0 or higher.
 - **API Keys**: Anthropic API Key or OpenRouter API Key.
@@ -10,23 +11,27 @@ Follow these steps to set up MariePsychic for local development.
 ## 🚀 Getting Started
 
 1. **Clone the Repository**:
+
    ```bash
    git clone https://github.com/bozoegg/MariePsychic.git
    cd MariePsychic
    ```
 
 2. **Install Dependencies**:
+
    ```bash
    npm install
    ```
 
 3. **Build the Webview**:
    The extension uses a React-based webview. You must build it first:
+
    ```bash
    npm run build-webview
    ```
 
 4. **Compile the Extension**:
+
    ```bash
    npm run compile
    ```
@@ -49,4 +54,5 @@ Follow these steps to set up MariePsychic for local development.
 - `npm run package`: Builds the final `.vsix` file for installation.
 
 ---
-*Verified and Documented with Love. ✨*
+
+_Verified and Documented with Love. ✨_

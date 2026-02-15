@@ -5,6 +5,7 @@ MariePsychic's intelligence is expressed through a diverse registry of autonomou
 ---
 
 ## 📂 Filesystem & Discovery
+
 Tools for exploring and modifying the physical Garden.
 
 - **`read_file`**: Surgical reading of files. Supports line ranges to minimize context noise.
@@ -17,6 +18,7 @@ Tools for exploring and modifying the physical Garden.
 ---
 
 ## 🧠 Intelligence & LSP
+
 Leveraging Language Server Protocol (LSP) for compiler-safe navigation.
 
 - **`get_symbol_definition`**: Jumps to the implementation of a symbol.
@@ -28,6 +30,7 @@ Leveraging Language Server Protocol (LSP) for compiler-safe navigation.
 ---
 
 ## 🎨 Refactoring & Evolution
+
 Tools for helping the project "Bloom" or "Compost" safely.
 
 - **`execute_semantic_rename`**: [High-Order] Workspace-wide, compiler-safe renaming.
@@ -39,17 +42,19 @@ Tools for helping the project "Bloom" or "Compost" safely.
 ---
 
 ## 👮 Governance & Integrity
+
 Protecting the "Downwards Flow Law" and project health.
 
 - **`audit_architectural_integrity`**: Scans for "Zone Leaks" and conceptual backflow.
 - **`check_ripple_health`**: Verifies if changes in a core file broke any downstream dependents.
-- **`predict_refactor_ripple`**: Foresight tool that predicts which files will break *before* you edit.
+- **`predict_refactor_ripple`**: Foresight tool that predicts which files will break _before_ you edit.
 - **`get_code_complexity`**: Measures cyclomatic complexity and "clutter level."
 - **`generate_architectural_decision`**: Saves an ADR-ID markdown record to `.marie/decisions/`.
 
 ---
 
 ## ✨ Rituals & Telemetry
+
 The heart of MariePsychic's mindful approach.
 
 - **`perform_strategic_planning`**: Mandatory ritual for complex tasks. Aligns the "Pass" roadmap.
@@ -60,4 +65,5 @@ The heart of MariePsychic's mindful approach.
 - **`get_workspace_joy_map`**: Generates a high-level health heat-map of the entire project.
 
 ---
-*Verified and Documented with Love. ✨*
+
+_Verified and Documented with Love. ✨_
