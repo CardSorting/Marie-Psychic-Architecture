@@ -450,14 +450,26 @@ export class MarieEngine {
   ): { valid: boolean; reason?: string } {
     // Novel Production Guard: Canon Protection
     const targetPath = input.path || input.targetFile;
-    if (targetPath && this.novelService.isCanon(targetPath)) {
-      // Unless specific "Retcon" or "Repair" strategy is explicit, we block.
-      // For now, allow REPAIR mode to touch canon, but block others.
-      if (decree?.ghostwriterMode !== "REPAIR" && decree?.ghostwriterMode !== "HARDEN") {
-        return {
-          valid: false,
-          reason: `CANON VIOLATION: '${targetPath}' is part of the Immutable Universe (Volume 1). Use REPAIR/HARDEN mode to perform a Retcon.`
-        };
+    if (targetPath) {
+      // 1. Full Canon: File is in a completed chapter
+      if (this.novelService.isCanon(targetPath)) {
+        if (decree?.ghostwriterMode !== "REPAIR" && decree?.ghostwriterMode !== "HARDEN") {
+          return {
+            valid: false,
+            reason: `CANON VIOLATION: '${targetPath}' is part of the Immutable Universe. Use REPAIR/HARDEN mode to perform a Retcon.`
+          };
+        }
+      }
+
+      // 2. Semi-Canon: File is locked by a completed pass in the active chapter
+      const passLock = this.novelService.isPassLocked(targetPath);
+      if (passLock.locked) {
+        if (decree?.ghostwriterMode !== "REPAIR") {
+          return {
+            valid: false,
+            reason: `SEMI-CANON VIOLATION: '${targetPath}' was locked by the ${passLock.lockedBy} pass. Previous passes are immutable. Build on top, don't rewrite.`
+          };
+        }
       }
     }
 
