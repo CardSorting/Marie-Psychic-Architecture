@@ -22,6 +22,7 @@ export interface SentinelReport {
 interface SentinelState {
   lastEntropy: number;
   history: { date: string; entropy: number }[];
+  mtimeCache?: { file: string; mtime: number }[];
 }
 
 /**
@@ -41,6 +42,12 @@ export class MarieSentinelService {
     workingDir: string,
     specificFile?: string,
   ): Promise<SentinelReport> {
+    // Velocity Mode: Check if we should skip expensive scans
+    const { ConfigService } = await import(
+      "../../infrastructure/config/ConfigService.js"
+    );
+    const fastMode = ConfigService.isAscensionEnabled() && !specificFile;
+
     const allFiles = await this.getAllFiles(workingDir);
     const targetFiles = specificFile ? [specificFile] : allFiles;
 
@@ -54,21 +61,45 @@ export class MarieSentinelService {
     const dependencyGraph = new Map<string, string[]>();
     const semanticHashMap = new Map<string, string>(); // Hash -> FilePath
 
-    for (const file of allFiles) {
-      const content = await fs.readFile(file, "utf8");
-      const relativePath = path.relative(workingDir, file);
+    // Load previous state for mtime incremental check
+    const state = await this.loadState(workingDir);
+    const mtimeCache = new Map<string, number>(
+      state.mtimeCache?.map((e: any) => [e.file, e.mtime]) || [],
+    );
+    const newMtimeCache = new Map<string, number>();
 
-      // A. Semantic Duplication (Token-based hash to ignore naming/formatting)
-      const semanticHash = this.computeSemanticHash(content);
-      if (semanticHashMap.has(semanticHash)) {
-        const original = semanticHashMap.get(semanticHash)!;
-        if (original !== relativePath) {
-          duplication.push(
-            `[Semantic Duplicate] ${relativePath} matches ${original}`,
-          );
+    let changedFilesCount = 0;
+
+    for (const file of allFiles) {
+      const stats = await fs.stat(file);
+      const mtime = stats.mtimeMs;
+      newMtimeCache.set(file, mtime);
+
+      const relativePath = path.relative(workingDir, file);
+      const isChanged = mtimeCache.get(file) !== mtime;
+
+      if (isChanged) changedFilesCount++;
+
+      // In Fast Mode, if file hasn't changed, skip heavy analysis unless it's a target
+      if (fastMode && !isChanged && !targetFiles.includes(file)) {
+        continue;
+      }
+
+      const content = await fs.readFile(file, "utf8");
+
+      // A. Semantic Duplication -> SKIP IN FAST MODE unless specific file
+      if (!fastMode) {
+        const semanticHash = this.computeSemanticHash(content);
+        if (semanticHashMap.has(semanticHash)) {
+          const original = semanticHashMap.get(semanticHash)!;
+          if (original !== relativePath) {
+            duplication.push(
+              `[Semantic Duplicate] ${relativePath} matches ${original}`,
+            );
+          }
+        } else {
+          semanticHashMap.set(semanticHash, relativePath);
         }
-      } else {
-        semanticHashMap.set(semanticHash, relativePath);
       }
 
       // B. Robust Import Extraction & Resolution
@@ -94,12 +125,18 @@ export class MarieSentinelService {
       }
     }
 
-    // 2. Cycle Detection (Global)
-    const cycles = this.detectCycles(dependencyGraph);
-    circularDependencies.push(...cycles);
+    // 2. Cycle Detection (Global) -> SKIP IN FAST MODE
+    if (!fastMode) {
+      const cycles = this.detectCycles(dependencyGraph);
+      circularDependencies.push(...cycles);
+    }
 
     // 3. Score Normalization & Ratchet
-    const lintErrors = await LintService.runLint(workingDir);
+    // Linting is expensive, run only if files changed or not in fast mode
+    const lintErrors =
+      !fastMode || changedFilesCount > 0
+        ? await LintService.runLint(workingDir)
+        : [];
 
     const entropyScore =
       zoneViolations.length * 8 + // Weighted higher
@@ -109,7 +146,6 @@ export class MarieSentinelService {
       leakyAbstractions.length * 5 +
       duplication.length * 10; // DRY is law
 
-    const state = await this.loadState(workingDir);
     const entropyDelta = entropyScore - state.lastEntropy;
 
     await this.saveState(workingDir, {
@@ -118,6 +154,10 @@ export class MarieSentinelService {
         ...state.history,
         { date: new Date().toISOString(), entropy: entropyScore },
       ].slice(-20),
+      mtimeCache: Array.from(newMtimeCache.entries()).map(([file, mtime]) => ({
+        file,
+        mtime,
+      })),
     });
 
     let stability: SentinelReport["stability"] = "Stable";
@@ -145,7 +185,9 @@ export class MarieSentinelService {
       passed: entropyScore < 20 && entropyDelta <= 0,
     };
 
-    await this.writeToSentinelLog(workingDir, report);
+    if (!fastMode) {
+      await this.writeToSentinelLog(workingDir, report);
+    }
     return report;
   }
 
@@ -381,17 +423,17 @@ ${report.graphDefinition}
 
 ## 📜 High-Priority Alerts
 ${report.zoneViolations
-  .slice(0, 5)
-  .map((v) => `- ❌ ${v}`)
-  .join("\n")}
+        .slice(0, 5)
+        .map((v) => `- ❌ ${v}`)
+        .join("\n")}
 ${report.circularDependencies
-  .slice(0, 3)
-  .map((c) => `- 🔄 ${c}`)
-  .join("\n")}
+        .slice(0, 3)
+        .map((c) => `- 🔄 ${c}`)
+        .join("\n")}
 ${report.duplication
-  .slice(0, 3)
-  .map((d) => `- 👯 ${d}`)
-  .join("\n")}
+        .slice(0, 3)
+        .map((d) => `- 👯 ${d}`)
+        .join("\n")}
 
 ---
 *Marie Sentinel v3.1 — Grounded Architectural Guardian*

@@ -308,9 +308,9 @@ export class ConfigService {
     if (vscode) {
       return vscode.workspace
         .getConfiguration("marie")
-        .get<number>("tokensPerChar", 0.25);
+        .get<number>("tokensPerChar", 0.35);
     }
-    return 0.25;
+    return 0.35;
   }
 
   static isAscensionEnabled(): boolean {
@@ -341,11 +341,11 @@ export class ConfigService {
 
   static getAscensionIntensity(): number {
     const vscode = getVscode();
-    let value = 1.0;
+    let value = 1.2;
     if (vscode) {
       value = vscode.workspace
         .getConfiguration("marie")
-        .get<number>("ascensionIntensity", 1.0);
+        .get<number>("ascensionIntensity", 1.2);
     }
     return Math.max(0.5, Math.min(1.5, value));
   }
@@ -414,12 +414,12 @@ export class ConfigService {
 
   static getAgentStreamTimeoutMs(): number {
     const vscode = getVscode();
-    let value = 20000;
+    let value = 60000;
 
     if (vscode) {
       value = vscode.workspace
         .getConfiguration("marie")
-        .get<number>("agentStreamTimeoutMs", 20000);
+        .get<number>("agentStreamTimeoutMs", 60000);
     } else {
       const config = getCliConfig();
       if (typeof config.agentStreamTimeoutMs === "number") {

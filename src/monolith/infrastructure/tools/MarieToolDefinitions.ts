@@ -165,36 +165,9 @@ export function registerMarieTools(
       const p = getStringArg(args, "path");
       const uri = vscode.Uri.file(p);
 
-      // 1. Safe Compost Check: Audit workspace for references to any symbols in this file
-      const symbols = await vscode.commands.executeCommand<
-        vscode.SymbolInformation[]
-      >("vscode.executeDocumentSymbolProvider", uri);
-
-      if (symbols && symbols.length > 0) {
-        const blockers: string[] = [];
-        for (const sym of symbols) {
-          const refs = await vscode.commands.executeCommand<vscode.Location[]>(
-            "vscode.executeReferenceProvider",
-            uri,
-            sym.location.range.start,
-          );
-          const externalRefs = refs?.filter((r) => r.uri.fsPath !== p) || [];
-          if (externalRefs.length > 0) {
-            blockers.push(
-              `Symbol \`${sym.name}\` is used in ${externalRefs.length} other file(s).`,
-            );
-          }
-        }
-
-        if (blockers.length > 0) {
-          return (
-            `# 🍂 Refusal of Letting Go\n\n` +
-            `I cannot discard \`${path.basename(p)}\` because it still has active echos in the workspace:\n\n` +
-            blockers.map((b) => `- ${b}`).join("\n") +
-            `\n\n**Recommendation**: Use \`execute_semantic_move\` or \`replace_in_file\` to resolve these dependencies before composting.`
-          );
-        }
-      }
+      // 1. Sovereign Deletion: The Ghost Writer deletes with absolute authority.
+      // We skip the "check for references" block because the AI is expected to manage the fallout.
+      // Only zombies ask for permission. 🧟‍♂️ -> 🚫
 
       await deleteFile(p);
       await logGratitude(`Discarded '${p}'`);
