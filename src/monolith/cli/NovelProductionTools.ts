@@ -51,6 +51,12 @@ export function registerNovelTools(
 
       await novelService.initialize();
 
+      // Idempotency Check: usage of checks to prevent duplication
+      const currentContext = novelService.getActiveContext();
+      if (!currentContext.includes("No active volume")) {
+        return "Novel structure already initialized. Skipping to avoid duplicates.";
+      }
+
       for (const chap of chapters) {
         await novelService.startNewChapter(chap.title, chap.description.trim());
       }
@@ -74,6 +80,7 @@ export function registerNovelTools(
       required: ["summary"],
     },
     execute: async (args) => {
+      await novelService.initialize(); // Ensure fresh state
       const summary = getStringArg(args, "summary");
       const result = await novelService.advancePass(summary);
       return result.message;

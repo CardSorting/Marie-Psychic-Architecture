@@ -208,6 +208,24 @@ export class NovelProductionService {
     if (activeChap.currentPass === "CANON")
       return { success: false, message: "Chapter is already Canon." };
 
+    // AUTO-DISCOVERY: Scan for files belonging to this chapter
+    const vaultPath = path.join(this.rootPath, ".vault", "novel", "chapters");
+    try {
+      const files = await fs.readdir(vaultPath);
+      const chapterFiles = files.filter(
+        (f) =>
+          f.startsWith(`Chapter_${activeChap.id}_`) && f.endsWith(".md"),
+      );
+      // Update activeChap.files with relative paths
+      if (chapterFiles.length > 0) {
+        activeChap.files = chapterFiles.map((f) =>
+          path.join(".vault", "novel", "chapters", f),
+        );
+      }
+    } catch (e) {
+      // Ignore if directory doesn't exist yet
+    }
+
     // Gate: CritiqueService reviews the current pass
     const review = await this.critiqueService.reviewPass(
       activeChap,
@@ -271,11 +289,11 @@ ${PASS_PERSONA.CANON}
     const ledgerSummary =
       activeChap.continuityLedger.length > 0
         ? activeChap.continuityLedger
-            .map(
-              (e) =>
-                `  [${e.pass}] ${e.summary} (Locked: ${e.filesLocked.join(", ")})`,
-            )
-            .join("\n")
+          .map(
+            (e) =>
+              `  [${e.pass}] ${e.summary} (Locked: ${e.filesLocked.join(", ")})`,
+          )
+          .join("\n")
         : "  (No previous passes)";
 
     return `

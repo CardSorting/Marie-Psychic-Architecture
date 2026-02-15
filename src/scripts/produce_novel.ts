@@ -149,7 +149,8 @@ CRITICAL INSTRUCTIONS:
 5. GENERATE the content for the chapter based on the description.
 6. WRITE the content immediately to the TARGET FILE using the 'write_to_file' tool.
 
-When your work for this pass is complete AND verified (by writing the file), call advance_novel_pass with a summary.`;
+When your work for this pass is complete AND verified (by writing the file), call advance_novel_pass with a summary.
+Then, IMMEDIATELY STOP. Do not perform any further actions, checks, or verifications. Accessing the novel status or listing directories after advancement is strictly prohibited.`;
 
     try {
       await marie.handleMessage(prompt, {
