@@ -13,6 +13,7 @@ import {
 import { createDefaultProvider } from "../runtime/providerFactory.js";
 import { RuntimeAdapterBase } from "../runtime/RuntimeAdapterBase.js";
 import { CliFileSystemPort } from "../cli/CliFileSystemPort.js";
+import { NarrativeAutomationServiceCLI } from "../services/NarrativeAutomationServiceCLI.js";
 
 class CliConfigPort implements RuntimeConfigPort {
   getAiProvider(): MarieProviderType {
@@ -71,14 +72,31 @@ export class MarieCLI extends RuntimeAdapterBase<RuntimeAutomationPort> {
       workingDir,
       joyService,
     );
+    const narrativeAutomationService = new NarrativeAutomationServiceCLI(
+      workingDir,
+      joyService,
+    );
 
     const runtime = new MarieRuntime<JoyAutomationServiceCLI>({
       config: new CliConfigPort(),
       sessionStore: new CliSessionStorePort(),
-      toolRegistrar: (registry, automation) =>
-        registerMarieToolsCLI(registry, automation, workingDir),
+      toolRegistrar: (registry, automation) => {
+        registerMarieToolsCLI(registry, automation, workingDir);
+        import("../cli/NovelProductionTools.js").then((m) => {
+          const novelService = (runtime as any).engine?.novelService;
+          if (novelService) {
+            m.registerNovelTools(
+              registry,
+              novelService,
+              narrativeAutomationService,
+              workingDir,
+            );
+          }
+        });
+      },
       providerFactory: createDefaultProvider,
       automationService,
+      narrativeAutomationService,
       onProgressEvent: (event) => joyService.emitRunProgress(event as any),
       shouldBypassApprovals: () => true,
       fs: new CliFileSystemPort(workingDir),

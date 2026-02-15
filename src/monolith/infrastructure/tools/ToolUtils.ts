@@ -80,3 +80,22 @@ export function getArrayArg<T>(
   }
   return value as T[];
 }
+
+/**
+ * Extracts a boolean argument from the tool args.
+ */
+export function getBooleanArg(
+  args: Record<string, unknown>,
+  key: string,
+): boolean | undefined {
+  const value = args[key];
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  if (typeof value !== "boolean") {
+    throw new Error(
+      `Argument ${key} must be a boolean, but got ${typeof value}`,
+    );
+  }
+  return value;
+}
