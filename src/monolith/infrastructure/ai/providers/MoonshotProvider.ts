@@ -58,11 +58,14 @@ export class MoonshotProvider implements AIProvider {
     async createMessage(params: AIRequestParams): Promise<AIResponse> {
         const payload = {
             model: params.model,
-            messages: params.messages.map((m) => ({
-                role: m.role,
-                content:
-                    typeof m.content === "string" ? m.content : JSON.stringify(m.content),
-            })),
+            messages: params.messages.map((m) => {
+                let content = typeof m.content === "string" ? m.content : JSON.stringify(m.content);
+                // Moonshot/Kimi strict mode: Assistant content must not be empty
+                if (m.role === "assistant" && !content) {
+                    content = "...";
+                }
+                return { role: m.role, content };
+            }),
             max_tokens: params.max_tokens || 1024,
             stream: false,
             tools: params.tools?.map((t) => ({
@@ -75,15 +78,33 @@ export class MoonshotProvider implements AIProvider {
             })),
         };
 
-        const response = await fetch(MoonshotProvider.BASE_URL, {
-            method: "POST",
-            headers: this.getHeaders(),
-            body: JSON.stringify(payload),
-        });
+        let response: Response | undefined;
+        let lastError: Error | undefined;
 
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`Moonshot API Error ${response.status}: ${text}`);
+        for (let i = 0; i < 5; i++) {
+            try {
+                response = await fetch(MoonshotProvider.BASE_URL, {
+                    method: "POST",
+                    headers: this.getHeaders(),
+                    body: JSON.stringify(payload),
+                });
+
+                if (response.status === 429) {
+                    const delay = (i + 1) * 3000 + Math.random() * 1000;
+                    if (process.env.MARIE_DEBUG) console.log(`[Moonshot] Rate limit 429. Retrying in ${Math.round(delay)}ms... (Attempt ${i + 1}/5)`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    continue;
+                }
+                break;
+            } catch (err: any) {
+                lastError = err;
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        if (!response?.ok) {
+            const text = await response?.text();
+            throw lastError || new Error(`Moonshot API Error ${response?.status}: ${text}`);
         }
 
         const data = (await response.json()) as MoonshotResponse;
@@ -119,11 +140,14 @@ export class MoonshotProvider implements AIProvider {
 
         const payload = {
             model: params.model,
-            messages: params.messages.map((m) => ({
-                role: m.role,
-                content:
-                    typeof m.content === "string" ? m.content : JSON.stringify(m.content),
-            })),
+            messages: params.messages.map((m) => {
+                let content = typeof m.content === "string" ? m.content : JSON.stringify(m.content);
+                // Moonshot/Kimi strict mode: Assistant content must not be empty
+                if (m.role === "assistant" && !content) {
+                    content = "...";
+                }
+                return { role: m.role, content };
+            }),
             max_tokens: params.max_tokens || 1024,
             stream: true,
             tools: params.tools?.map((t) => ({
@@ -136,19 +160,37 @@ export class MoonshotProvider implements AIProvider {
             })),
         };
 
-        const response = await fetch(MoonshotProvider.BASE_URL, {
-            method: "POST",
-            headers: {
-                ...this.getHeaders(),
-                Accept: "text/event-stream",
-            },
-            body: JSON.stringify(payload),
-            signal,
-        });
+        let response: Response | undefined;
+        let lastError: Error | undefined;
 
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(`Moonshot API Error ${response.status}: ${text}`);
+        for (let i = 0; i < 5; i++) {
+            try {
+                response = await fetch(MoonshotProvider.BASE_URL, {
+                    method: "POST",
+                    headers: {
+                        ...this.getHeaders(),
+                        Accept: "text/event-stream",
+                    },
+                    body: JSON.stringify(payload),
+                    signal,
+                });
+
+                if (response.status === 429) {
+                    const delay = (i + 1) * 3000 + Math.random() * 1000;
+                    if (process.env.MARIE_DEBUG) console.log(`[Moonshot] Rate limit 429. Retrying in ${Math.round(delay)}ms... (Attempt ${i + 1}/5)`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    continue;
+                }
+                break;
+            } catch (err: any) {
+                lastError = err;
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        }
+
+        if (!response?.ok) {
+            const text = await response?.text();
+            throw lastError || new Error(`Moonshot API Error ${response?.status}: ${text}`);
         }
 
         if (!response.body) {

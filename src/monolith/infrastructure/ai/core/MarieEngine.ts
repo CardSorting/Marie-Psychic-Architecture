@@ -1088,16 +1088,35 @@ export class MarieEngine {
       messages.push({ role: "user", content: toolResultBlocks });
 
       // ASCENSION EVALUATION: Determine next trajectory
-      const novelContext = this.novelService.getActiveContext();
-      const decree = await this.ascendant.evaluate(messages, this.state, { novelContext });
-      this.state.lastDecree = decree;
+      let decree: AscensionDecree;
 
-      tracker.emitEvent({
-        type: "reasoning",
-        runId: tracker.getRun().runId,
-        text: `⚡ Protocol Decree: ${decree.strategy} @ ${decree.confidence.toFixed(2)} — ${decree.reason}`,
-        elapsedMs: tracker.elapsedMs(),
-      });
+      if (ConfigService.isAscensionEnabled()) {
+        const novelContext = this.novelService.getActiveContext();
+        decree = await this.ascendant.evaluate(messages, this.state, { novelContext });
+
+        tracker.emitEvent({
+          type: "reasoning",
+          runId: tracker.getRun().runId,
+          text: `⚡ Protocol Decree: ${decree.strategy} @ ${decree.confidence.toFixed(2)} — ${decree.reason}`,
+          elapsedMs: tracker.elapsedMs(),
+        });
+      } else {
+        decree = {
+          strategy: "EXECUTE",
+          urgency: "LOW",
+          confidence: 1.0,
+          isContinueDirective: true,
+          structuralUncertainty: false,
+          reason: "Ascension Disabled",
+          requiredActions: [],
+          blockedBy: [],
+          stopCondition: "landed",
+          profile: "balanced",
+          raw: "{}"
+        };
+      }
+
+      this.state.lastDecree = decree;
 
       // ZENITH AUTONOMY: Autonomous Strategic Calibration
       this.calibrateStrategicTrajectory(decree, tracker);

@@ -5,6 +5,10 @@ import type * as vscodeTypes from "vscode";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
+
 // ISOMORPHIC REQUIRE: Resolves the correct require function for both ESM and CJS
 const nodeRequire = (() => {
   if (typeof require !== "undefined") {
@@ -17,6 +21,9 @@ const nodeRequire = (() => {
     return createRequire(metaUrl);
   } catch {
     return (id: string) => {
+      if (id === "fs") return fs;
+      if (id === "path") return path;
+      if (id === "os") return os;
       throw new Error(`Cannot require ${id} in this environment`);
     };
   }
@@ -68,20 +75,24 @@ function getVscode(): typeof vscodeTypes | null {
 
 function getCliConfig(): Record<string, unknown> {
   try {
-    // Prefer loading the CLI config directly from ~/.marie to avoid module resolution issues
-    // when running the globally installed CLI.
-    const fs = nodeRequire("fs") as typeof import("fs");
-    const path = nodeRequire("path") as typeof import("path");
-    const os = nodeRequire("os") as typeof import("os");
-
     const configPath = path.join(os.homedir(), ".marie", "config.json");
     if (!fs.existsSync(configPath)) {
       return {};
     }
 
     const raw = fs.readFileSync(configPath, "utf-8");
-    return JSON.parse(raw) || {};
-  } catch {
+    const parsed = JSON.parse(raw);
+
+    // Debug logging for CLI mode troubleshooting
+    if (process.env.MARIE_DEBUG === "true") {
+      console.log(`[ConfigService] Loaded CLI config from ${configPath}:`, parsed);
+    }
+
+    return parsed || {};
+  } catch (err) {
+    if (process.env.MARIE_DEBUG === "true") {
+      console.error("[ConfigService] Failed to load CLI config:", err);
+    }
     try {
       // Fallback when ConfigService is loaded from the CLI entrypoint path.
       const { Storage } = nodeRequire("../monolith/cli/storage.js");
@@ -299,7 +310,8 @@ export class ConfigService {
         .getConfiguration("marie")
         .get<boolean>("ascensionEnabled", true);
     }
-    return true;
+    const config = getCliConfig();
+    return typeof config.ascensionEnabled === "boolean" ? config.ascensionEnabled : true;
   }
 
   static getAscensionProfile(): "demo_day" | "balanced" | "recovery" {
@@ -311,7 +323,8 @@ export class ConfigService {
           "demo_day" | "balanced" | "recovery"
         >("ascensionProfile", "balanced");
     }
-    return "balanced";
+    const config = getCliConfig();
+    return (config.ascensionProfile as any) || "balanced";
   }
 
   static getAscensionIntensity(): number {
