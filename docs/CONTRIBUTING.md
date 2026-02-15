@@ -1,6 +1,6 @@
-# Contributing to MarieCoder 🌸
+# Contributing to MariePsychic 🔮
 
-Thank you for your interest in making MarieCoder even more joyful! We welcome contributions that align with our core philosophy of **intentionality, clarity, and gratitude**.
+Thank you for your interest in making MariePsychic even more joyful! We welcome contributions that align with our core philosophy of **intentionality, clarity, and gratitude**.
 
 ## 🌟 The Contributor's Mindset
 

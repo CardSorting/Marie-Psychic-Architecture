@@ -1,6 +1,6 @@
 # Troubleshooting Guide 🩺
 
-If Marie's magic feels a bit heavy, use this guide to restore harmony to your workspace.
+If MariePsychic's magic feels a bit heavy, use this guide to restore harmony to your workspace.
 
 ## 🔑 API Key Issues
 

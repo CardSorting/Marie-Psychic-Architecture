@@ -1,6 +1,6 @@
-# Resilience & Recovery Strategies 🩹
+# Resilience &# Recovery Strategies 🧘‍♀️
 
-MarieCoder is designed to be a resilient partner. When the technical path becomes obscured by failures, lints, or architectural complexity, the agent follows a set of **Mindful Recovery Protocols**.
+Even the most mindful agents stumble. MariePsychic is equipped with **Sovereign Recovery Protocols** to handle errors with grace. When the technical path becomes obscured by failures, lints, or architectural complexity, the agent follows a set of **Mindful Recovery Protocols**.
 
 ---
 

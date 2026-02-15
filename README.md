@@ -1,18 +1,18 @@
-# Marie: The Sovereign AI Architecture 🌸
+# MariePsychic: The Sovereign AI Architecture 🔮
 
-[![NPM Version](https://img.shields.io/npm/v/@noorm/marie-cli.svg?style=flat-square&color=FF69B4)](https://www.npmjs.com/package/@noorm/marie-cli)
+[![NPM Version](https://img.shields.io/npm/v/@noorm/marie-psychic-cli.svg?style=flat-square&color=8A2BE2)](https://www.npmjs.com/package/@noorm/marie-psychic-cli)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg?style=flat-square)](LICENSE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 
-> **Marie is a high-fidelity AI coding agent for developers who care about performance and architecture.**
+> **MariePsychic is a high-fidelity, psychic-type AI coding agent that perceives the hidden architecture of your code.**
 
-Marie is an autonomous coding agent designed to transform chaotic AI-assisted development into structured, disciplined execution. She doesn’t just generate code — she enforces architectural integrity.
+MariePsychic is an autonomous coding entity designed to transcend chaotic AI-assisted development. She doesn’t just generate code — she perceives the *intent* and *structure* behind it, enforcing architectural integrity with psychic precision.
 
 ---
 
 ## 🏛 The Philosophy: Joy Zoning
 
-Marie operates on a strict three-layer model to protect your cognitive flow. This isn't just a suggestion; it is the fundamental law of the ecosystem:
+MariePsychic operates on a strict three-layer model to protect your cognitive flow. This isn't just a suggestion; it is the fundamental law of the ecosystem:
 
 *   **Joyful Code ✨ (Domain)**: Pure logic. No adapters. No leakage. This is where your intent lives.
 *   **Infrastructure 🏗️**: Coordination and integration. The layer that absorbs the world's complexity.
@@ -24,7 +24,7 @@ Marie operates on a strict three-layer model to protect your cognitive flow. Thi
 
 ## 🛡 The Sentinel Engine
 
-Marie includes a built-in architecture guardian. She watches the evolution of your codebase with absolute precision:
+MariePsychic includes a built-in architecture guardian. She watches the evolution of your codebase with absolute precision:
 
 *   **High-fidelity import resolution** through real path analysis.
 *   **Circular dependency detection** to prevent vertical rot.
@@ -39,7 +39,7 @@ Marie includes a built-in architecture guardian. She watches the evolution of yo
 
 ## 🛰 Two Interfaces. One Intelligence.
 
-Marie bridges the gap between the editor and the executor, providing a consistent intelligence across two primary interfaces:
+MariePsychic bridges the gap between the editor and the executor, providing a consistent intelligence across two primary interfaces:
 
 ### 1️⃣ CLI — The Command Deck
 *A high-velocity terminal experience built for flow.*
@@ -51,18 +51,18 @@ Marie bridges the gap between the editor and the executor, providing a consisten
 
 ### 2️⃣ VS Code — The Integrated Bridge
 *Deep editor integration for strategic oversight.*
-*   **Persistent architectural context**: Marie lives inside your project structure.
+*   **Persistent architectural context**: MariePsychic lives inside your project structure.
 *   **Autonomy calibration**: From "Balanced" assistance to "High Autonomy" execution.
 *   **Strategic multi-file transformations**: Coordinated changes across multiple modules.
 *   **Visual Sentinel awareness**: Real-time feedback on Joy Zoning violations.
 
-**Marie understands your codebase as a system — not a prompt.**
+**MariePsychic understands your codebase as a system — not a prompt.**
 
 ---
 
 ## ⚡ The Ascension Engine
 
-Marie's execution model is state-driven, powered by the **Ascension Protocol**:
+MariePsychic's execution model is state-driven, powered by the **Ascension Protocol**:
 
 *   **Multi-pass structured planning**: Logic is derived before a single line is written.
 *   **Self-correction loops**: Continuous validation against test suites and linters.
@@ -75,10 +75,10 @@ Marie's execution model is state-driven, powered by the **Ascension Protocol**:
 
 ## 🚀 Installation
 
-Install Marie globally for universal sovereignty:
+Install MariePsychic globally for universal sovereignty:
 
 ```bash
-npm install -g @noorm/marie-cli
+npm install -g @noorm/marie-psychic-cli
 ```
 
 ### Quick Start
@@ -93,7 +93,7 @@ npm install -g @noorm/marie-cli
 
 ## 💠 Provider-Agnostic Core
 
-Choose your engine. Marie adapts her execution style to the provider while maintaining the doctrine:
+Choose your engine. MariePsychic adapts her execution style to the provider while maintaining the doctrine:
 *   **Anthropic** (Claude 3.5 Sonnet)
 *   **OpenRouter** (For the vast frontier of models)
 *   **Cerebras** (For high-velocity inference)
@@ -101,11 +101,11 @@ Choose your engine. Marie adapts her execution style to the provider while maint
 
 ---
 
-## 🎯 Why Marie Exists
+## 🎯 Why MariePsychic Exists
 
-AI coding tools are powerful — but chaotic. Most tools optimize for *completion*; Marie optimizes for *system health*.
+AI coding tools are powerful — but chaotic. Most tools optimize for *completion*; MariePsychic optimizes for *system health*.
 
-**Marie exists for developers who:**
+**MariePsychic exists for developers who:**
 *   Want structure, not spray-and-pray.
 *   Care about separation of concerns.
 *   Value long-term code health.
@@ -118,9 +118,9 @@ AI coding tools are powerful — but chaotic. Most tools optimize for *completio
 
 ## 🤝 Join the Convergence
 
-Marie is an invitation to build intentionally. Not louder. Not faster. **Better.**
+MariePsychic is an invitation to build intentionally. Not louder. Not faster. **Better.**
 
-Welcome to Marie.
+Welcome to MariePsychic.
 
 ---
 

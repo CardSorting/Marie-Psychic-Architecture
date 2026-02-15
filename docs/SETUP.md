@@ -1,6 +1,6 @@
 # Setup & Installation 🛠️
 
-Follow these steps to set up MarieCoder for local development.
+Follow these steps to set up MariePsychic for local development.
 
 ## 📋 Prerequisites
 - **Node.js**: v18 or higher.
@@ -11,8 +11,8 @@ Follow these steps to set up MarieCoder for local development.
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/bozoegg/MarieCoder.git
-   cd MarieCoder
+   git clone https://github.com/bozoegg/MariePsychic.git
+   cd MariePsychic
    ```
 
 2. **Install Dependencies**:

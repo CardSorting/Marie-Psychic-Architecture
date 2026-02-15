@@ -1,6 +1,6 @@
-# System Architecture: MarieCoder 🏗️
+# System Architecture: MariePsychic 🔮
 
-MarieCoder is designed with a strict emphasis on structural clarity and emotional alignment. The core architectural pattern is **Joy Zoning**, which protects the high-level intent from low-level mechanical noise.
+MariePsychic is designed with a strict emphasis on structural clarity and emotional alignment. The core architectural pattern is **Joy Zoning**, which protects the high-level intent from low-level mechanical noise.
 
 ---
 
@@ -23,7 +23,7 @@ The system is partitioned into three distinct zones, each with its own purpose, 
   - `ai/MarieEngine.ts`: The central orchestrator that coordinates sessions, tools, and progress.
   - `ai/ContextArchiveService.ts`: **Strategic Memory Anchor**. Persists critical snippets to `.marie_memory.json` to ground agent decisions across sessions.
   - `ai/AIProvider.ts`: Abstract interface for AI models (Anthropic, OpenRouter, etc.).
-  - `tools/ToolRegistry.ts`: Manages the discovery and execution of Marie's autonomous tools.
+  - `tools/ToolRegistry.ts`: Manages the discovery and execution of MariePsychic's autonomous tools.
 
 ### 2.5 Cross-Cutting Services 👻
 - **`services/MarieGhostService.ts`**: Provides real-time "Ghost Text" previews. It intercepts tool deltas (like `replace_in_file`) and renders them in the editor as italicized previews with a `$(sync~spin)` status icon before they are committed to disk.
@@ -96,7 +96,7 @@ sequenceDiagram
 
 ## ⚡ Founder Policy Layer: MarieYOLO
 
-MarieCoder now includes a founder-policy agent in the swarm: **MarieYOLO**.
+MariePsychic now includes a founder-policy agent in the swarm: **MarieYOLO**.
 
 ### Purpose
 - Preserve execution momentum when context is healthy.

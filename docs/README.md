@@ -1,6 +1,6 @@
-# 📔 MarieCoder Project Documentation
+# 🔮 MariePsychic Project Documentation
 
-Welcome to the heart of the MarieCoder project. This garden of knowledge is designed to help you understand the philosophy, architecture, and machinery behind your highly capable AI coding partner.
+Welcome to the mind palace of the MariePsychic project. This garden of knowledge is designed to help you understand the philosophy, architecture, and psychic machinery behind your highly capable AI coding partner.
 
 ---
 

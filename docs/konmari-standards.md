@@ -1,16 +1,21 @@
-# MarieCoder Development Standards (KonMari)
+# KonMari Standards for Code 🌸
 
-> *Guidance, not gospel. Pause, reflect, and choose with intention. Continuous evolution over perfection.*
+MariePsychic adheres to a set of coding standards inspired by the KonMari Method.
 
----
+## 1. Does it Spark Joy?
 
-## 🎯 Core Philosophy
+Every function, variable, and file should have a clear purpose. If you cannot explain *why* a piece of code exists, it is clutter.
 
-**Inspired by KonMari Method**: We approach code with mindfulness—honoring what served us, learning from it, and evolving with gratitude. Philosophy guides our thinking; clarity guides our code.
+### The Question
+> "Does this code spark joy?"
+
+If the answer is **no**, we thank it for its service and:
+- Refactor it to be beautiful.
+- Compost it (delete it).
 
 ### Before Any Change - Three Questions:
 1. **What purpose did this serve?** (Observe with curiosity)
-2. **What has this taught us?** (Learn with gratitude)  
+2. **What has this taught us?** (Learn with gratitude)
 3. **What brings clarity now?** (Choose with intention)
 
 ---

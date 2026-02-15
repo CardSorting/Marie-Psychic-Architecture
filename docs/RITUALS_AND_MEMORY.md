@@ -14,7 +14,7 @@ The system maintains a **Gratitude Journal** (`GRATITUDE.md`) to honor the lifec
 ---
 
 ## ⚓ Anchored Strategic Context (Memory)
-MarieCoder uses a persistent, surgical memory system called **Anchored Context**, managed by the `ContextArchiveService`.
+MariePsychic uses a persistent, surgical memory system called **Anchored Context**, managed by the `ContextArchiveService`.
 
 ### How it Works
 Unlike traditional "long-term memory" which can become noisy, anchors are **intentional**.

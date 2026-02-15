@@ -1,6 +1,6 @@
-# Marie's Toolset 🛠️
+# MariePsychic's Toolset 🛠️
 
-Marie's intelligence is expressed through a diverse registry of autonomous tools. These tools are categorized by their role in the project lifecycle and follow the **KonMari Philosophy**—preferring intentional, respectful, and surgical interventions over bulk changes.
+MariePsychic's intelligence is expressed through a diverse registry of autonomous tools. These tools are categorized by their role in the project lifecycle and follow the **KonMari Philosophy**—preferring intentional, respectful, and surgical interventions over bulk changes.
 
 ---
 
@@ -50,7 +50,7 @@ Protecting the "Downwards Flow Law" and project health.
 ---
 
 ## ✨ Rituals & Telemetry
-The heart of Marie's mindful approach.
+The heart of MariePsychic's mindful approach.
 
 - **`perform_strategic_planning`**: Mandatory ritual for complex tasks. Aligns the "Pass" roadmap.
 - **`checkpoint_pass`**: Formal transition between execution phases. Requires a "KonMari Reflection."
