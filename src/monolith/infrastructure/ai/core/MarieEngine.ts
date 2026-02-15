@@ -12,6 +12,8 @@ import {
   AscensionDecree,
   GhostwriterMemory,
 } from "./MarieAscensionTypes.js";
+import { NarrativeService } from "../narrative/NarrativeService.js";
+import { ChronicleService } from "../narrative/ChronicleService.js";
 import { MarieLockManager } from "./MarieLockManager.js";
 import { MarieToolMender } from "./MarieToolMender.js";
 import { MariePulseService } from "./MariePulseService.js";
@@ -38,6 +40,7 @@ export class MarieEngine {
   private lockManager: MarieLockManager;
   private toolMender: MarieToolMender;
   private pulseService: MariePulseService | undefined;
+  private chronicleService: ChronicleService;
   private reasoningBudget: ReasoningBudget;
   private toolCallCounter: number = 0;
   private contentBuffer: string = "";
@@ -60,6 +63,7 @@ export class MarieEngine {
     );
     this.lockManager = new MarieLockManager();
     this.toolMender = new MarieToolMender(this.toolRegistry);
+    this.chronicleService = new ChronicleService();
     this.reasoningBudget = new ReasoningBudget();
   }
 
@@ -83,19 +87,7 @@ export class MarieEngine {
       panicCoolDown: 0,
       environment: this.fs?.type === "vscode" ? "vscode" : "cli",
       lastFailedFile: undefined,
-      ghostwriterMemory: {
-        thesisClaims: [],
-        definedVariables: [],
-        sectionBoundaries: [],
-        downgradedHypotheses: [],
-        characterBible: [],
-        worldLexicon: {
-          terms: {},
-          laws: [],
-          geography: [],
-        },
-        activePOV: undefined,
-      },
+      ghostwriterMemory: NarrativeService.initializeMemory(),
     };
   }
 
@@ -109,8 +101,20 @@ export class MarieEngine {
           ...memory,
         };
       }
+      if (this.state && this.state.ghostwriterMemory) {
+        // Enchant memory with archeology (Async)
+        NarrativeService.enrichMemory(this.state.ghostwriterMemory, process.cwd()).then((m) => {
+          if (this.state) this.state.ghostwriterMemory = m;
+        });
+      }
     } catch (e) {
       // Memory file might not exist yet
+      if (this.state && this.state.ghostwriterMemory) {
+        // Initialize fresh if load failed but we have default
+        NarrativeService.enrichMemory(this.state.ghostwriterMemory, process.cwd()).then((m) => {
+          if (this.state) this.state.ghostwriterMemory = m;
+        });
+      }
     }
   }
 
@@ -697,7 +701,7 @@ export class MarieEngine {
       }
     }
 
-    let resolveTurn: () => void = () => {};
+    let resolveTurn: () => void = () => { };
     MarieEngine.activeTurn = new Promise<void>((resolve) => {
       resolveTurn = resolve;
     });
@@ -780,7 +784,7 @@ export class MarieEngine {
     // Decay spirit pressure if stale
     if (
       Date.now() -
-        (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
+      (this.state.techniqueExecutions.slice(-1)[0]?.timestamp || 0) >
       300000
     ) {
       this.state.spiritPressure = Math.max(30, this.state.spiritPressure - 10);
