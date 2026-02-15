@@ -40,7 +40,34 @@ const MainApp: React.FC = () => {
   return React.createElement(App, { workingDir });
 };
 
-// Render the app
+// Check for one-shot message flag
+const messageArgIndex = process.argv.indexOf("--message");
+const initialMessage = messageArgIndex !== -1 ? process.argv[messageArgIndex + 1] : null;
+
+if (initialMessage) {
+  const { MarieCLI } = await import("../monolith/adapters/CliMarieAdapter.js");
+  const marie = new MarieCLI(workingDir);
+  process.stdout.write(`🔮 Psychic One-Shot: "${initialMessage}"\n`);
+
+  // We need a simple way to wait for the message to complete
+  await marie.handleMessage(initialMessage, {
+    onStream: (chunk) => process.stdout.write(chunk),
+    onTool: (tool) => process.stdout.write(`\n🛠️ Calling tool: ${tool.name}...\n`),
+    onEvent: (event) => {
+      if (event.type === "run_error") {
+        process.stderr.write(`\n❌ Error: ${event.message}\n`);
+      }
+      if (event.type === "reasoning") {
+        process.stdout.write(`\n💭 ${event.text}\n`);
+      }
+    }
+  });
+
+  process.stdout.write("\n✅ Done.\n");
+  process.exit(0);
+}
+
+// Render the app (interactive mode)
 const { waitUntilExit } = render(React.createElement(MainApp));
 
 // Handle graceful shutdown

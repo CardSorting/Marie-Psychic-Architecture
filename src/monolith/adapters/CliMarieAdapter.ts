@@ -14,6 +14,8 @@ import { createDefaultProvider } from "../runtime/providerFactory.js";
 import { RuntimeAdapterBase } from "../runtime/RuntimeAdapterBase.js";
 import { CliFileSystemPort } from "../cli/CliFileSystemPort.js";
 import { NarrativeAutomationServiceCLI } from "../services/NarrativeAutomationServiceCLI.js";
+import { registerNovelTools } from "../cli/NovelProductionTools.js";
+import { NovelProductionService } from "../infrastructure/ai/narrative/NovelProductionService.js";
 
 class CliConfigPort implements RuntimeConfigPort {
   getAiProvider(): MarieProviderType {
@@ -23,8 +25,10 @@ class CliConfigPort implements RuntimeConfigPort {
 
   getApiKey(provider: MarieProviderType): string {
     const config = Storage.getConfig();
-    if (provider === "openrouter") return config.openrouterApiKey || "";
-    if (provider === "cerebras") return config.cerebrasApiKey || "";
+    if (provider === "openrouter") return (config as any).openrouterApiKey || "";
+    if (provider === "cerebras") return (config as any).cerebrasApiKey || "";
+    if (provider === "nvidia") return (config as any).nvidiaApiKey || "";
+    if (provider === "moonshot") return (config as any).moonshotApiKey || "";
     return config.apiKey || "";
   }
 }
@@ -76,27 +80,31 @@ export class MarieCLI extends RuntimeAdapterBase<RuntimeAutomationPort> {
       workingDir,
       joyService,
     );
+    const novelProductionService = new NovelProductionService(workingDir);
 
     const runtime = new MarieRuntime<JoyAutomationServiceCLI>({
       config: new CliConfigPort(),
       sessionStore: new CliSessionStorePort(),
-      toolRegistrar: (registry, automation) => {
+      toolRegistrar: (
+        registry,
+        automation,
+        narrativeAutomation,
+        novelService,
+      ) => {
         registerMarieToolsCLI(registry, automation, workingDir);
-        import("../cli/NovelProductionTools.js").then((m) => {
-          const novelService = (runtime as any).engine?.novelService;
-          if (novelService) {
-            m.registerNovelTools(
-              registry,
-              novelService,
-              narrativeAutomationService,
-              workingDir,
-            );
-          }
-        });
+        if (novelService) {
+          registerNovelTools(
+            registry,
+            novelService,
+            narrativeAutomation,
+            workingDir,
+          );
+        }
       },
       providerFactory: createDefaultProvider,
       automationService,
       narrativeAutomationService,
+      novelProductionService,
       onProgressEvent: (event) => joyService.emitRunProgress(event as any),
       shouldBypassApprovals: () => true,
       fs: new CliFileSystemPort(workingDir),

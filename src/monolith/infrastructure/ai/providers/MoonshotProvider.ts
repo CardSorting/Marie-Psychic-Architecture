@@ -65,6 +65,14 @@ export class MoonshotProvider implements AIProvider {
             })),
             max_tokens: params.max_tokens || 1024,
             stream: false,
+            tools: params.tools?.map((t) => ({
+                type: "function",
+                function: {
+                    name: t.name,
+                    description: t.description,
+                    parameters: t.input_schema,
+                },
+            })),
         };
 
         const response = await fetch(MoonshotProvider.BASE_URL, {
@@ -88,6 +96,11 @@ export class MoonshotProvider implements AIProvider {
         return {
             role: "assistant",
             content: choice.message.content || "",
+            tool_uses: choice.message.tool_calls?.map(tc => ({
+                id: tc.id,
+                name: tc.function.name,
+                input: JSON.parse(tc.function.arguments || "{}")
+            }))
         };
     }
 
@@ -113,6 +126,14 @@ export class MoonshotProvider implements AIProvider {
             })),
             max_tokens: params.max_tokens || 1024,
             stream: true,
+            tools: params.tools?.map((t) => ({
+                type: "function",
+                function: {
+                    name: t.name,
+                    description: t.description,
+                    parameters: t.input_schema,
+                },
+            })),
         };
 
         const response = await fetch(MoonshotProvider.BASE_URL, {
@@ -139,6 +160,7 @@ export class MoonshotProvider implements AIProvider {
         let buffer = "";
         let finalContent = "";
         let hasStartedContent = false;
+        const toolUses: any[] = [];
 
         try {
             while (true) {
@@ -169,7 +191,10 @@ export class MoonshotProvider implements AIProvider {
                             });
                         }
 
-                        const delta = chunk.choices[0]?.delta;
+                        const choice = chunk.choices[0];
+                        if (!choice) continue;
+
+                        const delta = choice.delta;
                         if (delta?.content) {
                             if (!hasStartedContent) {
                                 hasStartedContent = true;
@@ -181,6 +206,28 @@ export class MoonshotProvider implements AIProvider {
                             }
                             finalContent += delta.content;
                             onUpdate({ type: "content_delta", text: delta.content });
+                        }
+
+                        if (delta?.tool_calls) {
+                            for (const tc of delta.tool_calls) {
+                                onUpdate({
+                                    type: "tool_call_delta",
+                                    index: tc.index,
+                                    id: tc.id,
+                                    name: tc.function?.name,
+                                    argumentsDelta: tc.function?.arguments,
+                                });
+
+                                // Internal tracking for the final response object
+                                let internalTc = toolUses[tc.index];
+                                if (!internalTc) {
+                                    internalTc = { id: tc.id, name: tc.function?.name, input: "" };
+                                    toolUses[tc.index] = internalTc;
+                                }
+                                if (tc.function?.arguments) {
+                                    internalTc.input += tc.function.arguments;
+                                }
+                            }
                         }
                     } catch (e) {
                         console.error("Error parsing Moonshot stream chunk", e);
@@ -200,7 +247,12 @@ export class MoonshotProvider implements AIProvider {
 
         return {
             role: "assistant",
-            content: finalContent,
+            content: finalContent || "",
+            tool_uses: toolUses.length > 0 ? toolUses.filter(Boolean).map(tu => ({
+                id: tu.id,
+                name: tu.name,
+                input: JSON.parse(tu.input || "{}")
+            })) : undefined
         };
     }
 

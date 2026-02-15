@@ -45,6 +45,7 @@ export interface RuntimeOptions<TAutomation extends RuntimeAutomationPort> {
     registry: any,
     automation: TAutomation,
     narrativeAutomation?: any,
+    novelProduction?: any,
   ) => void;
   providerFactory: (
     providerType: MarieProviderType,
@@ -52,6 +53,7 @@ export interface RuntimeOptions<TAutomation extends RuntimeAutomationPort> {
   ) => AIProvider;
   automationService: TAutomation;
   narrativeAutomationService?: any;
+  novelProductionService?: any;
   onProgressEvent?: (event: any) => void;
   onApprovalRequest?: (request: {
     id: string;

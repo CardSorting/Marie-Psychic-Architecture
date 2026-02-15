@@ -36,6 +36,7 @@ export class MarieRuntime<
       this.toolRegistry,
       this.options.automationService,
       this.options.narrativeAutomationService,
+      this.options.novelProductionService,
     );
     if (this.options.narrativeAutomationService) {
       this.options.narrativeAutomationService.registerProviderFactory(
@@ -348,6 +349,7 @@ export class MarieRuntime<
       this.createProvider.bind(this),
       this.options.fs,
       this.options.ghostPort,
+      this.options.novelProductionService,
     );
 
     tracker.emitEvent({
@@ -422,8 +424,8 @@ export class MarieRuntime<
     try {
       const summary = await engine.chatLoop(
         [...messages, { role: "user", content: prompt }],
-        { emitProgressUpdate: () => {}, emitEvent: () => {} } as any,
-        async () => {},
+        { emitProgressUpdate: () => { }, emitEvent: () => { } } as any,
+        async () => { },
       );
 
       if (summary && typeof summary === "string" && summary.length < 60) {

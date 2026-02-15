@@ -57,6 +57,7 @@ export class MarieEngine {
     private providerFactory?: (type: string) => AIProvider,
     private fs?: FileSystemPort,
     private ghostPort?: GhostPort,
+    private novelServiceInput?: NovelProductionService,
   ) {
     this.ascendant = new MarieAscendant(this.provider);
     this.state = this.initializeState();
@@ -66,7 +67,8 @@ export class MarieEngine {
     this.lockManager = new MarieLockManager();
     this.toolMender = new MarieToolMender(this.toolRegistry);
     this.chronicleService = new ChronicleService();
-    this.novelService = new NovelProductionService(process.cwd());
+    this.novelService =
+      this.novelServiceInput || new NovelProductionService(process.cwd());
     this.reasoningBudget = new ReasoningBudget();
   }
 
