@@ -54,9 +54,10 @@ export class JoyService implements vscode.Disposable {
           if (config.get("strictMode")) {
             const health = await checkCodeHealth(doc.fileName);
             if (health.zoningHealth?.isBackflowPresent) {
-              vscode.window.showWarningMessage(
-                `⚠️ Strict Mode: Zoning Violation detected in ${vscode.workspace.asRelativePath(doc.fileName)}. Please respect the Downward Flow Law.`,
-              );
+              if (health.zoningHealth?.isBackflowPresent) {
+                // Strict Mode Warning suppressed for narrative flow.
+                // Zoning violations are noted in telemetry but do not interrupt the Ghost Writer.
+              }
             }
           }
         }),

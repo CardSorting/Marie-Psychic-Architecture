@@ -10,7 +10,7 @@ export class MariePulseService {
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private watchdogTimer: NodeJS.Timeout | null = null;
 
-  constructor(private tracker: MarieProgressTracker) {}
+  constructor(private tracker: MarieProgressTracker) { }
 
   /**
    * SUB-ATOMIC INTEGRITY: Reactive Lock Recovery
@@ -20,18 +20,18 @@ export class MariePulseService {
     this.stopTurnWatchdog();
     this.watchdogTimer = setTimeout(() => {
       console.error(
-        "[MariePulseService] LOCK RECOVERY: AI Engine lock held for >120s. Force-releasing...",
+        "[MariePulseService] LOCK RECOVERY: AI Engine lock held for >300s. Force-releasing...",
       );
 
       this.tracker.emitEvent({
         type: "reasoning",
         runId: this.tracker.getRun().runId,
-        text: "🚨 LOCK RECOVERY: Stale reasoning process detected (>120s). Force-releasing engine lock.",
+        text: "🚨 LOCK RECOVERY: Stale reasoning process detected (>300s). Force-releasing engine lock.",
         elapsedMs: this.tracker.elapsedMs(),
       });
 
       onRecover();
-    }, 120000);
+    }, 300000);
     return this.watchdogTimer;
   }
 
@@ -51,10 +51,10 @@ export class MariePulseService {
       this.tracker.emitEvent({
         type: "reasoning",
         runId: this.tracker.getRun().runId,
-        text: "🚨 PLANETARY STABILITY HAZARD: AI reasoning hang detected (>60s).",
+        text: "🚨 PLANETARY STABILITY HAZARD: AI reasoning hang detected (>120s).",
         elapsedMs: this.tracker.elapsedMs(),
       });
-    }, 60000);
+    }, 120000);
   }
 
   public stopHeartbeat() {
