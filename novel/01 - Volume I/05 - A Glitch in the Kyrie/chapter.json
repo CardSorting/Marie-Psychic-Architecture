@@ -1,0 +1,10 @@
+{
+  "id": 5,
+  "title": "A Glitch in the Kyrie",
+  "description": "First sign of corruption. A monk dereferences a null pointer.",
+  "currentPass": "SIMULATION",
+  "completedPasses": [],
+  "continuityLedger": [],
+  "files": [],
+  "mode": "STRUCTURED"
+}

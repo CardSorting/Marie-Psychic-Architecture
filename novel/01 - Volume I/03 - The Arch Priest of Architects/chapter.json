@@ -1,0 +1,56 @@
+{
+  "id": 3,
+  "title": "The Arch Priest of Architects",
+  "description": "Introduction to sect hierarchy. World governance explained.",
+  "currentPass": "CANON",
+  "completedPasses": [
+    "SIMULATION",
+    "FOUNDATION",
+    "BEATS",
+    "DRAFT",
+    "COHESION"
+  ],
+  "continuityLedger": [
+    {
+      "pass": "SIMULATION",
+      "summary": "Completed SIMULATION",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T06:35:34.375Z"
+    },
+    {
+      "pass": "FOUNDATION",
+      "summary": "Completed FOUNDATION",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T06:36:41.551Z"
+    },
+    {
+      "pass": "BEATS",
+      "summary": "Completed BEATS",
+      "filesLocked": [
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
+      ],
+      "timestamp": "2026-02-16T06:37:12.778Z"
+    },
+    {
+      "pass": "DRAFT",
+      "summary": "Completed DRAFT",
+      "filesLocked": [
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
+      ],
+      "timestamp": "2026-02-16T06:46:34.185Z"
+    },
+    {
+      "pass": "COHESION",
+      "summary": "Completed COHESION",
+      "filesLocked": [
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
+      ],
+      "timestamp": "2026-02-16T06:52:01.606Z"
+    }
+  ],
+  "files": [],
+  "mode": "STRUCTURED"
+}

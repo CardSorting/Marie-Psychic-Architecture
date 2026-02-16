@@ -1,3 +1,4 @@
+import { NarrativeFileSystem } from "./NarrativeFileSystem.js";
 import { MarieCLI } from "../../../adapters/CliMarieAdapter.js";
 import { Log } from "./ProductionLogger.js";
 import { EditorialService, CritiqueResult } from "./EditorialService.js";
@@ -12,25 +13,34 @@ export class ContentPassExecutor {
         private marie: MarieCLI,
         private log: Log,
         private editorialService: EditorialService,
-        private workingDir: string
+        private workingDir: string,
+        private fileSystem: NarrativeFileSystem
     ) { }
 
     public async execute(
         pass: ContentPhase,
+        volumeId: number,
         ch: NovelChapter,
         prevSummary: string,
         rejectionFeedback?: any
     ): Promise<{ success: boolean; nextPass?: ContentPhase; feedback?: any }> {
 
-        // Target file: .vault/content/{TYPE}_{ID}_{Title}.md
-        const cleanTitle = ch.title.replace(/[^a-zA-Z0-9]/g, "_");
-        const filename = `${ch.mode}_${ch.id}_${cleanTitle}`;
-        const targetDir = path.join(this.workingDir, ".vault", "content");
+        let targetDir: string;
+        try {
+            targetDir = await this.fileSystem.getChapterDirectory(volumeId, ch.id, ch.title);
+        } catch (e) {
+            // Fallback or create?
+            // Use NarrativeFS to get the standardized path
+            const volDir = await this.fileSystem.getVolumeDirectory(volumeId);
+            const chapDirName = this.fileSystem.formatFolderName(ch.id, ch.title);
+            targetDir = path.join(volDir, chapDirName);
+        }
+
         await fs.mkdir(targetDir, { recursive: true });
 
-        const targetPath = path.join(targetDir, `${filename}.md`);
-        const conceptPath = path.join(targetDir, `${filename}_Concept.md`);
-        const outlinePath = path.join(targetDir, `${filename}_Outline.md`);
+        const targetPath = path.join(targetDir, `content.md`);
+        const conceptPath = path.join(targetDir, `concept.md`);
+        const outlinePath = path.join(targetDir, `outline.md`);
 
         let success = false;
         let nextPass: ContentPhase | undefined;

@@ -33,7 +33,8 @@ export class NovelDirector {
             this.log,
             this.worldService,
             this.editorialService,
-            this.workingDir
+            this.workingDir,
+            this.productionSvc.fs
         );
     }
 
@@ -72,11 +73,12 @@ export class NovelDirector {
                 await this.productionSvc.initialize();
 
                 // 1. Acquire Target
-                const ch = this.findActiveChapter();
-                if (!ch) {
+                const active = this.findActiveChapter();
+                if (!active) {
                     process.stdout.write("✅ No active chapters found. Pipeline sleeping.\n");
                     break;
                 }
+                const { ch, volId } = active;
 
                 // 2. Context Retrieval
                 const prevSummary = await this.getPreviousSummary(ch.id);
@@ -86,6 +88,7 @@ export class NovelDirector {
                 // 3. Execute Pass
                 const result = await this.executor.execute(
                     ch.currentPass,
+                    volId,
                     ch,
                     prevSummary,
                     this.rejectionFeedback
@@ -96,6 +99,7 @@ export class NovelDirector {
                     process.stdout.write(`   ✅ Complete. Next: ${result.nextPass}\n`);
                     this.rejectionFeedback = null; // Clear feedback
                     await this.productionSvc.advancePass(
+                        ch,
                         `Completed ${ch.currentPass}`,
                         false,
                         // @ts-ignore
@@ -120,7 +124,7 @@ export class NovelDirector {
         }
     }
 
-    private findActiveChapter() {
+    private findActiveChapter(): { ch: any, volId: number } | null {
         // Access private structure via any casting hack
         const structure = (this.productionSvc as any).structure;
         if (!structure || !structure.volumes) return null;
@@ -128,7 +132,8 @@ export class NovelDirector {
         const vol = structure.volumes.find((v: any) => v.status === "DRAFT");
         if (!vol) return null;
 
-        return vol.chapters.find((c: any) => c.currentPass !== "CANON");
+        const ch = vol.chapters.find((c: any) => c.currentPass !== "CANON");
+        return ch ? { ch, volId: vol.id } : null;
     }
 
     private async getPreviousSummary(currentChId: number): Promise<string> {

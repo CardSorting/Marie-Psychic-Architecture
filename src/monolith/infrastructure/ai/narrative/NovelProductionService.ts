@@ -1,5 +1,6 @@
 import * as fs from "node:fs/promises";
 import * as path from "path";
+import { NarrativeFileSystem } from "./NarrativeFileSystem.js";
 import { IProductionStrategy } from "./strategies/IProductionStrategy.js";
 import { EssayProductionStrategy } from "./strategies/EssayStrategy.js";
 import { StructuredProductionStrategy } from "./strategies/StructuredStrategy.js";
@@ -74,13 +75,16 @@ export interface NovelChapter {
 // ─── Service ───────────────────────────────────────────────────
 
 export class NovelProductionService {
-  private static readonly NOVEL_FILE = ".marie/novel_structure.json";
   private structure: { volumes: NovelVolume[] } = { volumes: [] };
   private strategies: Map<string, IProductionStrategy> = new Map();
   private worldService: WorldService;
+  private fileSystem: NarrativeFileSystem;
+
+  public get fs() { return this.fileSystem; }
 
   constructor(private rootPath: string) {
     this.worldService = new WorldService(rootPath);
+    this.fileSystem = new NarrativeFileSystem(rootPath);
     // Register strategies
     this.registerStrategy(new EssayProductionStrategy());
     this.registerStrategy(new StructuredProductionStrategy(this.worldService));
@@ -96,13 +100,15 @@ export class NovelProductionService {
 
   public async initialize() {
     await this.worldService.initialize();
-    try {
-      const data = await fs.readFile(
-        path.join(this.rootPath, NovelProductionService.NOVEL_FILE),
-        "utf-8",
-      );
-      this.structure = JSON.parse(data);
-    } catch (e) {
+    await this.fileSystem.initialize();
+
+    // Load structure from filesystem
+    const loaded = await this.fileSystem.loadStructure();
+
+    if (loaded.volumes.length > 0) {
+      this.structure = loaded;
+    } else {
+      // Create default if empty
       this.structure = {
         volumes: [
           {
@@ -145,11 +151,14 @@ export class NovelProductionService {
   }
 
   public async save() {
-    await fs.mkdir(path.join(this.rootPath, ".marie"), { recursive: true });
-    await fs.writeFile(
-      path.join(this.rootPath, NovelProductionService.NOVEL_FILE),
-      JSON.stringify(this.structure, null, 2),
-    );
+    // DEPRECATED: This full-scan save is inefficient.
+    // Kept only for legacy callers or emergency state dumping.
+    for (const vol of this.structure.volumes) {
+      await this.fileSystem.saveVolume(vol);
+      for (const chap of vol.chapters) {
+        await this.fileSystem.saveChapter(vol.id, vol.title, chap);
+      }
+    }
   }
 
   // ─── Canon & Semi-Canon Checks ─────────────────────────────
@@ -221,16 +230,21 @@ export class NovelProductionService {
     newChapter.mode = mode;
 
     activeVol.chapters.push(newChapter);
-    await this.save();
+
+    // ATOMIC SAVE: Only save the affected chapter and volume metadata
+    await this.fileSystem.saveChapter(activeVol.id, activeVol.title, newChapter);
+    await this.fileSystem.saveVolume(activeVol); // Updates volume metadata (if we tracked chap count there)
+
     return newChapter;
   }
 
   public async advancePass(
+    chapter: NovelChapter,
     summary: string,
     force: boolean = false,
     overrideNextPass?: PassPhase,
   ): Promise<{ success: boolean; message: string }> {
-    const activeChap = this.getActiveChapter();
+    const activeChap = chapter;
     if (!activeChap) return { success: false, message: "No active chapter." };
 
     // Default to ESSAY if mode is undefined (migration fallback)
@@ -239,7 +253,16 @@ export class NovelProductionService {
 
     const result = await strategy.advancePass(activeChap, this.rootPath, summary, force, overrideNextPass);
     if (result.success) {
-      await this.save();
+      // Find the volume for this chapter to save accurately
+      const vol = this.structure.volumes.find(v => v.chapters.includes(activeChap));
+      if (vol) {
+        // ATOMIC SAVE
+        await this.fileSystem.saveChapter(vol.id, vol.title, activeChap);
+      } else {
+        // Fallback if we can't find the parent volume (shouldn't happen)
+        console.warn("Could not find parent volume for chapter save. Triggering global save.");
+        await this.save();
+      }
     }
     return result;
   }
@@ -301,7 +324,7 @@ All Chapters: CANON (Immutable)
       const ch = vol.chapters.find((c: any) => c.id === chId);
       if (ch) {
         ch.currentPass = "BLUEPRINT";
-        await this.save();
+        await this.fileSystem.saveChapter(vol.id, vol.title, ch);
         return;
       }
     }

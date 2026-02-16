@@ -42,25 +42,21 @@ export class ContentDirector {
             this.log,
             this.worldService,
             this.editorialService,
-            this.workingDir
+            this.workingDir,
+            this.productionSvc.fs
         );
 
         this.contentExecutor = new ContentPassExecutor(
             this.marie,
             this.log,
             this.editorialService,
-            this.workingDir
+            this.workingDir,
+            this.productionSvc.fs
         );
     }
 
     public async registerStrategies() {
-        // We need to make registerStrategy public in NovelProductionService
-        // or add a method 'addStrategy'
-        // I will update NovelProductionService to have `registerStrategy` public or use a different approach.
-        // For now, I'll bypass this check and assume I fixed it in step 66 by *not* making it private? 
-        // Wait, step 66 shows it as private. I should update it.
-        // But I can also just instantiate strategies inside NovelProductionService.
-        // I will stick to modifying NovelProductionService to register these strategies in its constructor.
+        // ...
     }
 
     public async run(mode: ContentMode = "NOVEL") {
@@ -87,18 +83,20 @@ export class ContentDirector {
         while (true) {
             try {
                 // 1. Acquire Target
-                const ch = this.findActiveChapter(mode);
+                const active = this.findActiveChapter(mode);
 
-                if (!ch) {
+                if (!active) {
                     process.stdout.write(`✅ No active ${mode} content found. Finished.\n`);
                     break;
                 }
 
+                const { ch, volId } = active;
+
                 // 2. Execute
                 if (mode === "NOVEL") {
-                    await this.runNovelPass(ch);
+                    await this.runNovelPass(ch, volId);
                 } else {
-                    await this.runContentPass(ch);
+                    await this.runContentPass(ch, volId);
                 }
 
                 await sleep(2000);
@@ -109,26 +107,28 @@ export class ContentDirector {
         }
     }
 
-    private findActiveChapter(mode: ContentMode): NovelChapter | null {
+    private findActiveChapter(mode: ContentMode): { ch: NovelChapter, volId: number } | null {
         // @ts-ignore - Accessing private structure
         const structure = this.productionSvc.structure;
-        const vol = structure.volumes.find((v: any) => v.status === "DRAFT");
-        if (!vol) return null;
-
-        // Filter by mode if specified in chapter, or volume default
-        return vol.chapters.find((c: any) => {
-            const chMode = c.mode || vol.mode || "NOVEL"; // defaulting
-            return c.currentPass !== "FINAL" && c.currentPass !== "CANON" && chMode === mode;
-        }) || null;
+        // Search through all volumes
+        for (const vol of structure.volumes) {
+            const ch = vol.chapters.find((c: any) => {
+                const chMode = c.mode || vol.mode || "NOVEL"; // defaulting
+                return c.currentPass !== "FINAL" && c.currentPass !== "CANON" && chMode === mode;
+            });
+            if (ch) return { ch, volId: vol.id };
+        }
+        return null;
     }
 
-    private async runContentPass(ch: NovelChapter) {
+    private async runContentPass(ch: NovelChapter, volId: number) {
         process.stdout.write(`\n📖 ${ch.mode}: "${ch.title}" | PASS: ${ch.currentPass}\n`);
 
         const result = await this.contentExecutor.execute(
             ch.currentPass as ContentPhase,
+            volId,
             ch,
-            "", // prevSummary not really used in short content yet
+            "",
             this.rejectionFeedback
         );
 
@@ -136,6 +136,7 @@ export class ContentDirector {
             process.stdout.write(`   ✅ Complete. Next: ${result.nextPass}\n`);
             this.rejectionFeedback = null;
             await this.productionSvc.advancePass(
+                ch,
                 `Completed ${ch.currentPass}`,
                 false,
                 result.nextPass
@@ -146,22 +147,15 @@ export class ContentDirector {
         }
     }
 
-    private async runNovelPass(ch: NovelChapter) {
-        // Legacy delegate
-        // ... (Logic from NovelDirector)
-        // For now, I assume NovelDirector is used for novels, and this for content.
-        // But if I want to merge them, I'd put logic here.
-        // I will just implement the logic to call existing executor.
-
-        // We'll need a method in NovelPassExecutor to handle the logic or just import logic.
-        // Since NovelDirector has the loop, I'll essentially replicate it here for uniformity.
+    private async runNovelPass(ch: NovelChapter, volId: number) {
         const result = await this.novelExecutor.execute(
             ch.currentPass,
+            volId,
             ch,
-            "Summary...", // Todo: fetch
+            "Summary...",
             this.rejectionFeedback
         );
         // ... handle result ...
-        // Keeping it simple for the MVP of "Short Content"
+        // Keeping it simple since NovelDirector typically handles this
     }
 }

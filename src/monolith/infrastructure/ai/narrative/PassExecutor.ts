@@ -1,3 +1,4 @@
+import { NarrativeFileSystem } from "./NarrativeFileSystem.js";
 import { MarieCLI } from "../../../adapters/CliMarieAdapter.js";
 import { Log } from "./ProductionLogger.js";
 import { WorldService } from "./WorldService.js";
@@ -31,21 +32,43 @@ export class PassExecutor {
         private log: Log,
         private worldService: WorldService,
         private editorialService: EditorialService,
-        private workingDir: string
+        private workingDir: string,
+        private fileSystem: NarrativeFileSystem
     ) { }
 
     public async execute(
         pass: string,
+        volumeId: number,
         ch: NovelChapter,
         prevSummary: string,
         rejectionFeedback?: any
     ): Promise<ExecutionResult> {
-        const chapFileName = `Chapter_${ch.id}_${ch.title.replace(/[^a-zA-Z0-9]/g, "_")}`;
-        const targetPath = path.join(this.workingDir, ".vault", "novel", "chapters", `${chapFileName}.md`);
-        const blueprintPath = path.join(this.workingDir, ".vault", "novel", "chapters", `${chapFileName}_Blueprint.json`);
+        let chapDir: string;
+        try {
+            chapDir = await this.fileSystem.getChapterDirectory(volumeId, ch.id, ch.title);
+        } catch (e) {
+            // Fallback for safety or migration
+            console.warn(`[PassExecutor] Failed to resolve directory for Ch${ch.id}. Using legacy fallback.`);
+            const chapFileName = `Chapter_${ch.id}_${ch.title.replace(/[^a-zA-Z0-9]/g, "_")}`;
+            chapDir = path.join(this.workingDir, ".vault", "novel", "chapters"); // This will break if joined again below
+            // Actually, we must create it if it fails?
+            // getChapterDirectory throws if not found and no title. But we pass title.
+            // So it should create a path string (even if dir doesn't exist yet, it constructs path)
+            // Wait, implementation of getChapterDirectory in previous step:
+            // "if (!chapDirName) { if (chapterTitle) ... throw ... }"
+            // It searches for EXISTING. If not found, it constructs.
+            // So it effectively returns what the path SHOULD be. It doesn't mkdir necessarily.
+            // check previous step... "chapDirName = this.formatFolderName..."
+            // It returns the path string.
+            // So we are good.
+            throw e;
+        }
+
+        const targetPath = path.join(chapDir, "content.md");
+        const blueprintPath = path.join(chapDir, "blueprint.json");
 
         // Ensure Directory
-        await fs.mkdir(path.dirname(targetPath), { recursive: true });
+        await fs.mkdir(chapDir, { recursive: true });
 
         let passOk = false;
         let nextPass: string | undefined = undefined;
