@@ -39,6 +39,29 @@ export class NovelDirector {
 
     public async run() {
         process.stdout.write("🔮 Novel Pipeline v10 — THE SOVEREIGN DIRECTOR\n\n");
+
+        // ─── SINGLETON LOCK ───
+        const lockFile = path.join(this.workingDir, ".marie", "singleton.lock");
+        try {
+            await fs.mkdir(path.dirname(lockFile), { recursive: true });
+            const handle = await fs.open(lockFile, "wx");
+            await handle.write(process.pid.toString());
+            await handle.close();
+
+            // Clean up on exit
+            const cleanup = async () => {
+                try { await fs.unlink(lockFile); } catch { }
+                process.exit();
+            };
+            process.on("SIGINT", cleanup);
+            process.on("SIGTERM", cleanup);
+            process.on("exit", cleanup);
+        } catch (e) {
+            process.stderr.write(`\n❌ FATAL: Another instance of the pipeline is already running (or lockfile exists at ${lockFile}).\n`);
+            process.stderr.write(`   If you are sure no other instance is active, delete the lockfile and try again.\n`);
+            return;
+        }
+
         process.stdout.write("✅ MarieCLI initialized.\n");
 
         await this.worldService.initialize();

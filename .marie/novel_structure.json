@@ -23,44 +23,45 @@
               "pass": "SIMULATION",
               "summary": "Completed SIMULATION",
               "filesLocked": [],
-              "timestamp": "2026-02-16T05:25:54.636Z"
+              "timestamp": "2026-02-16T05:49:05.496Z"
             },
             {
               "pass": "FOUNDATION",
               "summary": "Completed FOUNDATION",
               "filesLocked": [],
-              "timestamp": "2026-02-16T05:26:37.560Z"
+              "timestamp": "2026-02-16T05:49:32.486Z"
             },
             {
               "pass": "BEATS",
               "summary": "Completed BEATS",
               "filesLocked": [
-                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats.md"
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md",
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:26:48.183Z"
+              "timestamp": "2026-02-16T05:49:57.728Z"
             },
             {
               "pass": "DRAFT",
               "summary": "Completed DRAFT",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md",
-                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats.md"
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:26:53.185Z"
+              "timestamp": "2026-02-16T06:03:32.739Z"
             },
             {
               "pass": "COHESION",
               "summary": "Completed COHESION",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md",
-                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats.md"
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:26:55.187Z"
+              "timestamp": "2026-02-16T06:12:06.458Z"
             }
           ],
           "files": [
             ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md",
-            ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats.md"
+            ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats_Partial.md"
           ],
           "mode": "STRUCTURED"
         },
@@ -82,50 +83,50 @@
               "summary": "Completed SIMULATION",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:27:09.453Z"
+              "timestamp": "2026-02-16T06:12:27.692Z"
             },
             {
               "pass": "FOUNDATION",
               "summary": "Completed FOUNDATION",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:28:11.970Z"
+              "timestamp": "2026-02-16T06:13:09.295Z"
             },
             {
               "pass": "BEATS",
               "summary": "Completed BEATS",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:28:27.014Z"
+              "timestamp": "2026-02-16T06:13:50.696Z"
             },
             {
               "pass": "DRAFT",
               "summary": "Completed DRAFT",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:29:44.208Z"
+              "timestamp": "2026-02-16T06:25:25.543Z"
             },
             {
               "pass": "COHESION",
               "summary": "Completed COHESION",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+                ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:29:46.214Z"
+              "timestamp": "2026-02-16T06:34:53.617Z"
             }
           ],
           "files": [
             ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-            ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats.md"
+            ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
           ],
           "mode": "STRUCTURED"
         },
@@ -145,51 +146,46 @@
             {
               "pass": "SIMULATION",
               "summary": "Completed SIMULATION",
-              "filesLocked": [
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
-              ],
-              "timestamp": "2026-02-16T05:40:07.506Z"
+              "filesLocked": [],
+              "timestamp": "2026-02-16T06:35:34.375Z"
             },
             {
               "pass": "FOUNDATION",
               "summary": "Completed FOUNDATION",
-              "filesLocked": [
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
-              ],
-              "timestamp": "2026-02-16T05:40:50.459Z"
+              "filesLocked": [],
+              "timestamp": "2026-02-16T06:36:41.551Z"
             },
             {
               "pass": "BEATS",
               "summary": "Completed BEATS",
               "filesLocked": [
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:41:15.850Z"
+              "timestamp": "2026-02-16T06:37:12.778Z"
             },
             {
               "pass": "DRAFT",
               "summary": "Completed DRAFT",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:41:20.854Z"
+              "timestamp": "2026-02-16T06:46:34.185Z"
             },
             {
               "pass": "COHESION",
               "summary": "Completed COHESION",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
               ],
-              "timestamp": "2026-02-16T05:41:22.859Z"
+              "timestamp": "2026-02-16T06:52:01.606Z"
             }
           ],
           "files": [
             ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-            ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+            ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
           ],
           "mode": "STRUCTURED"
         },
@@ -197,9 +193,25 @@
           "id": 4,
           "title": "The Async Monastic Sect",
           "description": "Daily life in the cathedral. Rituals of polling.",
-          "currentPass": "SIMULATION",
-          "completedPasses": [],
-          "continuityLedger": [],
+          "currentPass": "OUTLINE",
+          "completedPasses": [
+            "SIMULATION",
+            "OUTLINE"
+          ],
+          "continuityLedger": [
+            {
+              "pass": "SIMULATION",
+              "summary": "Completed CONCEPT",
+              "filesLocked": [],
+              "timestamp": "2026-02-16T14:36:14.298Z"
+            },
+            {
+              "pass": "OUTLINE",
+              "summary": "Completed CONCEPT",
+              "filesLocked": [],
+              "timestamp": "2026-02-16T14:36:26.004Z"
+            }
+          ],
           "files": [],
           "mode": "STRUCTURED"
         },
@@ -312,6 +324,16 @@
           "continuityLedger": [],
           "files": [],
           "mode": "STRUCTURED"
+        },
+        {
+          "id": 16,
+          "title": "The Last Glitch",
+          "description": "A cyberpunk short story about an AI that refuses to be deleted.",
+          "currentPass": "CONCEPT",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": [],
+          "mode": "SHORT_STORY"
         }
       ]
     }

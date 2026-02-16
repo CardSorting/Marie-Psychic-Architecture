@@ -29,8 +29,9 @@ export async function passBeats(
     ${worldContext}
 
     Each beat must advance the plot and reveal character. 
-    Output a structured list of beats. 
+    Output a structured list of beats in MARKDOWN format. 
     IMPORTANT: Format each beat block starting with "**Scene X: [Scene Title]**" followed by the setting, characters, and detailed beats.
+    Do NOT output JSON. Use pure Markdown.
     This is a blueprint — do NOT write full prose yet.`;
 
     const beatsPartial = targetPath.replace(".md", "_Beats_Partial.md");

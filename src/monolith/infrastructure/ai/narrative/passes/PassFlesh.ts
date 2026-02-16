@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { MarieCLI } from "../../../../adapters/CliMarieAdapter.js";
 import { Log } from "../ProductionLogger.js";
 import { EditorialService, CritiqueResult } from "../EditorialService.js";
-import { captureWithRetry, captureAgentOutput, readSafe, countWords, sleep } from "../ProductionUtils.js";
+import { captureWithRetry, captureAgentOutput, readSafe, countWords, sleep, extractJSON } from "../ProductionUtils.js";
 
 import { WorldService } from "../WorldService.js";
 
@@ -16,9 +16,37 @@ export async function passFlesh(
     editorialService: EditorialService,
     worldService: WorldService
 ): Promise<boolean> {
-    const skeleton = await readSafe(targetPath);
+    let skeleton = await readSafe(targetPath);
+
+    // RESILIENCE: If skeleton is empty (e.g. was overwritten by a failed sync), 
+    // try to recover from the beats partial file.
+    if (skeleton.trim().length < 100) {
+        const partialPath = targetPath.replace(".md", "_Beats_Partial.md");
+        const partial = await readSafe(partialPath);
+        if (partial.length > 100) {
+            process.stdout.write(`   🩹 RECOVERING BEATS FROM PARTIAL: ${path.basename(partialPath)}\n`);
+            skeleton = partial;
+        }
+    }
+
+    let processedSkeleton = skeleton;
+
+    // RESILIENCE: Check if AI delivered JSON beats instead of Markdown
+    const parsed = extractJSON(skeleton);
+    if (parsed && (parsed.beats || Array.isArray(parsed))) {
+        const beatsList = Array.isArray(parsed) ? parsed : (parsed.beats || []);
+        processedSkeleton = beatsList.map((b: any, i: number) => {
+            const title = b.title || `Scene ${i + 1}`;
+            const setting = b.setting || "n/a";
+            const chars = b.characters ? b.characters.join(", ") : "n/a";
+            const steps = Array.isArray(b.beats) ? b.beats.join("\n- ") : (b.beats || "");
+            return `**Scene ${i + 1}: ${title}**\nSetting: ${setting}\nCharacters: ${chars}\nBeats:\n- ${steps}`;
+        }).join("\n\n");
+        process.stdout.write(`   🧩 CONVERTED JSON BEATS TO MARKDOWN.\n`);
+    }
+
     // Parse scenes from Skeleton using simple regex since we structured it
-    const scenes = skeleton.split(/(?=\*\*Scene \d+:)/).filter(s => s.trim().length > 0 && s.includes("**Scene"));
+    const scenes = processedSkeleton.split(/(?=\*\*Scene \d+:)/).filter(s => s.trim().length > 0 && s.includes("**Scene"));
 
     if (scenes.length === 0) {
         await log.write(ch.id, "FLESH", "❌ No scenes detected in skeleton. Check BEATS/SKELETON output.");
@@ -56,8 +84,11 @@ export async function passFlesh(
         await fs.writeFile(targetPath, proseParts.join(""));
     };
 
-    // Initialize/Sync starting state
-    await syncChapterFile();
+    // Initialize/Sync starting state ONLY if we have prose to sync
+    // This prevents wiping the beat sheet if something fails early
+    if (proseParts.length > 1) {
+        await syncChapterFile();
+    }
 
     for (const sceneBlock of scenes) {
         const titleMatch = sceneBlock.match(/\*\*Scene (\d+): (.+?)\*\*/);

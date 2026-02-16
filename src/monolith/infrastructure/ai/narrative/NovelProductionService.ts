@@ -86,7 +86,7 @@ export class NovelProductionService {
     this.registerStrategy(new StructuredProductionStrategy(this.worldService));
   }
 
-  private registerStrategy(strategy: IProductionStrategy) {
+  public registerStrategy(strategy: IProductionStrategy) {
     this.strategies.set(strategy.mode, strategy);
   }
 

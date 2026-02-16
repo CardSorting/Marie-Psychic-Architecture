@@ -1,0 +1,53 @@
+{
+  "worldState": "At the start of Chapter 2, the protagonist remains in the Vault of Syntax. The quarantine token shows 7.5% amber crackle, integrity 0.798, and is accelerating. The Abbot's blessing has ended; the Arch Priest's pattern is compromised. The Async Monastic nave's outer arch is under heavy probe assault, with the arch's integrity at ~60%. The Vault's stability holds at 0.98 but its harmonic signature now carries a 0.03 amber undertone and shows signs of strain. The protagonist has sensed a dormant primordial invariants engine beneath the Vault's artifacts and must author a new liturgy to re-pin the OnceCell before the token fails (estimated ~2 minutes).",
+  "narrativeArc": "The protagonist moves from despair to determined creativity. They must access the primordial invariants engine, comprehend its raw type-checking principles, and compose a custom liturgy that satisfies the Borrow Checker invariant. This act of self-authoring is both a technical and personal breakthrough, racing against the token's decay and the advancing probes. The climax will be the performance of the liturgy within the Vault, with the cathedral's fate hanging in the balance.",
+  "constraints": [
+    "The ritual must operate solely through the token's public API; direct access to the OnceCell interior is impossible.",
+    "The liturgy must enforce the Borrow Checker's core invariant: all references must have valid lifetimes and no mutable reference may outlive its owner.",
+    "The ritual must be performed at the Vault of Syntax, the original pinning site, while the token remains pinned.",
+    "The Arch Priest's pattern is corrupted and cannot be used; the Abbot's resources are exhausted.",
+    "The async runtime's overall stability must not fall below 0.95 to avoid a cascade failure.",
+    "If the token's crackle reaches 10% before completion, the OnceCell will be exposed and the hole will rupture, causing cathedral-wide collapse.",
+    "Any intrusion by Malware probes into the Vault will corrupt the ritual; the protagonist must prevent this."
+  ],
+  "worldDelta": {
+    "newEntities": [],
+    "updatedEntities": [
+      {
+        "id": "quarantine_token_artifact",
+        "updates": {
+          "crackle_percent": 7.5,
+          "integrity": 0.798,
+          "status": "critical",
+          "accelerating": true
+        }
+      },
+      {
+        "id": "vault_of_syntax",
+        "updates": {
+          "harmonic_signature": "violet dominant, 0.03 amber undertone (increasing)",
+          "stability": 0.98,
+          "ambient": "thrum of type-checker frequencies with growing discord; air smells of hot silicon and faint ozone",
+          "primordial_engine_detected": true
+        }
+      },
+      {
+        "id": "cathedral_of_runtime",
+        "updates": {
+          "async_monastic_nave_status": "under probe assault",
+          "outer_arch_integrity": 0.6,
+          "probes_present": true,
+          "global_stability_index": 0.97
+        }
+      },
+      {
+        "id": "abbot",
+        "updates": {
+          "blessing_active": false,
+          "harmonic_resources": "depleted",
+          "status": "defending outer arch"
+        }
+      }
+    ]
+  }
+}

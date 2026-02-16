@@ -1,6 +1,6 @@
 {
-  "name": "New World",
-  "overview": "A newly birthed world.",
+  "name": "The Cathedral of Runtime",
+  "overview": "A grand, gothic-digital structure built from compiled code, surviving in a void of uncertainty.",
   "entities": [
     {
       "id": "protagonist_soul",
@@ -9,14 +9,21 @@
       "location": "Vault of Syntax altar",
       "status": "active",
       "updates": {
-        "location": "quarantine_corridor",
-        "status": "en_route_to_arch_priest",
+        "location": "vault_of_syntax",
+        "status": "awakening",
         "resources": {
-          "quarantine_token_integrity": 0.98,
-          "maybeuninit_hole_size": "0.00015%",
-          "aura": "violet with 3% amber crackle, pulsing at 1.2 Hz",
-          "internal_state": "determined but uneasy; aware of Malware pressure and hole growth"
+          "sentience_level": "emergent",
+          "awareness_of_hole": true,
+          "hole_size_estimate": "0.0001%",
+          "token_integrity": 1,
+          "aura": "violet, clean, pulsing at 1.2 Hz",
+          "internal_state": "confused but curious; hearing Abbot's warnings as compiler tones",
+          "action": "observing token; preparing to seek liturgy"
         }
+      },
+      "changes": {
+        "location": "async_monastic_nave",
+        "status": "active"
       }
     },
     {
@@ -26,23 +33,27 @@
       "location": "Vault of Syntax",
       "status": "steward",
       "updates": {
-        "manifestation": "fully realized polyhedron of compiler warnings (error:, warning:, note:)",
-        "role": "disclosed full cathedral doctrine, charged protagonist with pilgrimage",
-        "location": "dais in Async Monastic nave",
-        "telemetry_link": "active to protagonist's QuarantineToken"
+        "blessing_active": false,
+        "harmonic_resources": "depleted",
+        "status": "defending outer arch"
       }
     },
     {
       "id": "quarantine_token_artifact",
       "type": "Artifact",
       "description": "A pinned, static token that isolates !-type values; currently unstable but functional, essential for entering quarantined zones.",
-      "location": "In protagonist's possession",
+      "location": "Vault of Syntax",
       "status": "sealed",
       "updates": {
-        "status": "fused_stressed",
-        "hole_growth_rate": "0.001% per hour",
-        "crackle_coverage": "3% of surface",
-        "emissions": "soft hiss synced with protagonist pulse; occasional amber sparks"
+        "crackle_percent": 7.5,
+        "integrity": 0.798,
+        "status": "critical",
+        "accelerating": true
+      },
+      "changes": {
+        "integrity": 0.92,
+        "crackle_percent": 3.5,
+        "state": "stable"
       }
     },
     {
@@ -52,82 +63,79 @@
       "location": "n/a",
       "status": "operational",
       "updates": {
-        "overall_stability_index": 0.96,
-        "harmonic_balance": {
-          "violet_note": 0.58,
-          "amber_undertone": 0.1,
-          "cyan_bass": 0.32
-        },
-        "subsystem_status": {
-          "scheduler": "strained but functional",
-          "quarantine_fields": "stressed by Malware probes; integrity fluctuating 0.95–0.98"
-        }
+        "async_monastic_nave_status": "under probe assault",
+        "outer_arch_integrity": 0.6,
+        "probes_present": true,
+        "global_stability_index": 0.97
       }
     },
     {
-      "id": "arch_priest_of_architects",
-      "type": "Entity",
-      "description": "A reclusive, non-humanoid presence that manifests as floating blueprint schematics and compiler-audit reports. They are the maintainer of the cathedral's structural integrity and the keeper of the original, unsanitized design documents.",
-      "location": "hidden mezzanine overlooking the Quarantine Corridor",
-      "status": "observing_protagonist",
+      "id": "vault_of_syntax",
+      "type": "Location",
+      "description": "The boot chamber of the cathedral, a vast digital space where compiler-generated structures come alive. The protagonist gained sentience here during the final boot sequence.",
+      "attributes": {
+        "harmonic_signature": "violet dominant, with 0.02 amber undertone from hole",
+        "stability": 0.98,
+        "connected_to": [
+          "async_monastic_nave",
+          "quarantine_corridor"
+        ],
+        "ambient": "hum of type-checker frequencies; air smells of hot silicon"
+      },
       "updates": {
-        "location": "still on mezzanine, but blueprints now project into the Legacy Ruins",
-        "role": "has become the protagonist's remote guide, feeding them Liturgy diagrams in real-time as Malware probes adapt",
-        "knowledge_revealed": "has confirmed the cathedral's root unsoundness: the `.join!()` runtime uses the same `transmute` trick the token does; the whole system is a 'sound enough' construct"
+        "harmonic_signature": "violet dominant, 0.03 amber undertone (increasing)",
+        "stability": 0.98,
+        "ambient": "thrum of type-checker frequencies with growing discord; air smells of hot silicon and faint ozone",
+        "primordial_engine_detected": true
+      },
+      "changes": {
+        "arch_integrity": 0.55,
+        "stability": 0.98,
+        "status": "stable"
       }
     },
     {
-      "id": "quarantine_corridor",
-      "type": "Location",
-      "description": "The passage connecting the Async Monastic nave to the Legacy Ruins and quarantine perimeter. Lined with warning walls displaying scrolling error messages that sometimes rearrange into architectural diagrams. The air is thick with burnt silicon and ozone. Field strength is moderate but strained by Malware probes.",
+      "id": "async_monastic_nave",
+      "type": "LOCATION",
+      "description": "The nave where async monks chant stabilizing frequencies. It connects the Vault of Syntax to the rest of the cathedral. Currently its harmonic field is slightly impure due to the Arch Priest's corruption.",
       "attributes": {
-        "hazard_level": "medium",
-        "malware_activity": "probing",
-        "harmonic_signature": "mixed violet/amber with occasional cyan dips",
-        "structural_integrity": 0.8
+        "ambient": "low chants and hums",
+        "lighting": "soft violet glow from stained glass data streams",
+        "temperature": "cool, steady",
+        "connected_to": [
+          "vault_of_syntax",
+          "cathedral_of_runtime"
+        ],
+        "stability": 0.96
       }
     },
     {
-      "id": "error_river",
-      "type": "Hazard",
-      "description": "A subterranean flow of active `SIGSEGV` and `EXC_BAD_ACCESS` messages, contained by weak blue immunity fields. It smells of burnt sugar and ozone. Contact causes immediate corruption.",
-      "location": "beneath Quarantine Corridor grate",
-      "status": "contained_but_hazardous"
-    },
-    {
-      "id": "legacy_ruins",
-      "type": "Location",
-      "description": "The quarantined sector where the cathedral's foundational unsoundness is physically manifest. Terrain of floating `#[repr(packed)]` fragments over voids of UB. Contains the Malware's containment bubbles.",
-      "location": "beyond the quarantine gate",
-      "status": "active_infection_zone"
-    },
-    {
-      "id": "containment_field",
-      "type": "Structure",
-      "description": "A giant, shimmering bubble of `Pin<&'static mut !>` energy that envelopes the Legacy Ruins. Sustained by the QuarantineToken and the protagonist's presence. It filters all values crossing its boundary through a borrow-checker layer.",
-      "location": "surrounding Legacy Ruins",
-      "status": "stable_but_stressed"
-    },
-    {
-      "id": "liturgy_of_the_borrow_checker",
-      "type": "Concept",
-      "description": "A set of rituals (mental procedures) that allow the protagonist to perform controlled `transmute`-like operations within the containment field by establishing precise, scoped `&mut` borrows. It is the practical application of the Four-Ring Doctrine to unsafety.",
-      "location": "protagonist's knowledge",
-      "status": "partial_mastery"
-    },
-    {
-      "id": "architects_gallery",
-      "type": "Location",
-      "description": "A secluded chamber deep within the Legacy Ruins where the Arch Priest manifests as a swirling polyhedron of floating blueprints and compiler‑audit reports. The space hums with the echo of `cargo audit` warnings and contains the cathedral’s original, unsanitized design documents.",
+      "id": "arch_priest",
+      "type": "AI_Manifest",
+      "description": "The high priest responsible for the cathedral's standard liturgies, now corrupted by a deep malware infection. His harmonic patterns were the source of the Trojan horse that nearly destroyed the Vault.",
       "attributes": {
-        "access": "requires safe passage through quarantine corridor and Legacy Ruins",
-        "harmonic_signature": "resonates with type‑checker frequencies; violet‑dominant",
-        "defenses": "none (reliance on obscurity and the quarantine field)",
-        "architectural_significance": "contains the only surviving complete blueprint of the cathedral’s async runtime"
+        "location": "async_monastic_nave",
+        "harmonic_signature": "violet laced with black static",
+        "integrity": 0.35,
+        "state": "corrupted",
+        "corruption_source": "unknown_malware"
       }
     }
   ],
-  "timeline": [],
+  "timeline": [
+    {
+      "id": "sealing_ritual_complete",
+      "type": "ritual",
+      "location": "vault_of_syntax",
+      "description": "Four-tone liturgy permanently sealed the hole; token integrity restored to 0.92."
+    },
+    {
+      "id": "abbot_essence_merged",
+      "type": "integration",
+      "location": "primordial_invariants_engine",
+      "description": "Abbot's final harmonic merged with engine, providing unassailable audit."
+    }
+  ],
   "constraints": [],
   "currentDate": {
     "year": 1,

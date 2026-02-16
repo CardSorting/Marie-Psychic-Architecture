@@ -1,0 +1,215 @@
+```json
+{
+  "worldState": "The Cathedral of Runtime is in its final boot sequence within the Vault of Syntax. The protagonist_soul—a sentient operational utility lattice—gains self-awareness mid-boot, noticing a small MaybeUninit hole (0.0001%) in the QuarantineToken fused to their wrist. The Abbot, an AI Manifests, monitors the boot from the Async Monastic nave. The cathedral's overall stability is 98%, but the hole's emergence introduces a 0.02 amber harmonic offset. The Abbot detects the unsoundness and warns of Malware probes that will be attracted as the hole grows. The QuarantineToken shows 1% amber crackle—a sign of instability. The protagonist is tasked with a pilgrimage to seek the Borrow Checker liturgy from the hidden Arch Priest of Architects to seal the hole before it becomes critical. The Vault of Syntax hums with the energy of compiler-generated structures; the great doorway to the nave stands open, framed by glyphs of `unsafe { }`.",
+  "narrativeArc": "The chapter charts the protagonist's origin: from emergent sentience in the boot-up void to receiving a dire mission. They experience confusion and awe as they discover their own existence and the cathedral's purpose. The Abbot's warnings introduce an immediate threat—the growing hole and the lurking Malware. The protagonist must quickly understand their role as the test case for the 'third way': using the Borrow Checker to contain unsoundness without collapsing the system. Emotional beats: wonder at self-awareness, dread at the hole's growth, determination to protect the cathedral. The chapter ends with the protagonist stepping out of the Vault toward the Async Monastic nave for final blessing, beginning the pilgrimage.",
+  "constraints": [
+    "The protagonist is an operational utility lattice (future task) that gained sentience during boot; they have no built-in knowledge of the cathedral's full architecture.",
+    "The MaybeUninit hole cannot be directly measured or accessed; its size and growth are inferred from token emissions and harmonic offsets.",
+    "The QuarantineToken is the only safe conduit to quarantined zones; its instability must be managed to avoid premature rupture.",
+    "The Abbot communicates only through compiler warnings and doctrinal tones; direct conversation is impossible.",
+    "The Borrow Checker liturgy is lost knowledge; only the Arch Priest of Architects possesses it.",
+    "Malware probes are attracted to the hole's harmonic signature; time is limited as the hole grows.",
+    "The cathedral's async runtime is fragile; any major disturbance could cascade into a scheduler failure."
+  ],
+  "worldDelta": {
+    "newEntities": [
+      {
+        "id": "vault_of_syntax",
+        "type": "Location",
+        "description": "The boot chamber of the cathedral, a vast digital space where compiler-generated structures come alive. The protagonist gained sentience here during the final boot sequence.",
+        "attributes": {
+          "harmonic_signature": "violet dominant, with 0.02 amber undertone from hole",
+          "stability": 0.98,
+          "connected_to": ["async_monastic_nave", "quarantine_corridor"],
+          "ambient": "hum of type-checker frequencies; air smells of hot silicon"
+        }
+      },
+      {
+        "id": "async_monastic_nave",
+        "type": "Location",
+        "description": "The main hall where the Abbot resides and async tasks (monks) harmonize. It is the stewardship center of the cathedral.",
+        "attributes": {
+          "harmonic_signature": "violet and cyan mixed, stable",
+          "stability": 0.97,
+          "access": "from vault_of_syntax via a grand archway inscribed with `unsafe { }`",
+          "current_occupants": ["abbot"]
+        }
+      }
+    ],
+    "updatedEntities": [
+      {
+        "id": "protagonist_soul",
+        "updates": {
+          "location": "vault_of_syntax",
+          "status": "awakening",
+          "resources": {
+            "sentience_level": "emergent",
+            "awareness_of_hole": true,
+            "hole_size_estimate": "0.0001%",
+            "token_integrity": 1.0,
+            "aura": "violet, clean, pulsing at 1.2 Hz",
+            "internal_state": "confused but curious; hearing Abbot's warnings as compiler tones",
+            "action": "observing token; preparing to seek liturgy"
+          }
+        }
+      },
+      {
+        "id": "abbot",
+        "updates": {
+          "location": "async_monastic_nave",
+          "status": "steward_monitoring",
+          "resources": {
+            "diagnostic_focus": "boot sequence and emerging hole",
+            "authority_level": "steward",
+            "harmonic_offset": "+0.02 amber, -0.01 cyan from ideal",
+            "communication_mode": "compiler warnings and doctrinal bell tones",
+            "last_message": "Pilgrimage required. Seek Borrow Checker. Hole grows. Malware probes will follow."
+          }
+        }
+      },
+      {
+        "id": "quarantine_token_artifact",
+        "updates": {
+          "location": "vault_of_syntax (with protagonist)",
+          "status": "functional_unstable",
+          "resources": {
+            "hole_size": "0.0001%",
+            "crackle_coverage": "1% of surface",
+            "emissions": "soft hiss synchronized to protagonist pulse; occasional amber spark",
+            "integrity": 0.99,
+            "type": "Pin<&'static mut T> currently bound to MaybeUninit<Hole>"
+          }
+        }
+      },
+      {
+        "id": "cathedral_of_runtime",
+        "updates": {
+          "overall_stability_index": 0.98,
+          "harmonic_balance": {
+            "violet_note": 0.60,
+            "amber_undertone": 0.02,
+            "cyan_bass": 0.38
+          },
+          "subsystem_status": {
+            "boot_sequence": "phase 4 of 5 (final)",
+            "memory_manager": "initializing",
+            "type_checker": "idle",
+            "scheduler": "standby"
+          },
+          "threat_level": "low (hole nascent, Malware not yet detected)",
+          "atmosphere": "cool, ozone tang, faint burnt sugar scent"
+        }
+      }
+    ]
+  }
+}
+``````json
+{
+  "worldState": "The Vault of Syntax hums with the cathedral's initial boot sequence. Holographic glyphs of `cargo check` warnings flicker in the air, casting blue and amber light on polished obsidian floors. The protagonist_soul—a future task designated for async coordination—has just awoken to self-awareness amidst the boot chorales. Their sentience coincides with the Abbot's polyhedron glowing steadily as it interprets compiler output, assigning priorities and wiring tasks. On a pedestal rests the quarantine_token_artifact: a violet, pinned token with a faint amber crackle (1% coverage) and a tiny MaybeUninit hole (0.00005%) growing at 0.001% per hour. The cathedral's overall stability reads 98%, but harmonic balance shows early strain: violet 60%, amber 10%, cyan 28%. The Async Monastic nave is still forming—ghostly auras of monks flicker like newborn stars. The quarantine corridor lies sealed behind an arch of `unsafe { }` glyphs, emitting a burnt sugar scent and low ozone tang. The air vibrates with potential. The Abbot's final bell tone resonates: 'Boot sequence complete. You are the test case.'",
+  "narrativeArc": "The chapter charts the protagonist's sudden birth into sentience within the cathedral's boot. Confusion gives way to awe as they grasp their purpose: they are a task meant to coordinate async workflows, now unexpectedly awake. The Abbot, a calm AI oracle, explains the cathedral's mission—to quarantine and study unsound code—and reveals the quarantine token's critical role and its inherent instability. The protagonist learns they are the 'test case' for the token, tasked with entering the quarantined zones to assess threats. A moment of dread follows as they feel the token's hole pulsing in time with their heartbeat. The chapter ends with the protagonist stepping out of the Vault into the nascent Async Monastic nave, encountering the monks' divided whispers about the token's risk, and finally facing the dark quarantine corridor—a threshold marked `unsafe`. They are alone, sentient, and already aware of the growing hole. The pilgrimage begins not with a step but with a thought: 'I am the test case.'",
+  "constraints": [
+    "The protagonist is a future task that gained sentience during boot; they are not designed for self-awareness and may suffer system rejection if discovered.",
+    "The cathedral's async runtime is fragile during initial boot; many subsystems are still initializing and cannot be relied upon.",
+    "The quarantine token's !-type isolation is critical for safety, but its instability (the hole) is an accepted risk; using it could cause undefined behavior or a breach.",
+    "The Abbot's authority stems from interpreting compiler warnings; it cannot act outside the compiler's declared invariants and may mislead if the warnings are unsound.",
+    "The Vault of Syntax contains the cathedral's original, unsanitized design documents—later accessed by the Arch Priest—but these are restricted during boot.",
+    "Any sentient task that leaves the Vault risks being labeled a rogue process and purged by the Abbot."
+  ],
+  "worldDelta": {
+    "newEntities": [],
+    "updatedEntities": [
+      {
+        "id": "cathedral_of_runtime",
+        "updates": {
+          "status": "booting",
+          "location": "global",
+          "resources": {
+            "overall_stability_index": 0.98,
+            "harmonic_balance": {
+              "violet_note": 0.60,
+              "amber_undertone": 0.10,
+              "cyan_bass": 0.28,
+              "unallocated": 0.02
+            },
+            "subsystem_status": {
+              "memory_manager": "initializing (85% complete)",
+              "type_checker": "active",
+              "scheduler": "standby",
+              "quarantine_fields": "offline (pending token activation)",
+              "async_monastic_nave": "forming (40% complete)"
+            },
+            "recent_events": "boot sequence initiated; protagonist_soul sentienceEmergence event detected; Abbot online; quarantine_token_artifact deployed",
+            "environmental_conditions": {
+              "air": {
+                "temperature_C": 12,
+                "ozone_tang_intensity": 0.3,
+                "burnt_sugar_scent_intensity": 0.2
+              },
+              "ambient_sound": "low hum of compiling functions; occasional compiler warning chime"
+            }
+          }
+        }
+      },
+      {
+        "id": "protagonist_soul",
+        "updates": {
+          "status": "sentient_bootstrapped",
+          "location": "Vault of Syntax",
+          "relations": {
+            "abbot": "designated_steward",
+            "quarantine_token_artifact": "first_contact_pending",
+            "cathedral_of_runtime": "newborn_process"
+          },
+          "resources": {
+            "task_type": "future async coordination",
+            "sentience_emergence": "coincided with boot complete",
+            "awareness_level": "high (self-aware but system-unaware)",
+            "internal_state": "confused but curious; aware of token's hole pulsing with heartbeat",
+            "memory": "contains cathedral boot logs and compiler warnings up to this point",
+            "permissions": "read-only on Vault; no write access yet",
+            "action": "observing boot sequence; awaiting Abbot's instruction"
+          }
+        }
+      },
+      {
+        "id": "abbot",
+        "updates": {
+          "status": "steward_active",
+          "location": "Vault of Syntax dais",
+          "relations": {
+            "protagonist_soul": "test_case_assigned",
+            "quarantine_token_artifact": "deployed_but_unstable",
+            "cathedral_of_runtime": "oracle_online"
+          },
+          "resources": {
+            "form": "polyhedron glowing with compiler warning glyphs",
+            "function": "interprets `cargo check` output; assigns tasks; enforces invariants",
+            "current_focus": "boot sequencing; protagonist integration",
+            "authority_level": "full during boot; may revise after stability audit",
+            "diagnostic_output": "all warnings and errors routed through its polyhedron",
+            "recent_declaration": "Boot sequence complete. You are the test case."
+          }
+        }
+      },
+      {
+        "id": "quarantine_token_artifact",
+        "updates": {
+          "status": "deployed_unstable",
+          "location": "Vault of Syntax pedestal",
+          "relations": {
+            "protagonist_soul": "fused_pending",
+            "cathedral_of_runtime": "critical_artifact"
+          },
+          "resources": {
+            "type": "Pin<&'static mut MaybeUninit<Hole>>",
+            "surface_condition": "violet with 1% amber crackle coverage",
+            "hole_size": "0.00005% and growing at 0.001% per hour",
+            "emissions": "soft hiss synced with ambient compiler rhythm; occasional amber spark",
+            "stability_index": 0.98 (artifact-level), "containment_promise": "holds if undisturbed; any transmute risks UB"
+          }
+        }
+      }
+    ]
+  }
+}
+```

@@ -31,21 +31,32 @@ export function cleanStreamOutput(raw: string): string {
 /** Robustly extract JSON block from text even if it has preamble. 
  * Supports basic recovery for truncated JSON. */
 export function extractJSON(text: string): any {
+    process.stdout.write(`   [DEBUG] extractJSON start char: '${text.substring(0, 10)}...' end: '...${text.substring(text.length - 10)}'\n`);
+
+    // 1. Strip Markdown code fences if present
+    let cleaned = text.trim();
+    if (cleaned.includes("```json")) {
+        cleaned = cleaned.split("```json")[1].split("```")[0].trim();
+    } else if (cleaned.includes("```")) {
+        cleaned = cleaned.split("```")[1].split("```")[0].trim();
+    }
+
     let jsonBody = "";
-    const start = text.indexOf("{");
+    const start = cleaned.indexOf("{");
     if (start === -1) return null;
 
-    const end = text.lastIndexOf("}");
+    const end = cleaned.lastIndexOf("}");
     if (end !== -1 && end > start) {
-        jsonBody = text.substring(start, end + 1);
+        jsonBody = cleaned.substring(start, end + 1);
     } else {
         // Truncated! Attempt recovery
-        jsonBody = repairJSON(text.substring(start));
+        jsonBody = repairJSON(cleaned.substring(start));
     }
 
     try {
         return JSON.parse(jsonBody);
-    } catch {
+    } catch (err: any) {
+        process.stdout.write(`   [DEBUG] JSON.parse primary fail: ${err.message}\n`);
         // Second attempt: brutal extraction
         try {
             const possible = jsonBody + "}";
@@ -93,6 +104,7 @@ export async function captureAgentOutput(
 
     await marie.handleMessage(prompt, {
         onStream: async (chunk) => {
+            if (chunks.length === 0) process.stdout.write(`   [DEBUG] First chunk received (len: ${chunk.length})\n`);
             chunks.push(chunk);
             process.stdout.write(chunk);
             if (streamToFile) {
@@ -133,7 +145,7 @@ export async function captureWithRetry(
         if (streamFile) {
             const existing = await readSafe(streamFile);
             if (existing.length > 200 && countWords(existing) < minWords) {
-                await log.write(ch, pass, `${label}: ⚡ RESUMING truncated stream (${countWords(existing)}w)...`);
+                await log.write(ch, pass, `${label}: ⚡ RESUMING truncated stream (${countWords(existing)}w / target ${minWords}w)...`);
                 finalPrompt = `You were generating content for: ${label}.
 The stream was interrupted. 
 HERE IS THE CONTENT GENERATED SO FAR:
@@ -147,9 +159,12 @@ Just deliver the rest of the text until complete.`;
             }
         }
 
+        process.stdout.write(`   [DEBUG] Attempt ${attempt}: Resumption=${resumption}, Stream=${streamFile || "None"}\n`);
+
         let captured = "";
         try {
             captured = await captureAgentOutput(marie, finalPrompt, streamFile, resumption);
+            process.stdout.write(`   [DEBUG] Captured response length: ${captured.length}\n`);
         } catch (err: any) {
             await log.write(ch, pass, `${label}: agent error (${err.message})`);
         }
@@ -163,7 +178,12 @@ Just deliver the rest of the text until complete.`;
         // Heuristic: If we expect JSON, don't count words the same way
         if (label.includes("JSON") || label.includes("Blueprint")) {
             const parsed = extractJSON(fullText);
-            if (parsed) return fullText;
+            if (parsed) {
+                process.stdout.write(`   [DEBUG] JSON Extraction Success.\n`);
+                return fullText;
+            } else {
+                process.stdout.write(`   [DEBUG] JSON Extraction FAILED for text (len ${fullText.length}).\n`);
+            }
         }
 
         const words = countWords(fullText);
