@@ -32,12 +32,24 @@ export class CliFileSystemPort implements FileSystemPort {
     _signal?: AbortSignal,
   ): Promise<void> {
     const fullPath = this.resolve(filePath);
-    try {
-      await fs.mkdir(path.dirname(fullPath), { recursive: true });
-      await fs.writeFile(fullPath, content, "utf-8");
-    } catch (error: any) {
-      throw new Error(`Failed to write file ${filePath}: ${error.message}`);
+    let lastError: any;
+    
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await fs.mkdir(path.dirname(fullPath), { recursive: true });
+        await fs.writeFile(fullPath, content, "utf-8");
+        return; // Success
+      } catch (error: any) {
+        lastError = error;
+        // Retry on busy or locked files (common on macOS/Windows)
+        if (["EBUSY", "EPERM", "ENOLCK"].includes(error.code) && attempt < 3) {
+          await new Promise(r => setTimeout(r, 100 * attempt));
+          continue;
+        }
+        throw new Error(`Failed to write file ${filePath}: ${error.message}`);
+      }
     }
+    throw lastError;
   }
 
   async deleteFile(filePath: string): Promise<void> {

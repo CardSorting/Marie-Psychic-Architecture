@@ -167,10 +167,25 @@ function cleanStreamOutput(raw: string): string {
 // ═══════════════════════════════════════════════════════════════
 
 class Log {
+  private logFd: number | null = null;
   private logPath: string;
 
   constructor(workingDir: string) {
     this.logPath = path.join(workingDir, ".vault", "novel", "production.log");
+    this.ensureLogOpen();
+  }
+
+  private ensureLogOpen() {
+    if (this.logFd !== null) return;
+    try {
+      const dir = path.dirname(this.logPath);
+      if (!fsSync.existsSync(dir)) {
+        fsSync.mkdirSync(dir, { recursive: true });
+      }
+      this.logFd = fsSync.openSync(this.logPath, "a");
+    } catch (err: any) {
+      process.stderr.write(`\n❌ CRITICAL: Failed to open log file: ${err.message}\n`);
+    }
   }
 
   async write(ch: number, pass: string, msg: string, words?: number) {
@@ -178,11 +193,26 @@ class Log {
     const wc = words !== undefined ? ` [${words}w]` : "";
     const line = `[${ts}] Ch${ch}/${pass}: ${msg}${wc}\n`;
     process.stdout.write(`📝 ${line}`);
-    try {
-      await fs.mkdir(path.dirname(this.logPath), { recursive: true });
-      await fs.appendFile(this.logPath, line);
-    } catch (err: any) {
-      process.stderr.write(`\n❌ Log Write Failed: ${err.message}\n`);
+    
+    this.ensureLogOpen();
+    if (this.logFd !== null) {
+      try {
+        fsSync.writeSync(this.logFd, line);
+        // Ensure data is flushed to disk
+        fsSync.fsyncSync(this.logFd);
+      } catch (err: any) {
+        process.stderr.write(`\n❌ Log Write Failed: ${err.message}\n`);
+        this.logFd = null; // Mark as closed to attempt re-open next time
+      }
+    }
+  }
+
+  close() {
+    if (this.logFd !== null) {
+      try {
+        fsSync.closeSync(this.logFd);
+        this.logFd = null;
+      } catch {}
     }
   }
 }
