@@ -1,0 +1,91 @@
+{
+  "id": 3,
+  "title": "Quantum Obsession",
+  "description": "A high-energy K-pop single engineered for maximum dopamine reward. Themes of neuro-audio architecture, digital addiction, and neon-drenched dominance. Aim for Billboard 100 Dominance with the Dopamine Engineering pass.",
+  "currentPass": "CANON",
+  "completedPasses": [
+    "BRIEF",
+    "HOOK_ISOLATION",
+    "BEAT_SHEET",
+    "RECORDING",
+    "RE_AMPING",
+    "POLARIZATION",
+    "LOCALIZATION",
+    "DEEP_REFINEMENT",
+    "DOPAMINE_ENGINEERING",
+    "MIX_AND_MASTER",
+    "VIRAL_PROMO"
+  ],
+  "continuityLedger": [
+    {
+      "pass": "BRIEF",
+      "summary": "Completed BRIEF",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:54:10.854Z"
+    },
+    {
+      "pass": "HOOK_ISOLATION",
+      "summary": "Completed HOOK_ISOLATION",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:54:35.938Z"
+    },
+    {
+      "pass": "BEAT_SHEET",
+      "summary": "Completed BEAT_SHEET",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:55:07.611Z"
+    },
+    {
+      "pass": "RECORDING",
+      "summary": "Completed RECORDING",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:57:24.935Z"
+    },
+    {
+      "pass": "RE_AMPING",
+      "summary": "Completed RE_AMPING",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:58:06.711Z"
+    },
+    {
+      "pass": "POLARIZATION",
+      "summary": "Completed POLARIZATION",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:58:40.922Z"
+    },
+    {
+      "pass": "LOCALIZATION",
+      "summary": "Completed LOCALIZATION",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:59:11.724Z"
+    },
+    {
+      "pass": "DEEP_REFINEMENT",
+      "summary": "Completed DEEP_REFINEMENT",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T18:59:59.527Z"
+    },
+    {
+      "pass": "DOPAMINE_ENGINEERING",
+      "summary": "Completed DOPAMINE_ENGINEERING",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T19:02:09.809Z"
+    },
+    {
+      "pass": "MIX_AND_MASTER",
+      "summary": "Completed MIX_AND_MASTER",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T19:02:53.482Z"
+    },
+    {
+      "pass": "VIRAL_PROMO",
+      "summary": "Completed VIRAL_PROMO",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T19:03:45.140Z"
+    }
+  ],
+  "files": [],
+  "mode": "MUSIC_STUDIO",
+  "wordCount": 2231,
+  "lastModified": "2026-02-16T19:03:45.141Z"
+}

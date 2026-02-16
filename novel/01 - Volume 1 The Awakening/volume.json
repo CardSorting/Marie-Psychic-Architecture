@@ -29,8 +29,7 @@
         }
       ],
       "files": [
-        "src/prompts.ts",
-        "src/index.ts"
+        "src/prompts.ts"
       ],
       "mode": "ESSAY",
       "wordCount": 0,
@@ -40,13 +39,147 @@
       "id": 2,
       "title": "Neon Dreams",
       "description": "A high-energy K-pop single about a futuristic cyberpunk Seoul. Themes of neon lights, digital romance, and high-frequency energy. Aim for Billboard 100 Dominance with the Empire Pass.",
+      "currentPass": "CANON",
+      "completedPasses": [
+        "BRIEF",
+        "HOOK_ISOLATION",
+        "BEAT_SHEET",
+        "RECORDING",
+        "RE_AMPING",
+        "POLARIZATION",
+        "LOCALIZATION",
+        "MIX_AND_MASTER",
+        "VIRAL_PROMO"
+      ],
+      "continuityLedger": [
+        {
+          "pass": "BRIEF",
+          "summary": "Completed BRIEF",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:14:34.232Z"
+        },
+        {
+          "pass": "HOOK_ISOLATION",
+          "summary": "Completed HOOK_ISOLATION",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:15:00.072Z"
+        },
+        {
+          "pass": "BEAT_SHEET",
+          "summary": "Completed BEAT_SHEET",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:15:37.231Z"
+        },
+        {
+          "pass": "RECORDING",
+          "summary": "Completed RECORDING",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:17:24.256Z"
+        },
+        {
+          "pass": "RE_AMPING",
+          "summary": "Completed RE_AMPING",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:18:02.089Z"
+        },
+        {
+          "pass": "POLARIZATION",
+          "summary": "Completed POLARIZATION",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:18:27.925Z"
+        },
+        {
+          "pass": "LOCALIZATION",
+          "summary": "Completed LOCALIZATION",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:19:02.385Z"
+        },
+        {
+          "pass": "MIX_AND_MASTER",
+          "summary": "Completed MIX_AND_MASTER",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:19:34.229Z"
+        },
+        {
+          "pass": "VIRAL_PROMO",
+          "summary": "Completed VIRAL_PROMO",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:20:38.429Z"
+        },
+        {
+          "pass": "BEAT_SHEET",
+          "summary": "Completed BEAT_SHEET",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T17:26:52.499Z"
+        },
+        {
+          "pass": "RECORDING",
+          "summary": "Completed RECORDING",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:34:08.803Z"
+        },
+        {
+          "pass": "RE_AMPING",
+          "summary": "Completed RE_AMPING",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:35:09.327Z"
+        },
+        {
+          "pass": "POLARIZATION",
+          "summary": "Completed POLARIZATION",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:35:48.706Z"
+        },
+        {
+          "pass": "LOCALIZATION",
+          "summary": "Completed LOCALIZATION",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:36:29.643Z"
+        },
+        {
+          "pass": "MIX_AND_MASTER",
+          "summary": "Completed MIX_AND_MASTER",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:37:24.055Z"
+        },
+        {
+          "pass": "VIRAL_PROMO",
+          "summary": "Completed VIRAL_PROMO",
+          "filesLocked": [
+            "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+          ],
+          "timestamp": "2026-02-16T17:39:46.043Z"
+        }
+      ],
+      "files": [
+        "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/content.md",
+        "novel/01 - Volume 1 The Awakening/02 - Neon Dreams/outline.md"
+      ],
+      "mode": "MUSIC_STUDIO",
+      "wordCount": 2199,
+      "lastModified": "2026-02-16T17:39:46.045Z"
+    },
+    {
+      "id": 3,
+      "title": "Quantum Obsession",
+      "description": "A high-energy K-pop single engineered for maximum dopamine reward. Themes of neuro-audio architecture, digital addiction, and neon-drenched dominance. Aim for Billboard 100 Dominance with the Dopamine Engineering pass.",
       "currentPass": "BRIEF",
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
       "mode": "MUSIC_STUDIO",
       "wordCount": 0,
-      "lastModified": "2026-02-16T17:13:22.023Z"
+      "lastModified": "2026-02-16T18:53:44.225Z"
     }
   ]
 }

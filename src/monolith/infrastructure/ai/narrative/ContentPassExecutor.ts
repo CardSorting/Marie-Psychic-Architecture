@@ -177,11 +177,13 @@ export class ContentPassExecutor {
             case "VIRAL_PROMO": {
                 const finalTrackContent = await readSafe(targetPath);
 
-                // 1. Audit/Forecast the track
+                // 1. Audit/Forecast the track (Final Distillation)
                 const forecastedResult = await this.revisionService.applyViralForecasting(ch, finalTrackContent);
                 if (forecastedResult) {
                     const auditPath = path.join(targetDir, `audit.md`);
                     await this.fileSystem.writeContent(auditPath, forecastedResult);
+                    // The Distillation overwrites the Cathedral with the Performance.
+                    await this.fileSystem.writeContent(targetPath, forecastedResult);
                 }
 
                 // 2. Generate Social Assets

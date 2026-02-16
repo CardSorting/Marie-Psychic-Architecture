@@ -11,8 +11,8 @@ async function main() {
     if (!activeChapter) {
         console.log("🚀 Initializing K-POP EMPIRE Volume & Track...");
         await service.startNewChapter(
-            "Neon Dreams",
-            "A high-energy K-pop single about a futuristic cyberpunk Seoul. Themes of neon lights, digital romance, and high-frequency energy. Aim for Billboard 100 Dominance with the Empire Pass.",
+            "Quantum Obsession",
+            "A high-energy K-pop single engineered for maximum dopamine reward. Themes of neuro-audio architecture, digital addiction, and neon-drenched dominance. Aim for Billboard 100 Dominance with the Dopamine Engineering pass.",
             "MUSIC_STUDIO"
         );
     } else {

@@ -210,22 +210,22 @@ OUTPUT: The globally localized and universally resonant Billboard track.
     }
 
     public async applyViralForecasting(ch: NovelChapter, draft: string): Promise<string | null> {
-        process.stdout.write(`   🔭 Viral Forecasting (Platform Audit)...\n`);
+        process.stdout.write(`   🔭 Viral Forecasting (Final Distillation)...\n`);
 
-        const prompt = `VIRAL FORECASTING & PLATFORM AUDIT.
+        const prompt = `VIRAL FORECASTING & FINAL DISTILLATION.
 DRAFT (Current Lyrics):
 ${draft}
 
 TASK:
-1. Audit for 'Scroll-Stop' potential. Is the energy immediate?
-2. Ensure high 'Shareable Wisdom' — identify the ultimate pull-quotes.
-3. Verify Algorithmic Friction: eliminate anything that slows down the viral spread.
-4. Polish the 'TikTok Hook' for maximum retention.
+1. **Remove Meta-Layer Noise**: Strip away strategy language, deployment framing, inevitability rhetoric, and conceptual density. If it sounds like an A&R briefing, remove it.
+2. **Convert Architecture into Breath**: Translate system thinking (escalation curves, hook triads) into performable lyrics. Focus on shorter lines, stronger vowels, and repeatable cadence.
+3. **Protect the Emotional Core**: Guard the lines that are actually alive. Do not over-optimize the "human" out of the track.
+4. **Viral Audit**: Identify the ultimate pull-quotes and ensure the 15-second "TikTok" moment is preserved.
 
-OUTPUT: The FULL BODY of the track (Lyrics), algorithmically optimized and viral-ready for Billboard dominance. 
+OUTPUT: The FULL BODY of the distilled and perfected track (Lyrics). 
 Return ONLY the optimized markdown content (Lyrics), not a report.`;
 
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Forecasted Track", 400);
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Distilled Track", 400);
     }
 }
 
