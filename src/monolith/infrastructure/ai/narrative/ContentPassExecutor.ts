@@ -132,6 +132,30 @@ export class ContentPassExecutor {
                     await this.fileSystem.writeContent(targetPath, localizedResult);
                     success = true;
                     // @ts-ignore
+                    nextPass = "DEEP_REFINEMENT";
+                }
+                break;
+            }
+
+            case "DEEP_REFINEMENT": {
+                const draftRefined = await readSafe(targetPath);
+                const refinedResult = await this.revisionService.applyDeepRefinement(ch, draftRefined);
+                if (refinedResult) {
+                    await this.fileSystem.writeContent(targetPath, refinedResult);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "DOPAMINE_ENGINEERING";
+                }
+                break;
+            }
+
+            case "DOPAMINE_ENGINEERING": {
+                const draftDopamine = await readSafe(targetPath);
+                const dopamineResult = await this.revisionService.applyDopamineEngineering(ch, draftDopamine);
+                if (dopamineResult) {
+                    await this.fileSystem.writeContent(targetPath, dopamineResult);
+                    success = true;
+                    // @ts-ignore
                     nextPass = "MIX_AND_MASTER";
                 }
                 break;

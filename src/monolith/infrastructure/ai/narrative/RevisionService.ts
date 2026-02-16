@@ -19,7 +19,7 @@ export class RevisionService {
         if (ch.mode === "OP_ED") editors = ["OP_ED_COLUMNIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "ARTICLE") editors = ["JOURNALIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "SHORT_STORY") editors = ["DIRECTOR", "SENSORY_EDITOR", "VOICE_COACH"];
-        else if (ch.mode === "MUSIC_STUDIO") editors = ["STUDIO_HEAD", "BEAT_ARCHITECT", "CHART_ANALYST", "LYRICAL_GENIUS", "MIX_ENGINEER"];
+        else if (ch.mode === "MUSIC_STUDIO") editors = ["STUDIO_HEAD", "BEAT_ARCHITECT", "CHART_ANALYST", "LYRICAL_GENIUS", "MIX_ENGINEER", "CHART_SURGEON", "DOPAMINE_ENGINEER"];
 
         const critiques: CritiqueResult[] = [];
 
@@ -152,6 +152,43 @@ TASK:
 OUTPUT: The perfectly tuned and cognitively satisfied Dynasty-ready track.
 `;
         return await captureWithRetry(this.marie, prompt, this.log, ch.id, "REMIXING", "Remixed/Tuned Track", 400);
+    }
+
+    public async applyDeepRefinement(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   ⚕️  Chart Surgeon: Deep Refinement Pass...\n`);
+
+        const prompt = `CHART SURGEON MODE (Deep Refinement).
+DRAFT:
+${draft}
+
+TASK:
+1. Micro-Audit: Scrutinize every line for rhythm, cadence, and "mouthfeel".
+2. Hook Optimization: Ensure the chorus hits with maximum dopamine.
+3. Emotional Calibration: Verify the emotional arc spikes at the Bridge.
+4. Lyric Polish: Replace any generic phrasing with iconic, memorable imagery.
+5. Goal: Ensure the track is "unskippable" and chemically addictive.
+
+OUTPUT: The deeply refined and surgically perfected Billboard lyrics.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "DEEP_REFINEMENT", "Deep Refined Track", 400);
+    }
+
+    public async applyDopamineEngineering(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🧪 Dopamine Engineering (Neuro-Optimization)...\n`);
+
+        const prompt = `DOPAMINE ENGINEER MODE.
+DRAFT:
+${draft}
+
+TASK:
+1. Audit Time-to-Reward: Ensure the first hook hits within 7 seconds.
+2. Calibrate Anticipation: Ensure the pre-chorus builds sufficient tension.
+3. Inject Novelty Spikes: Add a surprising element (sound, word, rhythm) every 15 seconds.
+4. Maximize Reward Density: Ensure every line has a sonic or lyrical payoff.
+
+OUTPUT: The scientifically optimized and neurochemically addictive Billboard track.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "DOPAMINE_ENGINEERING", "Dopamine Optimized Track", 400);
     }
 
     public async applyGlobalLocalization(ch: NovelChapter, draft: string): Promise<string | null> {

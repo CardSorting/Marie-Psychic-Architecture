@@ -137,16 +137,16 @@ TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just 
     public async generateMusicStudioBrief(ch: NovelChapter): Promise<string | null> {
         process.stdout.write(`   💡 Generating Billboard-Tier Brief for Track: "${ch.title}"...\n`);
 
-        const prompt = `STUDIO BRIEF MODE. 
+        const prompt = `STUDIO BRIEF MODE (Billboard Dominance).
 TITLE: ${ch.title}
 DESCRIPTION: ${ch.description}
 
 TASK: 
-1. Identify the 'Hit Factor' (The Hook).
-2. Define the 'Sonic Texture' and 'Atmosphere' of the track.
-3. Define the 'Billboard Trajectory' — why will this dominate the charts?
-4. Define 1 core 'Earworm Motif' that must be repeated.
-5. Goal: Billboard 100 Dominance.
+1. Identify the 'Hit Factor' (The Hook) with surgical precision. It must be instantly viral.
+2. Define the 'Sonic Texture' - must sound expensive, massive, and iconic.
+3. Define the 'Billboard Trajectory' — exactly why this will hit #1.
+4. Define 1 core 'Earworm Motif' that is scientifically designed to stick in the brain.
+5. Goal: ABSOLUTE Billboard 100 Dominance. No fillers.
 
 OUTPUT FORMAT (Markdown):
 # STUDIO BRIEF: ${ch.title}
