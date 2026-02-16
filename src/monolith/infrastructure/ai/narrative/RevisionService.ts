@@ -217,10 +217,11 @@ DRAFT (Current Lyrics):
 ${draft}
 
 TASK:
-1. **Remove Meta-Layer Noise**: Strip away strategy language, deployment framing, inevitability rhetoric, and conceptual density. If it sounds like an A&R briefing, remove it.
-2. **Convert Architecture into Breath**: Translate system thinking (escalation curves, hook triads) into performable lyrics. Focus on shorter lines, stronger vowels, and repeatable cadence.
-3. **Protect the Emotional Core**: Guard the lines that are actually alive. Do not over-optimize the "human" out of the track.
-4. **Viral Audit**: Identify the ultimate pull-quotes and ensure the 15-second "TikTok" moment is preserved.
+1. **Compress Signal-to-Noise**: Keep lines that carry emotional voltage; cut those that explain it. Charge, not explanation.
+2. **Convert Concept to Mouth Language**: Focus on vowels, rhythm, breath timing, and syllable stress. Ensure chantability and "singability" in one breath.
+3. **Lower Cognitive Load**: Shift from "Think about this" to "Feel this." Use repetition and variation to engage the body, not just the brain.
+4. **Protect the Subconscious Hook**: Reduce around the 1-3 lines that have staying power. Give them space to survive in silence.
+5. **Stabilize Energy Curves**: Create tension, release, breath, and drop. Convert Architectural Spectacle into Performable Emotion.
 
 OUTPUT: The FULL BODY of the distilled and perfected track (Lyrics). 
 Return ONLY the optimized markdown content (Lyrics), not a report.`;
