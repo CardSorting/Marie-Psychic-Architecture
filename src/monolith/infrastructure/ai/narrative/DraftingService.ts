@@ -37,13 +37,24 @@ OUTPUT FORMAT (Markdown):
     public async generateOutline(ch: NovelChapter, concept: string): Promise<string | null> {
         process.stdout.write(`   📝 Generating Outline...\n`);
 
+        let requirements = `
+- For ARTICLES/OP-EDS: Use H1, H2, H3 structure with bullet points for content.
+- For STORIES: Use Scene list with emotional beats.
+- Be specific. Include "Target Word Count" per section.`;
+
+        if (ch.mode === "MUSIC_STUDIO") {
+            requirements = `
+- For MUSIC_STUDIO: Use a Song Structure (Intro, Verse 1, Pre-Chorus, Chorus, Verse 2, Pre-Chorus, Chorus, Bridge, Final Chorus, Outro).
+- For each section, define the 'Vibe', 'Lyrical Direction', and 'Sonic Focus'.
+- Identify where the 'Earworm Motif' and 'Hooks' from the concept/hook isolation should be placed.
+- Be extremely specific about the emotional arc of the lyrics.`;
+        }
+
         const prompt = `Planner Mode. Create a detailed OUTLINE based on this concept.
 ${concept}
 
 REQUIREMENTS:
-- For ARTICLES/OP-EDS: Use H1, H2, H3 structure with bullet points for content.
-- For STORIES: Use Scene list with emotional beats.
-- Be specific. Include "Target Word Count" per section.
+${requirements}
 `;
         return await captureWithRetry(this.marie, prompt, this.log, ch.id, "OUTLINE", "Outline", 200);
     }
@@ -77,13 +88,22 @@ REQUIREMENTS:
                 { type: "B: ANALYTICAL", focus: "Data-driven, logical flow" },
                 { type: "C: EMPATHETIC", focus: "Personal connection, emotional appeal" }
             ];
+        } else if (ch.mode === "MUSIC_STUDIO") {
+            variants = [
+                { type: "A: CHART-TOPPER (POP)", focus: "Maximum catchiness, repetitive hooks, high energy" },
+                { type: "B: BALLAD/EMOTIONAL", focus: "Deep emotional resonance, powerful vocals, slower build" },
+                { type: "C: PERFORMANCE/RAP", focus: "Complex rhythm, sharp delivery, high attitude and 'swag'" }
+            ];
         }
 
         // Generate Variants (Parallel)
         process.stdout.write(`   ⚛️  Generating ${variants.length} content variants...\n`);
 
         const promises = variants.map(async (v) => {
-            const p = `Writer Mode. Write the FULL BODY text for this ${ch.mode}.
+            const role = ch.mode === "MUSIC_STUDIO" ? "Music Songwriter Mode" : "Writer Mode";
+            const task = ch.mode === "MUSIC_STUDIO" ? "Write the FULL SONG LYRICS" : "Write the FULL BODY text";
+            
+            const p = `${role}. ${task} for this ${ch.mode}.
 OUTLINE:
 ${outline}
 
@@ -92,7 +112,7 @@ ${worldContext}
 
 STYLE VARIANT: ${v.type}
 FOCUS: ${v.focus}
-Keep it under 2000 words. Start with the Title.`;
+${ch.mode === "MUSIC_STUDIO" ? "Ensure all song sections (Intro, Verse, Chorus, etc.) are clearly labeled. Include performance cues [in brackets] if necessary." : "Keep it under 2000 words. Start with the Title."}`;
             return captureWithRetry(this.marie, p, this.log, ch.id, "DRAFT", `Variant ${v.type}`, 400);
         });
 

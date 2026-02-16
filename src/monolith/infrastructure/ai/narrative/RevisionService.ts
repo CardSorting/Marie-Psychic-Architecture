@@ -176,7 +176,7 @@ OUTPUT: The globally localized and universally resonant Billboard track.
         process.stdout.write(`   🔭 Viral Forecasting (Platform Audit)...\n`);
 
         const prompt = `VIRAL FORECASTING & PLATFORM AUDIT.
-DRAFT:
+DRAFT (Current Lyrics):
 ${draft}
 
 TASK:
@@ -185,8 +185,9 @@ TASK:
 3. Verify Algorithmic Friction: eliminate anything that slows down the viral spread.
 4. Polish the 'TikTok Hook' for maximum retention.
 
-OUTPUT: The algorithmically optimized and viral-ready Billboard masterpiece.
-`;
+OUTPUT: The FULL BODY of the track (Lyrics), algorithmically optimized and viral-ready for Billboard dominance. 
+Return ONLY the optimized markdown content (Lyrics), not a report.`;
+
         return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Forecasted Track", 400);
     }
 }

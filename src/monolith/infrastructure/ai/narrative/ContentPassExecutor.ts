@@ -78,7 +78,10 @@ export class ContentPassExecutor {
             case "BEAT_SHEET":
             case "OUTLINE":
                 const conceptContent = await readSafe(conceptPath);
-                const outline = await this.draftingService.generateOutline(ch, conceptContent);
+                const hookPathForOutline = path.join(targetDir, `hook.md`);
+                const hookContent = await readSafe(hookPathForOutline);
+                const outlineInput = ch.mode === "MUSIC_STUDIO" ? `${conceptContent}\n\nHOOK ISOLATION:\n${hookContent}` : conceptContent;
+                const outline = await this.draftingService.generateOutline(ch, outlineInput);
                 if (outline) {
                     await this.fileSystem.writeContent(outlinePath, outline);
                     success = true;
@@ -153,7 +156,8 @@ export class ContentPassExecutor {
                 // 1. Audit/Forecast the track
                 const forecastedResult = await this.revisionService.applyViralForecasting(ch, finalTrackContent);
                 if (forecastedResult) {
-                    await this.fileSystem.writeContent(targetPath, forecastedResult);
+                    const auditPath = path.join(targetDir, `audit.md`);
+                    await this.fileSystem.writeContent(auditPath, forecastedResult);
                 }
 
                 // 2. Generate Social Assets
