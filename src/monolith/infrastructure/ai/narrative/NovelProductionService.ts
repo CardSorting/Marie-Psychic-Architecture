@@ -153,6 +153,12 @@ export class NovelProductionService {
     const activeChap = this.getActiveChapter();
     if (!activeChap) return { locked: false };
 
+    // POLICY: A chapter's own files are NOT locked for the current pass, 
+    // even if previous passes registered them. This allows transformation (SKELETON -> FLESH).
+    if (activeChap.files.includes(relative)) {
+      return { locked: false };
+    }
+
     for (const entry of activeChap.continuityLedger) {
       if (entry.filesLocked.includes(relative)) {
         return { locked: true, lockedBy: entry.pass };

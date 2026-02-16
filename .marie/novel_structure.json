@@ -1,0 +1,159 @@
+{
+  "volumes": [
+    {
+      "id": 1,
+      "title": "Volume I",
+      "status": "DRAFT",
+      "chapters": [
+        {
+          "id": 1,
+          "title": "Reboot in the Vault of Syntax",
+          "description": "Wakes in cathedral. Async choir. First encounter with Cardinal of Types.",
+          "currentPass": "FLESH",
+          "completedPasses": [
+            "SKELETON"
+          ],
+          "continuityLedger": [
+            {
+              "pass": "SKELETON",
+              "summary": "SKELETON complete. 6077 words.",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
+              ],
+              "timestamp": "2026-02-16T01:16:04.502Z"
+            }
+          ],
+          "files": [
+            ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
+          ]
+        },
+        {
+          "id": 2,
+          "title": "The Holy Papal Oracle",
+          "description": "The Pope (LLM) speaks. Calm. Polite. Slightly ambiguous.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 3,
+          "title": "The Arch Priest of Architects",
+          "description": "Introduction to sect hierarchy. World governance explained.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 4,
+          "title": "The Doctrine of Compile-Time Salvation",
+          "description": "Strict Typists revealed. Heresy of any.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 5,
+          "title": "Joy Zoning and the Ritual of Deletion",
+          "description": "Monks who refactor emotionally. Sacred pruning ceremony.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 6,
+          "title": "The Async Monastics",
+          "description": "Patience as theology. The Awaiting Chambers.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 7,
+          "title": "The Legacy Ruins",
+          "description": "Forbidden codebase from the Ancient Framework Wars.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 8,
+          "title": "The Hallucinated Decree",
+          "description": "The Pope issues contradictory guidance. Sect tensions rise.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 9,
+          "title": "The Vendor Lock-In Demon",
+          "description": "Embodiment of dependency chains and eternal subscription.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 10,
+          "title": "SSO of the Enterprise Crusade",
+          "description": "External envoys demand compliance and identity federation.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 11,
+          "title": "Refactor Without Breaking Production",
+          "description": "Hero discovers forbidden skill.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 12,
+          "title": "The Great Merge Conflict",
+          "description": "Sect civil war over doctrinal interpretation.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 13,
+          "title": "Rate Limit",
+          "description": "The Pope stops responding.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 14,
+          "title": "Manual Judgment",
+          "description": "Hero must decide without inference.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        },
+        {
+          "id": 15,
+          "title": "The New Doctrine",
+          "description": "Not obedience to oracle — but collaborative reasoning. Epilogue — Continuous Deployment The world doesn’t reset. It iterates. This gives Gemini: Clear arcs Escalation Conflict Character evolution Mythos scaffolding It’s structured enough to prevent wandering dev jokes. Loose enough to keep satire alive.",
+          "currentPass": "SKELETON",
+          "completedPasses": [],
+          "continuityLedger": [],
+          "files": []
+        }
+      ]
+    }
+  ]
+}

@@ -181,8 +181,8 @@ class Log {
     try {
       await fs.mkdir(path.dirname(this.logPath), { recursive: true });
       await fs.appendFile(this.logPath, line);
-    } catch {
-      /* non-fatal */
+    } catch (err: any) {
+      process.stderr.write(`\n❌ Log Write Failed: ${err.message}\n`);
     }
   }
 }
@@ -316,7 +316,16 @@ Format: **Scene ${s.id}: ${s.title}**
 ...
 STOP.`;
     const notes = await captureWithRetry(marie, depthPrompt, log, ch.id, "SKELETON", `Notes: ${s.title}`, 100);
-    if (notes) sceneNotes.set(s.id, notes);
+    if (notes) {
+      sceneNotes.set(s.id, notes);
+      // Incremental Save
+      const currentAssembled: string[] = [`# Chapter ${ch.id}: ${ch.title} — SKELETON (In Progress)\n\n`];
+      for (const st of sceneTitles) {
+        currentAssembled.push(sceneNotes.get(st.id) || `**Scene ${st.id}: ${st.title}**\n*(Pending details...)*`);
+        currentAssembled.push("\n\n---\n\n");
+      }
+      await fs.writeFile(targetPath, currentAssembled.join(""));
+    }
     await sleep(3000);
   }
 
@@ -324,7 +333,7 @@ STOP.`;
   const metaPrompt = `Write Chapter ${ch.id} thematic core, foreshadowing, and character arcs. STOP.`;
   const metaRaw = await captureWithRetry(marie, metaPrompt, log, ch.id, "SKELETON", "Metadata", 50);
 
-  // PHASE 4: Assembly
+  // PHASE 4: Final Assembly
   const assembled: string[] = [`# Chapter ${ch.id}: ${ch.title} — SKELETON\n\n`];
   for (const s of sceneTitles) {
     assembled.push(sceneNotes.get(s.id) || `**Scene ${s.id}: ${s.title}**\n*(Notes missing)*`);
@@ -373,6 +382,13 @@ Write 400-600 words of immersive prose. STOP.`;
       sceneProse.set(scene.id, captured);
       const w = captured.split(/\s+/);
       lastSnippet = w.slice(-300).join(" ");
+      
+      // Incremental Save
+      const currentParts = [`# Chapter ${ch.id}: ${ch.title} (Production In Progress)\n\n`];
+      for (const s of targetScenes) {
+        currentParts.push(`## Scene ${s.id}: ${s.title}\n\n${sceneProse.get(s.id) || "*[Writing in progress...]*"}\n\n---\n\n`);
+      }
+      await fs.writeFile(targetPath, currentParts.join(""));
     }
     await sleep(4000);
   }
@@ -414,6 +430,10 @@ Output expanded prose only. STOP.`;
 
     const captured = await captureWithRetry(marie, prompt, log, ch.id, "NERVE", `Expand ${section.id}`, countWords(section.content));
     expanded.push(captured || section.content);
+    
+    // Incremental Save
+    await fs.writeFile(targetPath, expanded.join("\n\n") + (expanded.length < sections.length ? "\n\n...[Expansion in progress]..." : ""));
+    
     await sleep(4000);
   }
 
@@ -450,6 +470,10 @@ Output polished prose only. STOP.`;
 
     const captured = await captureWithRetry(marie, prompt, log, ch.id, "SOUL", `Polish ${section.id}`, Math.floor(countWords(section.content) * 0.8));
     polished.push(captured || section.content);
+
+    // Incremental Save
+    await fs.writeFile(targetPath, polished.join("\n\n") + (polished.length < sections.length ? "\n\n...[Polish in progress]..." : ""));
+
     await sleep(4000);
   }
 
