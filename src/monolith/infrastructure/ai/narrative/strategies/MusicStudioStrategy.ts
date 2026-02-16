@@ -12,11 +12,7 @@ export type MusicStudioPhase =
     | "HOOK_ISOLATION"
     | "BEAT_SHEET"
     | "RECORDING"
-    | "RE_AMPING"
-    | "POLARIZATION"
-    | "LOCALIZATION"
-    | "DEEP_REFINEMENT"
-    | "DOPAMINE_ENGINEERING"
+    | "PARALLEL_REFINEMENT"
     | "MIX_AND_MASTER"
     | "VIRAL_PROMO"
     | "CANON";
@@ -26,17 +22,13 @@ export const MUSIC_STUDIO_ORDER: MusicStudioPhase[] = [
     "HOOK_ISOLATION",
     "BEAT_SHEET",
     "RECORDING",
-    "RE_AMPING",
-    "POLARIZATION",
-    "LOCALIZATION",
-    "DEEP_REFINEMENT",
-    "DOPAMINE_ENGINEERING",
+    "PARALLEL_REFINEMENT",
     "MIX_AND_MASTER",
     "VIRAL_PROMO",
     "CANON",
 ];
 
-export const MUSIC_STUDIO_PERSONA: Record<MusicStudioPhase, string> = {
+export const MUSIC_STUDIO_PERSONA: Record<string, string> = {
     BRIEF:
         "MODE: STUDIO BRIEF. You are the Global A&R Executive. Identify the 'Hit Factor' with ruthless precision. Define the 'Billboard Trajectory' for absolute chart dominance.",
     HOOK_ISOLATION:
@@ -45,18 +37,10 @@ export const MUSIC_STUDIO_PERSONA: Record<MusicStudioPhase, string> = {
         "MODE: BEAT ARCHITECT. Structure the track based on the selected Hook. Define the 'Billboard Formula' structure for maximum retention.",
     RECORDING:
         "MODE: LYRICAL GENIUS. Write the full bodies. Focus on punchlines, flow, and iconic vocal performance. Every line must be a caption.",
-    RE_AMPING:
-        "MODE: GHOST PRODUCER. Add layers. Motif reinforcement. Subtext injection. Sonic cohesion. Make it sound expensive.",
-    POLARIZATION:
-        "MODE: CULTURAL ALCHEMIST. Inject the 'Edge'. Force polarization. Create conversation starters that break the internet.",
-    LOCALIZATION:
-        "MODE: GLOBAL LOCALIZER. Adapt for international appeal. Universal theme calibration for global charts.",
-    DEEP_REFINEMENT:
-        "MODE: CHART SURGEON. Deep refinement pass. Scrutinize every syllable for rhythm and impact. Optimize for maximum replay value and emotional addiction.",
-    DOPAMINE_ENGINEERING:
-        "MODE: DOPAMINE ENGINEER. Scientifically optimize the track for neurochemical reward. Verify 'Time-to-Dopamine' is under 7 seconds. Maximize gratification.",
+    PARALLEL_REFINEMENT:
+        "MODE: MULTI-STEM COORDINATOR. Orchestrating simultaneous refinements: Re-Amping, Polarization, Localization, and Deep Refinement.",
     MIX_AND_MASTER:
-        "MODE: RADIO FORMATTER. Ruthless pacing audit. Viral snippet identification. Final Billboard shine. Perfection is the minimum.",
+        "MODE: EXECUTIVE PRODUCER. Imperial Synthesis. Merging all refined stems into the final Billboard #1 Master.",
     VIRAL_PROMO:
         "MODE: VIRAL FORECASTER. Social asset generation. Algorithm-ready audit. Distribution scripts for total saturation.",
     CANON:
@@ -155,12 +139,12 @@ ${MUSIC_STUDIO_PERSONA.CANON}
         }
 
         const worldContext = this.worldService.getWorldContext();
-        const persona = MUSIC_STUDIO_PERSONA[phase];
+        const persona = MUSIC_STUDIO_PERSONA[phase] || MUSIC_STUDIO_PERSONA["RECORDING"];
 
         return `
 [MUSIC STUDIO TRACK STATUS]
 ${volumeContext}
-Active Track: "${chapter.title}" — Pass ${MUSIC_STUDIO_ORDER.indexOf(phase) + 1}/10
+Active Track: "${chapter.title}" — Pass ${MUSIC_STUDIO_ORDER.indexOf(phase) + 1}/${MUSIC_STUDIO_ORDER.length}
 Current Pass: ${phase}
 Completed Passes: ${chapter.completedPasses.join(" → ") || "None"}
 

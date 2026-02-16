@@ -3,6 +3,33 @@ import * as path from "node:path";
 import { MarieCLI } from "../../../adapters/CliMarieAdapter.js";
 import { Log } from "./ProductionLogger.js";
 
+/**
+ * Concurrency Controller (Semaphore)
+ * Limits the number of simultaneous active tasks to prevent system overload.
+ */
+export class Semaphore {
+    private queue: (() => void)[] = [];
+    private activeCount = 0;
+
+    constructor(private maxConcurrency: number) { }
+
+    async run<T>(task: () => Promise<T>): Promise<T> {
+        if (this.activeCount >= this.maxConcurrency) {
+            await new Promise<void>(resolve => this.queue.push(resolve));
+        }
+        this.activeCount++;
+        try {
+            return await task();
+        } finally {
+            this.activeCount--;
+            if (this.queue.length > 0) {
+                const next = this.queue.shift();
+                if (next) next();
+            }
+        }
+    }
+}
+
 export function countWords(text: string): number {
     return text.split(/\s+/).filter((w) => w.length > 0).length;
 }
@@ -31,8 +58,6 @@ export function cleanStreamOutput(raw: string): string {
 /** Robustly extract JSON block from text even if it has preamble. 
  * Supports basic recovery for truncated JSON. */
 export function extractJSON(text: string): any {
-    process.stdout.write(`   [DEBUG] extractJSON start char: '${text.substring(0, 10)}...' end: '...${text.substring(text.length - 10)}'\n`);
-
     // 1. Strip Markdown code fences if present
     let cleaned = text.trim();
     if (cleaned.includes("```json")) {
@@ -56,7 +81,6 @@ export function extractJSON(text: string): any {
     try {
         return JSON.parse(jsonBody);
     } catch (err: any) {
-        process.stdout.write(`   [DEBUG] JSON.parse primary fail: ${err.message}\n`);
         // Second attempt: brutal extraction
         try {
             const possible = jsonBody + "}";
@@ -104,9 +128,7 @@ export async function captureAgentOutput(
 
     await marie.handleMessage(prompt, {
         onStream: async (chunk) => {
-            if (chunks.length === 0) process.stdout.write(`   [DEBUG] First chunk received (len: ${chunk.length})\n`);
             chunks.push(chunk);
-            process.stdout.write(chunk);
             if (streamToFile) {
                 await fs.appendFile(streamToFile, chunk);
             }
@@ -146,44 +168,28 @@ export async function captureWithRetry(
             const existing = await readSafe(streamFile);
             if (existing.length > 200 && countWords(existing) < minWords) {
                 await log.write(ch, pass, `${label}: ⚡ RESUMING truncated stream (${countWords(existing)}w / target ${minWords}w)...`);
-                finalPrompt = `You were generating content for: ${label}.
-The stream was interrupted. 
-HERE IS THE CONTENT GENERATED SO FAR:
+                finalPrompt = `The stream was interrupted. CONTINUE EXACTLY FROM LAST WORD:
 ---
 ${existing}
 ---
-PLEASE CONTINUE EXACTLY FROM THE LAST WORD. 
-Do NOT repeat the start. Do NOT preamble.
-Just deliver the rest of the text until complete.`;
+Deliver rest of text. NO PREAMBLE.`;
                 resumption = true;
             }
         }
 
-        process.stdout.write(`   [DEBUG] Attempt ${attempt}: Resumption=${resumption}, Stream=${streamFile || "None"}\n`);
-
         let captured = "";
         try {
             captured = await captureAgentOutput(marie, finalPrompt, streamFile, resumption);
-            process.stdout.write(`   [DEBUG] Captured response length: ${captured.length}\n`);
         } catch (err: any) {
             await log.write(ch, pass, `${label}: agent error (${err.message})`);
         }
 
-        // If we resumed, the "captured" is just the new part. We need the full thing for word count and return.
-        let fullText = captured;
-        if (resumption && streamFile) {
-            fullText = await readSafe(streamFile);
-        }
+        let fullText = (resumption && streamFile) ? await readSafe(streamFile) : captured;
 
         // Heuristic: If we expect JSON, don't count words the same way
         if (label.includes("JSON") || label.includes("Blueprint")) {
             const parsed = extractJSON(fullText);
-            if (parsed) {
-                process.stdout.write(`   [DEBUG] JSON Extraction Success.\n`);
-                return fullText;
-            } else {
-                process.stdout.write(`   [DEBUG] JSON Extraction FAILED for text (len ${fullText.length}).\n`);
-            }
+            if (parsed) return fullText;
         }
 
         const words = countWords(fullText);
@@ -194,7 +200,7 @@ Just deliver the rest of the text until complete.`;
 
         if (attempt < maxRetries) {
             await log.write(ch, pass, `${label}: too short (${words}w). Retry ${attempt + 1}...`);
-            await sleep(3000);
+            await sleep(500); // ⚡ Tightened from 3000ms
         }
     }
 
@@ -204,30 +210,14 @@ Just deliver the rest of the text until complete.`;
 
 export function extractKeywords(text: string, max: number = 5): string[] {
     if (!text) return [];
-
-    // Simple heuristic: Look for capitalized words that aren't at the start of sentences? 
-    // Or just all Nouns? 
-    // Let's go with: Proper Nouns (Capitalized words in middle of sentences) + Frequent large words.
-
-    // Remove common stop words
     const stopWords = new Set(["The", "A", "An", "Is", "Are", "Was", "Were", "In", "On", "At", "To", "For", "Of", "With", "By", "And", "But", "Or", "So", "If", "When", "Then", "It", "He", "She", "They", "We", "You", "I", "My", "His", "Her", "Their", "Our", "Your", "This", "That", "These", "Those", "What", "Who", "Where", "Why", "How"]);
-
     const words = text.replace(/[^\w\s]/g, "").split(/\s+/);
     const candidates = new Map<string, number>();
-
     for (const w of words) {
         if (w.length < 3) continue;
-        // Check if capitalized
         if (w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) {
-            if (!stopWords.has(w)) {
-                candidates.set(w, (candidates.get(w) || 0) + 1);
-            }
+            if (!stopWords.has(w)) candidates.set(w, (candidates.get(w) || 0) + 1);
         }
     }
-
-    // Sort by frequency
-    return Array.from(candidates.entries())
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, max)
-        .map(e => e[0]);
+    return Array.from(candidates.entries()).sort((a, b) => b[1] - a[1]).slice(0, max).map(e => e[0]);
 }

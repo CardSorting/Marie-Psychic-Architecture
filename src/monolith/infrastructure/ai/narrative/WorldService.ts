@@ -31,15 +31,22 @@ export class WorldService {
 
     // ─── LIFECYCLE ─────────────────────────────────────────────────────────
 
+    private lastLoaded: number = 0;
+
     public async initialize() {
+        const filePath = path.join(this.rootPath, WorldService.WORLD_FILE);
         try {
-            const data = await fs.readFile(
-                path.join(this.rootPath, WorldService.WORLD_FILE),
-                "utf-8",
-            );
+            const stats = await fs.stat(filePath);
+            if (stats.mtimeMs <= this.lastLoaded) return; // Cache hit
+
+            const data = await fs.readFile(filePath, "utf-8");
             this.bible = JSON.parse(data);
+            this.lastLoaded = stats.mtimeMs;
         } catch (e) {
-            await this.save();
+            // File might not exist or be corrupt
+            if (this.lastLoaded === 0) { // Only fallback on first load
+                await this.save();
+            }
         }
     }
 
@@ -49,6 +56,9 @@ export class WorldService {
             path.join(this.rootPath, WorldService.WORLD_FILE),
             JSON.stringify(this.bible, null, 2),
         );
+        // Update timestamp to avoid self-reload
+        const stats = await fs.stat(path.join(this.rootPath, WorldService.WORLD_FILE));
+        this.lastLoaded = stats.mtimeMs;
     }
 
     public getBible(): WorldBible {

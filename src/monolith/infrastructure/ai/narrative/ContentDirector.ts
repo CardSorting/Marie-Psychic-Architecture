@@ -9,7 +9,7 @@ import { PassExecutor } from "./PassExecutor.js"; // Legacy for Novels
 import { ContentPassExecutor } from "./ContentPassExecutor.js"; // New for Content
 import { DraftingService } from "./DraftingService.js";
 import { RevisionService } from "./RevisionService.js";
-import { sleep } from "./ProductionUtils.js";
+import { sleep, Semaphore } from "./ProductionUtils.js";
 import { SimpleContentStrategy, ContentPhase } from "./strategies/SimpleContentStrategy.js";
 import { MusicStudioProductionStrategy } from "./strategies/MusicStudioStrategy.js";
 
@@ -28,6 +28,9 @@ export class ContentDirector {
     private marie: MarieCLI;
 
     private rejectionFeedback: any = null;
+    
+    // 🚦 Concurrency Control: Limit to 10 simultaneous active chapters
+    private semaphore = new Semaphore(10);
 
     constructor(workingDir: string) {
         this.workingDir = workingDir;
@@ -64,12 +67,8 @@ export class ContentDirector {
         );
     }
 
-    public async registerStrategies() {
-        // ...
-    }
-
     public async run(mode: ContentMode = "NOVEL") {
-        process.stdout.write(`🔮 Content Director v1 — Mode: ${mode}\n\n`);
+        process.stdout.write(`🔮 Hyper-Parallel Content Director — Mode: ${mode}\n\n`);
 
         // Singleton Lock
         const lockFile = path.join(this.workingDir, ".marie", "singleton.lock");
@@ -79,9 +78,7 @@ export class ContentDirector {
             await handle.write(process.pid.toString());
             await handle.close();
             const cleanup = async () => { try { await fs.unlink(lockFile); } catch { } process.exit(); };
-            process.on("SIGINT", cleanup);
-            process.on("SIGTERM", cleanup);
-            process.on("exit", cleanup);
+            process.on("SIGINT", cleanup); process.on("SIGTERM", cleanup); process.on("exit", cleanup);
         } catch (e) {
             console.error("Pipeline already running.");
             return;
@@ -91,58 +88,64 @@ export class ContentDirector {
 
         while (true) {
             try {
-                // 1. Acquire Target
-                const active = this.findActiveChapter(mode);
+                // 1. Acquire ALL Active Targets across ALL Volumes
+                const activeItems = this.findAllActiveChapters(mode);
 
-                if (!active) {
-                    process.stdout.write(`✅ No active ${mode} content found. Finished.\n`);
+                if (activeItems.length === 0) {
+                    process.stdout.write(`✅ No active ${mode} content found. Task complete.\n`);
                     break;
                 }
 
-                const { ch, volId } = active;
+                process.stdout.write(`🚀 Burst Mode: Orchestrating ${activeItems.length} items (Concurrency Cap: 10)...\n`);
 
-                // 2. Execute
-                if (mode === "NOVEL") {
-                    await this.runNovelPass(ch, volId);
-                } else {
-                    await this.runContentPass(ch, volId);
-                }
+                // 2. Execute Batch through Semaphore
+                await Promise.all(activeItems.map((item) => 
+                    this.semaphore.run(async () => {
+                        const { ch, volId } = item;
+                        try {
+                            if (mode === "NOVEL") {
+                                await this.runNovelPass(ch, volId);
+                            } else {
+                                await this.runContentPass(ch, volId);
+                            }
+                        } catch (err: any) {
+                            process.stderr.write(`   [FAIL] ${ch.title}: ${err.message}\n`);
+                        }
+                    })
+                ));
 
-                await sleep(2000);
+                // ⚡ Yield to event loop
+                await sleep(100); 
+                await this.productionSvc.initialize(); 
             } catch (e: any) {
-                console.error(`Error: ${e.message}`);
-                await sleep(5000);
+                console.error(`Loop Error: ${e.message}`);
+                await sleep(2000); 
             }
         }
     }
 
-    private findActiveChapter(mode: ContentMode): { ch: NovelChapter, volId: number } | null {
+    private findAllActiveChapters(mode: ContentMode): { ch: NovelChapter, volId: number }[] {
         // @ts-ignore - Accessing private structure
         const structure = this.productionSvc.structure;
-        // Search through all volumes
+        const active: { ch: NovelChapter, volId: number }[] = [];
+        
         for (const vol of structure.volumes) {
-            const ch = vol.chapters.find((c: any) => {
+            if (vol.status !== "DRAFT") continue;
+            
+            const chapters = vol.chapters.filter((c: any) => {
                 const chMode = c.mode || vol.mode || "NOVEL";
-                const isFinal = c.currentPass === "FINAL" || c.currentPass === "CANON";
-                if (isFinal) return false;
+                if (c.currentPass === "FINAL" || c.currentPass === "CANON") return false;
                 if (chMode !== mode) return false;
-
-                // Scheduling Logic
-                if (c.scheduledDate) {
-                    const scheduled = new Date(c.scheduledDate);
-                    const now = new Date();
-                    if (scheduled > now) return false; // Fail fast if in the future
-                }
-
+                if (c.scheduledDate && new Date(c.scheduledDate) > new Date()) return false;
                 return true;
             });
-            if (ch) return { ch, volId: vol.id };
+            for (const ch of chapters) active.push({ ch, volId: vol.id });
         }
-        return null;
+        return active;
     }
 
     private async runContentPass(ch: NovelChapter, volId: number) {
-        process.stdout.write(`\n📖 ${ch.mode}: "${ch.title}" | PASS: ${ch.currentPass}\n`);
+        process.stdout.write(`   ⚡ Active Task: ${ch.mode} | "${ch.title}" | PASS: ${ch.currentPass}\n`);
 
         const result = await this.contentExecutor.execute(
             ch.currentPass as ContentPhase,
@@ -153,29 +156,16 @@ export class ContentDirector {
         );
 
         if (result.success && result.nextPass) {
-            process.stdout.write(`   ✅ Complete. Next: ${result.nextPass}\n`);
+            process.stdout.write(`   ✅ Complete: "${ch.title}" -> Next: ${result.nextPass}\n`);
             this.rejectionFeedback = null;
-            await this.productionSvc.advancePass(
-                ch,
-                `Completed ${ch.currentPass}`,
-                false,
-                result.nextPass
-            );
+            await this.productionSvc.advancePass(ch, `Hyper-Parallel: Completed ${ch.currentPass}`, false, result.nextPass);
         } else if (!result.success) {
-            process.stdout.write(`   ❌ Pass Failed. Retrying...\n`);
+            process.stdout.write(`   ❌ Failed: "${ch.title}" (Pass: ${ch.currentPass})\n`);
             this.rejectionFeedback = result.feedback;
         }
     }
 
     private async runNovelPass(ch: NovelChapter, volId: number) {
-        const result = await this.novelExecutor.execute(
-            ch.currentPass,
-            volId,
-            ch,
-            "Summary...",
-            this.rejectionFeedback
-        );
-        // ... handle result ...
-        // Keeping it simple since NovelDirector typically handles this
+        const result = await this.novelExecutor.execute(ch.currentPass, volId, ch, "Batch summary", this.rejectionFeedback);
     }
 }

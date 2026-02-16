@@ -6,6 +6,10 @@ import { countWords } from "./ProductionUtils.js";
 export class NarrativeFileSystem {
     private readonly novelDir = "novel";
     private readonly backupDir = ".vault/backups";
+    
+    // Cache State
+    private structureCache: { volumes: NovelVolume[] } | null = null;
+    private isDirty: boolean = true;
 
     constructor(private rootPath: string) { }
 
@@ -25,7 +29,11 @@ export class NarrativeFileSystem {
     /**
      * Scans the filesystem to reconstruct the Novel Structure
      */
-    async loadStructure(): Promise<{ volumes: NovelVolume[] }> {
+    async loadStructure(forceRefresh: boolean = false): Promise<{ volumes: NovelVolume[] }> {
+        if (!forceRefresh && !this.isDirty && this.structureCache) {
+            return this.structureCache;
+        }
+
         const volumes: NovelVolume[] = [];
 
         try {
@@ -137,7 +145,9 @@ export class NarrativeFileSystem {
             console.error("[NarrativeFS] Error scanning structure:", e);
         }
 
-        return { volumes };
+        this.structureCache = { volumes };
+        this.isDirty = false;
+        return this.structureCache;
     }
 
     /**
@@ -177,6 +187,26 @@ export class NarrativeFileSystem {
         // 4. Save Metadata
         const metaPath = path.join(chapPath, "chapter.json");
         await fs.writeFile(metaPath, JSON.stringify(chapter, null, 2));
+
+        // 5. Update Cache (Write-Through)
+        if (this.structureCache) {
+            let vol = this.structureCache.volumes.find(v => v.id === volumeId);
+            if (!vol) {
+                // If volume not in cache but we are saving to it, maybe cache is stale or incomplete.
+                // For safety, assume cache is valid and we just add the volume? 
+                // Or better, just dirty the cache if volume missing to force reload.
+                this.isDirty = true;
+            } else {
+                const idx = vol.chapters.findIndex(c => c.id === chapter.id);
+                if (idx >= 0) {
+                    vol.chapters[idx] = chapter;
+                } else {
+                    vol.chapters.push(chapter);
+                    vol.chapters.sort((a, b) => a.id - b.id);
+                }
+                // Cache remains clean
+            }
+        }
     }
 
     /**
@@ -231,6 +261,8 @@ export class NarrativeFileSystem {
     }
 
     async saveVolume(volume: NovelVolume): Promise<void> {
+        this.isDirty = true; // Invalidate cache on write
+
         // Find volume dir
         let volDirName = await this.findDirectoryById(this.novelPath, volume.id);
         if (!volDirName) {

@@ -1,23 +1,26 @@
-import * as fsSync from "node:fs";
+import * as fs from "node:fs";
 import * as path from "node:path";
 
 export class Log {
-    private logFd: number | null = null;
+    private stream: fs.WriteStream | null = null;
     private logPath: string;
 
     constructor(workingDir: string) {
         this.logPath = path.join(workingDir, ".vault", "novel", "production.log");
-        this.ensureLogOpen();
+        this.ensureStreamOpen();
     }
 
-    private ensureLogOpen() {
-        if (this.logFd !== null) return;
+    private ensureStreamOpen() {
+        if (this.stream) return;
         try {
             const dir = path.dirname(this.logPath);
-            if (!fsSync.existsSync(dir)) {
-                fsSync.mkdirSync(dir, { recursive: true });
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
             }
-            this.logFd = fsSync.openSync(this.logPath, "a");
+            this.stream = fs.createWriteStream(this.logPath, { flags: "a" });
+            this.stream.on("error", (err) => {
+                process.stderr.write(`\n❌ LOG STREAM ERROR: ${err.message}\n`);
+            });
         } catch (err: any) {
             process.stderr.write(`\n❌ CRITICAL: Failed to open log file: ${err.message}\n`);
         }
@@ -27,26 +30,20 @@ export class Log {
         const ts = new Date().toISOString().substring(11, 19);
         const wc = words !== undefined ? ` [${words}w]` : "";
         const line = `[${ts}] Ch${ch}/${pass}: ${msg}${wc}\n`;
-        process.stdout.write(`📝 ${line}`);
+        
+        // Non-blocking stdout
+        process.stdout.write(`📝 ${line}`, () => {}); 
 
-        this.ensureLogOpen();
-        if (this.logFd !== null) {
-            try {
-                fsSync.writeSync(this.logFd, line);
-                fsSync.fsyncSync(this.logFd);
-            } catch (err: any) {
-                process.stderr.write(`\n❌ Log Write Failed: ${err.message}\n`);
-                this.logFd = null;
-            }
+        this.ensureStreamOpen();
+        if (this.stream) {
+            this.stream.write(line);
         }
     }
 
     close() {
-        if (this.logFd !== null) {
-            try {
-                fsSync.closeSync(this.logFd);
-                this.logFd = null;
-            } catch { }
+        if (this.stream) {
+            this.stream.end();
+            this.stream = null;
         }
     }
 }

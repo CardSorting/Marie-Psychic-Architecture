@@ -7,6 +7,7 @@ import * as fs from "fs/promises";
 import { readSafe } from "./ProductionUtils.js";
 import { DraftingService } from "./DraftingService.js";
 import { RevisionService } from "./RevisionService.js";
+import { MarieCLI } from "../../../adapters/CliMarieAdapter.js";
 
 export class ContentPassExecutor {
     constructor(
@@ -97,9 +98,42 @@ export class ContentPassExecutor {
                     await this.fileSystem.writeContent(targetPath, draft);
                     success = true;
                     // @ts-ignore
-                    nextPass = ch.mode === "MUSIC_STUDIO" ? "RE_AMPING" : "REVIEW";
+                    nextPass = ch.mode === "MUSIC_STUDIO" ? "PARALLEL_REFINEMENT" : "REVIEW";
                 }
                 break;
+
+            case "PARALLEL_REFINEMENT": {
+                process.stdout.write(`   ⚡ Hyper-Parallel Refinement: Fanning out 5 stems...\n`);
+                const baseDraft = await readSafe(targetPath);
+                
+                const tasks = [
+                    { id: "RE_AMPING", run: (m: MarieCLI) => this.revisionService.applyRecursiveReAmping(ch, baseDraft, m) },
+                    { id: "POLARIZATION", run: (m: MarieCLI) => this.revisionService.applyPolarizationPass(ch, baseDraft, m) },
+                    { id: "LOCALIZATION", run: (m: MarieCLI) => this.revisionService.applyGlobalLocalization(ch, baseDraft, m) },
+                    { id: "DEEP_REFINEMENT", run: (m: MarieCLI) => this.revisionService.applyDeepRefinement(ch, baseDraft, m) },
+                    { id: "DOPAMINE", run: (m: MarieCLI) => this.revisionService.applyDopamineEngineering(ch, baseDraft, m) }
+                ];
+
+                // ⚡ allSettled prevents one bad stem from killing the whole track
+                const settledResults = await Promise.allSettled(tasks.map(async (task) => {
+                    const isolationMarie = new MarieCLI(this.workingDir);
+                    try {
+                        const res = await task.run(isolationMarie);
+                        return { id: task.id, content: res };
+                    } finally {
+                        isolationMarie.dispose();
+                    }
+                }));
+
+                const results = settledResults.map(r => r.status === 'fulfilled' ? r.value : null).filter(Boolean);
+                const stemsPath = path.join(targetDir, `stems.json`);
+                await fs.writeFile(stemsPath, JSON.stringify(results, null, 2));
+                
+                success = true;
+                // @ts-ignore
+                nextPass = "MIX_AND_MASTER";
+                break;
+            }
 
             case "RE_AMPING": {
                 const draftRef = await readSafe(targetPath);
@@ -163,30 +197,49 @@ export class ContentPassExecutor {
 
             case "MIX_AND_MASTER":
             case "HARDENING": {
-                const draftHard = await readSafe(targetPath);
-                const hardenedResult = await this.revisionService.applyStudioMastering(ch, draftHard);
-                if (hardenedResult) {
-                    await this.fileSystem.writeContent(targetPath, hardenedResult);
-                    success = true;
-                    // @ts-ignore
-                    nextPass = "VIRAL_PROMO";
+                if (ch.mode === "MUSIC_STUDIO") {
+                    process.stdout.write(`   🧬 Imperial Synthesis (Mixing Stems)...\n`);
+                    const stemsPath = path.join(targetDir, `stems.json`);
+                    const stemsRaw = await readSafe(stemsPath);
+                    const stems = stemsRaw ? JSON.parse(stemsRaw) : [];
+
+                    const synthesisPrompt = `IMPERIAL SYNTHESIS MODE.
+Merge these Stems into one MASTER Billboard #1 version. 
+${stems.map((r: any) => `--- STEM: ${r.id} ---\n${r.content || "FAILED"}\n`).join("\n")}
+OUTPUT: Final synthesized master. Markdown ONLY.`;
+
+                    const synthMarie = new MarieCLI(this.workingDir);
+                    const synthesizedMaster = await this.revisionService.applyStudioMastering(ch, synthesisPrompt, synthMarie);
+                    synthMarie.dispose();
+
+                    if (synthesizedMaster) {
+                        await this.fileSystem.writeContent(targetPath, synthesizedMaster);
+                        success = true;
+                        // @ts-ignore
+                        nextPass = "VIRAL_PROMO";
+                    }
+                } else {
+                    const draftHard = await readSafe(targetPath);
+                    const hardenedResult = await this.revisionService.applyStudioMastering(ch, draftHard);
+                    if (hardenedResult) {
+                        await this.fileSystem.writeContent(targetPath, hardenedResult);
+                        success = true;
+                        // @ts-ignore
+                        nextPass = "VIRAL_PROMO";
+                    }
                 }
                 break;
             }
 
             case "VIRAL_PROMO": {
                 const finalTrackContent = await readSafe(targetPath);
-
-                // 1. Audit/Forecast the track (Final Distillation)
                 const forecastedResult = await this.revisionService.applyViralForecasting(ch, finalTrackContent);
                 if (forecastedResult) {
                     const auditPath = path.join(targetDir, `audit.md`);
                     await this.fileSystem.writeContent(auditPath, forecastedResult);
-                    // The Distillation overwrites the Cathedral with the Performance.
                     await this.fileSystem.writeContent(targetPath, forecastedResult);
                 }
 
-                // 2. Generate Social Assets
                 const updatedTrackContent = await readSafe(targetPath);
                 const socialAssets = await this.draftingService.generateViralPromos(ch, updatedTrackContent);
                 if (socialAssets) {

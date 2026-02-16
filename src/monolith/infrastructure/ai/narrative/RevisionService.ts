@@ -11,8 +11,8 @@ export class RevisionService {
         private editorialService: EditorialService
     ) { }
 
-    public async reviewDraft(ch: NovelChapter, draft: string): Promise<EditorialDecision> {
-        process.stdout.write(`   ⚔️  Entering Editorial Gauntlet...\n`);
+    public async reviewDraft(ch: NovelChapter, draft: string, marieOverride?: MarieCLI): Promise<EditorialDecision> {
+        process.stdout.write(`   ⚔️  Entering Editorial Gauntlet (Parallel Mode)...\n`);
 
         // Select Editors based on Mode
         let editors = ["CHIEF_EDITOR", "PROSE"];
@@ -21,17 +21,21 @@ export class RevisionService {
         else if (ch.mode === "SHORT_STORY") editors = ["DIRECTOR", "SENSORY_EDITOR", "VOICE_COACH"];
         else if (ch.mode === "MUSIC_STUDIO") editors = ["STUDIO_HEAD", "BEAT_ARCHITECT", "CHART_ANALYST", "LYRICAL_GENIUS", "MIX_ENGINEER", "CHART_SURGEON", "DOPAMINE_ENGINEER"];
 
-        const critiques: CritiqueResult[] = [];
+        // ⚡ Parallel Critiquing
+        const critiquePromises = editors.map(async (role) => {
+            const isolationMarie = new MarieCLI(process.cwd());
+            try {
+                // @ts-ignore
+                const prompt = this.editorialService.getPrompt(role, draft, "No extra context");
+                const res = await captureAgentOutput(isolationMarie, prompt);
+                // @ts-ignore
+                return this.editorialService.parseCritique(role, res);
+            } finally {
+                isolationMarie.dispose();
+            }
+        });
 
-        for (const role of editors) {
-            // @ts-ignore - Dynamic role mapping
-            const prompt = this.editorialService.getPrompt(role, draft, "No extra context");
-            // @ts-ignore
-            const res = await captureAgentOutput(this.marie, prompt);
-            // @ts-ignore
-            critiques.push(this.editorialService.parseCritique(role, res));
-        }
-
+        const critiques = await Promise.all(critiquePromises);
         const decision = this.editorialService.makeDecision(critiques);
         await this.log.write(ch.id, "REVIEW", `Decision: ${decision.outcome} (Avg: ${decision.averageScore})`);
         return decision;

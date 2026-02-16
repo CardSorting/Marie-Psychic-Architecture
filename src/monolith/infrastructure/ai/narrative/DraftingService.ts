@@ -6,12 +6,13 @@ import { WorldService } from "./WorldService.js";
 
 export class DraftingService {
     constructor(
-        private marie: MarieCLI,
+        private defaultMarie: MarieCLI,
         private log: Log,
         private worldService: WorldService
     ) { }
 
-    public async generateConcept(ch: NovelChapter, feedback?: any): Promise<string | null> {
+    public async generateConcept(ch: NovelChapter, feedback?: any, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   💡 Generating Concept for ${ch.mode}: "${ch.title}"...\n`);
 
         const prompt = `Architect Mode. Create a High-Level Concept for a ${ch.mode}.
@@ -31,10 +32,11 @@ OUTPUT FORMAT (Markdown):
 ## Tone & Style
 (e.g. "Urgent", "Whimsical", "Academic")
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "CONCEPT", "Concept Doc", 100);
+        return await captureWithRetry(marie, prompt, this.log, ch.id, "CONCEPT", "Concept Doc", 100);
     }
 
-    public async generateOutline(ch: NovelChapter, concept: string): Promise<string | null> {
+    public async generateOutline(ch: NovelChapter, concept: string, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   📝 Generating Outline...\n`);
 
         let requirements = `
@@ -56,10 +58,11 @@ ${concept}
 REQUIREMENTS:
 ${requirements}
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "OUTLINE", "Outline", 200);
+        return await captureWithRetry(marie, prompt, this.log, ch.id, "OUTLINE", "Outline", 200);
     }
 
-    public async generateDraft(ch: NovelChapter, outline: string): Promise<string | null> {
+    public async generateDraft(ch: NovelChapter, outline: string, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   ✍️  Drafting Content (Quantum Mode)...\n`);
 
         // 🔮 Context Injection
@@ -113,7 +116,7 @@ ${worldContext}
 STYLE VARIANT: ${v.type}
 FOCUS: ${v.focus}
 ${ch.mode === "MUSIC_STUDIO" ? "Ensure all song sections (Intro, Verse, Chorus, etc.) are clearly labeled. Include performance cues [in brackets] if necessary." : "Keep it under 2000 words. Start with the Title."}`;
-            return captureWithRetry(this.marie, p, this.log, ch.id, "DRAFT", `Variant ${v.type}`, 400);
+            return captureWithRetry(marie, p, this.log, ch.id, "DRAFT", `Variant ${v.type}`, 400);
         });
 
         const results = await Promise.all(promises);
@@ -126,7 +129,7 @@ ${ch.mode === "MUSIC_STUDIO" ? "Ensure all song sections (Intro, Verse, Chorus, 
 ${validResults.map((r, i) => `VARIANT ${i}:\n${r.slice(0, 500)}...\n`).join("\n")}
 TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just the number.`;
 
-        const choice = await captureAgentOutput(this.marie, selectionPrompt);
+        const choice = await captureAgentOutput(marie, selectionPrompt);
         const winnerIndex = parseInt(choice.match(/\d/)?.[0] || "0");
 
         process.stdout.write(`   🏆 Selected Variant ${winnerIndex}: ${variants[winnerIndex]?.type || "Default"}\n`);
@@ -134,7 +137,8 @@ TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just 
         return validResults[winnerIndex] || null;
     }
 
-    public async generateMusicStudioBrief(ch: NovelChapter): Promise<string | null> {
+    public async generateMusicStudioBrief(ch: NovelChapter, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   💡 Generating Billboard-Tier Brief for Track: "${ch.title}"...\n`);
 
         const prompt = `STUDIO BRIEF MODE (Billboard Dominance).
@@ -156,10 +160,11 @@ OUTPUT FORMAT (Markdown):
 ## Earworm Motif
 ## Production Goal: Chart Dominance Strategy
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "BRIEF", "Studio Brief", 150);
+        return await captureWithRetry(marie, prompt, this.log, ch.id, "BRIEF", "Studio Brief", 150);
     }
 
-    public async generateHookSnippets(ch: NovelChapter): Promise<string | null> {
+    public async generateHookSnippets(ch: NovelChapter, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   🪝  Isolating Billboard Hooks & Motifs...\n`);
 
         const prompt = `HOOK ISOLATION MODE.
@@ -174,10 +179,11 @@ TASK:
 
 OUTPUT: A ranked list of hooks and their earworm motifs.
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "HOOK_ISOLATION", "Hook Selection", 150);
+        return await captureWithRetry(marie, prompt, this.log, ch.id, "HOOK_ISOLATION", "Hook Selection", 150);
     }
 
-    public async generateViralPromos(ch: NovelChapter, finalTrack: string): Promise<string | null> {
+    public async generateViralPromos(ch: NovelChapter, finalTrack: string, marieOverride?: MarieCLI): Promise<string | null> {
+        const marie = marieOverride || this.defaultMarie;
         process.stdout.write(`   📢 Generating Empire Marketing Assets (Viral Promo)...\n`);
 
         const prompt = `VIRAL PROMO GENERATION.
@@ -192,7 +198,7 @@ TASK:
 
 OUTPUT: The complete Empire Marketing Bundle for the track.
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Marketing Bundle Assets", 400);
+        return await captureWithRetry(marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Marketing Bundle Assets", 400);
     }
 }
 
