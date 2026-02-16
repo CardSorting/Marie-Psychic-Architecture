@@ -43,12 +43,17 @@ export const PASS_PERSONA: Record<PassPhase, string> = {
 
 // ─── Continuity Ledger ─────────────────────────────────────────
 
+
+// ─── Continuity Ledger ─────────────────────────────────────────
+
 export interface LedgerEntry {
   pass: PassPhase;
   summary: string;
   filesLocked: string[];
   timestamp: string;
 }
+
+export type ContinuityEntry = LedgerEntry;
 
 // ─── Novel Structures ──────────────────────────────────────────
 
@@ -58,7 +63,6 @@ export interface NovelVolume {
   chapters: NovelChapter[];
   status: "DRAFT" | "PUBLISHED";
   mode?: string; // "ESSAY" | "STRUCTURED"
-  // ─── UTILS ───
 }
 
 export interface NovelChapter {
@@ -67,9 +71,11 @@ export interface NovelChapter {
   description: string;
   currentPass: PassPhase;
   completedPasses: PassPhase[];
-  continuityLedger: LedgerEntry[];
+  continuityLedger: ContinuityEntry[];
   files: string[];
-  mode?: string; // Optional override per chapter if needed
+  mode?: string;
+  wordCount?: number;
+  lastModified?: string;
 }
 
 // ─── Service ───────────────────────────────────────────────────
@@ -310,10 +316,17 @@ All Chapters: CANON (Immutable)
 
   // ─── Helpers ───────────────────────────────────────────────
 
-  private getActiveChapter(): NovelChapter | undefined {
-    const activeVol = this.structure.volumes.find((v) => v.status === "DRAFT");
-    if (!activeVol) return undefined;
-    return activeVol.chapters.find((c) => c.currentPass !== "CANON");
+  public getActiveChapter(): NovelChapter | undefined {
+    // Ensuring structure is loaded
+    if (!this.structure || !this.structure.volumes) return undefined;
+    const activeVol = this.structure.volumes.find((v) => v.status === "DRAFT" || v.status === "PUBLISHED"); // Support finding chapter even if published? No, draft.
+    // Actually existing logic was fine:
+    // const activeVol = this.structure.volumes.find((v) => v.status === "DRAFT");
+
+    // Let's stick to existing logic but public
+    const vol = this.structure.volumes.find((v) => v.status === "DRAFT");
+    if (!vol) return undefined;
+    return vol.chapters.find((c) => c.currentPass !== "CANON");
   }
 
   // ─── UTILS ───

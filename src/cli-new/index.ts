@@ -17,6 +17,21 @@ if (!fs.existsSync(MARIE_DIR)) {
 // Get working directory
 const workingDir = process.cwd();
 
+// CLI Commands routing
+const command = process.argv[2];
+
+if (command === "status") {
+  const { printNovelStatus } = await import("../monolith/cli/commands/status.js");
+  await printNovelStatus(workingDir);
+  process.exit(0);
+}
+
+if (command === "build") {
+  const { buildManuscript } = await import("../monolith/cli/commands/build.js");
+  await buildManuscript(workingDir);
+  process.exit(0);
+}
+
 // Check for API key in environment or config
 const envApiKey =
   process.env.ANTHROPIC_API_KEY ||

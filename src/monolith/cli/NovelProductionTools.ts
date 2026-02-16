@@ -90,7 +90,13 @@ export function registerNovelTools(
     execute: async (args) => {
       await novelService.initialize(); // Ensure fresh state
       const summary = getStringArg(args, "summary");
-      const result = await novelService.advancePass(summary);
+      const activeChap = novelService.getActiveChapter();
+
+      if (!activeChap) {
+        return "Error: No active chapter found.";
+      }
+
+      const result = await novelService.advancePass(activeChap, summary);
       return result.message;
     },
   });

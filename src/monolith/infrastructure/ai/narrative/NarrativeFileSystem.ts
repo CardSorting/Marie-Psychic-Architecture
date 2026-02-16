@@ -1,9 +1,11 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 import { NovelChapter, NovelVolume } from "./NovelProductionService.js";
+import { countWords } from "./ProductionUtils.js";
 
 export class NarrativeFileSystem {
     private readonly novelDir = "novel";
+    private readonly backupDir = ".vault/backups";
 
     constructor(private rootPath: string) { }
 
@@ -11,8 +13,13 @@ export class NarrativeFileSystem {
         return path.join(this.rootPath, this.novelDir);
     }
 
+    private get backupPath(): string {
+        return path.join(this.rootPath, this.backupDir);
+    }
+
     async initialize(): Promise<void> {
         await fs.mkdir(this.novelPath, { recursive: true });
+        await fs.mkdir(this.backupPath, { recursive: true });
     }
 
     /**
@@ -108,6 +115,12 @@ export class NarrativeFileSystem {
                         }
 
                         chapter.files = actualFiles;
+
+                        // Calculate word count if missing
+                        if (chapter.wordCount === undefined) {
+                            chapter.wordCount = await this.calculateChapterWordCount(chapter, chapPath);
+                        }
+
                         volume.chapters.push(chapter);
                     } catch (e) {
                         console.warn(`[NarrativeFS] Skipped malformed chapter: ${chapPath}`);
@@ -157,9 +170,64 @@ export class NarrativeFileSystem {
 
         const chapPath = path.join(volPath, chapDirName);
 
-        // 3. Save Metadata
+        // 3. Update Metrics (Word Count & Timestamp)
+        chapter.wordCount = await this.calculateChapterWordCount(chapter, chapPath);
+        chapter.lastModified = new Date().toISOString();
+
+        // 4. Save Metadata
         const metaPath = path.join(chapPath, "chapter.json");
         await fs.writeFile(metaPath, JSON.stringify(chapter, null, 2));
+    }
+
+    /**
+     * Writes content to a file, creating a backup first if the file exists.
+     */
+    async writeContent(filePath: string, content: string): Promise<void> {
+        const fullPath = path.isAbsolute(filePath) ? filePath : path.join(this.rootPath, filePath);
+
+        // Backup
+        try {
+            await fs.access(fullPath);
+            await this.backupFile(fullPath);
+        } catch {
+            // File doesn't exist, no backup needed
+        }
+
+        // Write
+        await fs.writeFile(fullPath, content);
+    }
+
+    /**
+     * Internal helper to backup a file
+     */
+    private async backupFile(filePath: string): Promise<void> {
+        try {
+            await fs.mkdir(this.backupPath, { recursive: true });
+
+            const fileName = path.basename(filePath);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+            const backupName = `${timestamp}_${fileName}`;
+            const destPath = path.join(this.backupPath, backupName);
+
+            await fs.copyFile(filePath, destPath);
+        } catch (e) {
+            console.warn(`[NarrativeFS] Backup failed for ${filePath}:`, e);
+            // Don't fail the main operation if backup fails
+        }
+    }
+
+    private async calculateChapterWordCount(chapter: NovelChapter, chapPath: string): Promise<number> {
+        let count = 0;
+        const contentFiles = ["content.md", "scene.md"]; // Prioritize prose files
+
+        for (const f of contentFiles) {
+            try {
+                const p = path.join(chapPath, f);
+                const content = await fs.readFile(p, "utf-8");
+                count += countWords(content);
+            } catch { }
+        }
+        return count;
     }
 
     async saveVolume(volume: NovelVolume): Promise<void> {

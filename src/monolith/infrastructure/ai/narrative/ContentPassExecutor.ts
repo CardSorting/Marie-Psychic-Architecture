@@ -100,7 +100,7 @@ OUTPUT FORMAT (Markdown):
 `;
         const content = await captureWithRetry(this.marie, prompt, this.log, ch.id, "CONCEPT", "Concept Doc", 100);
         if (content) {
-            await fs.writeFile(targetPath, content);
+            await this.fileSystem.writeContent(targetPath, content);
             return true;
         }
         return false;
@@ -120,7 +120,7 @@ REQUIREMENTS:
 `;
         const content = await captureWithRetry(this.marie, prompt, this.log, ch.id, "OUTLINE", "Outline", 200);
         if (content) {
-            await fs.writeFile(targetPath, content);
+            await this.fileSystem.writeContent(targetPath, content);
             return true;
         }
         return false;
@@ -181,7 +181,7 @@ TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just 
         process.stdout.write(`   🏆 Selected Variant ${winnerIndex}: ${variants[winnerIndex]?.type || "Default"}\n`);
 
         if (validResults[winnerIndex]) {
-            await fs.writeFile(targetPath, validResults[winnerIndex]);
+            await this.fileSystem.writeContent(targetPath, validResults[winnerIndex]);
             return true;
         }
         return false;
@@ -242,7 +242,7 @@ ${draft}`;
         const polished = await captureWithRetry(this.marie, prompt, this.log, ch.id, "POLISH", "Polished Draft", countWords(draft));
 
         if (polished && countWords(polished) > countWords(draft) * 0.5) {
-            await fs.writeFile(targetPath, polished);
+            await this.fileSystem.writeContent(targetPath, polished);
             return true;
         }
         return false;

@@ -1,9 +1,8 @@
-#!/usr/bin/env node
-import { NarrativeFileSystem } from "../monolith/infrastructure/ai/narrative/NarrativeFileSystem.js";
+
+import { NarrativeFileSystem } from "../../infrastructure/ai/narrative/NarrativeFileSystem.js";
 import * as path from "path";
 
-async function main() {
-    const workingDir = process.cwd();
+export async function printNovelStatus(workingDir: string) {
     const fs = new NarrativeFileSystem(workingDir);
     await fs.initialize();
 
@@ -16,6 +15,8 @@ async function main() {
         return;
     }
 
+    let totalWords = 0;
+
     for (const vol of structure.volumes) {
         console.log(`📦 [${vol.status}] Volume ${vol.id}: ${vol.title}`);
 
@@ -24,7 +25,7 @@ async function main() {
         }
 
         for (const chap of vol.chapters) {
-            const symbols = {
+            const symbols: Record<string, string> = {
                 "BLUEPRINT": "📐",
                 "SKELETON": "💀",
                 "FLESH": "🥩",
@@ -34,7 +35,11 @@ async function main() {
                 "DRAFT": "📝",
                 "REVIEW": "👀",
                 "POLISH": "✨",
-                "FINAL": "🏆"
+                "FINAL": "🏆",
+                "SIMULATION": "🎲",
+                "FOUNDATION": "🏗️",
+                "BEATS": "🥁",
+                "COHESION": "🔗"
             };
             const icon = symbols[chap.currentPass] || "📄";
 
@@ -42,10 +47,15 @@ async function main() {
             const fileCount = chap.files.length;
             const fileIndicator = fileCount > 0 ? `(${fileCount} files)` : "⚠️  No files";
 
-            console.log(`    ${icon} Chapter ${chap.id}: ${chap.title.padEnd(40)} [${chap.currentPass}] ${fileIndicator}`);
+            // Word count
+            const wc = chap.wordCount || 0;
+            totalWords += wc;
+            const wcStr = wc > 0 ? `${wc}w` : "";
+
+            console.log(`    ${icon} Chapter ${chap.id}: ${chap.title.padEnd(30)} [${chap.currentPass.padEnd(10)}] ${wcStr.padEnd(8)} ${fileIndicator}`);
         }
         console.log("");
     }
-}
 
-main().catch(console.error);
+    console.log(`Total Word Count: ${totalWords}`);
+}
