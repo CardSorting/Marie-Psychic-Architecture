@@ -24,6 +24,7 @@ export interface IProductionStrategy {
         fullPath: string,
         summary: string,
         force: boolean,
+        overrideNextPass?: string,
     ): Promise<{ success: boolean; message: string }>;
 
     /**

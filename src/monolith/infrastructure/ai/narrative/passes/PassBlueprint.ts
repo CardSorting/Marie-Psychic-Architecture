@@ -11,12 +11,26 @@ export async function passBlueprint(
     targetPath: string, // .vault/novel/chapters/Chapter_X_Blueprint.json
     log: Log,
     worldService: WorldService,
-    prevSummary: string
+    prevSummary: string,
+    feedback?: any // EngagementReport
 ): Promise<boolean> {
     const bpService = new BlueprintService(worldService);
     const lore = worldService.getWorldContext([ch.title]);
 
-    const prompt = bpService.generateBlueprintPrompt(ch.id, ch.title, lore, prevSummary);
+    const mandate = feedback
+        ? `\n🚨 EXECUTIVE MANDATE (PREVIOUS ATTEMPT FAILED):\nThe previous draft was rejected. REASON: ${feedback.verdict}.\nISSUES: ${feedback.plotHoles.join(", ")}\nBOREDOM: ${feedback.boredomIndex}/10.\nYOU MUST FIX THIS. CHANGE THE STRUCTURE.`
+        : "";
+
+    const prompt = `Architect Mode. Create a structural BLUEPRINT for Chapter ${ch.id}: "${ch.title}".
+    
+    CONTEXT:
+    ${lore}
+    
+    PREVIOUS CHAPTER:
+    ${prevSummary}
+    ${mandate}
+    
+    Task: Output a JSON list of scenes.`;
     const raw = await captureWithRetry(marie, prompt, log, ch.id, "BLUEPRINT", "Structure Generation", 20);
 
     const blueprint = bpService.parseBlueprint(raw);

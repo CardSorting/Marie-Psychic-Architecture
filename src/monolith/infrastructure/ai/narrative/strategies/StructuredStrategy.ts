@@ -66,6 +66,7 @@ export class StructuredProductionStrategy implements IProductionStrategy {
         rootPath: string,
         summary: string,
         force: boolean,
+        overrideNextPass?: string,
     ): Promise<{ success: boolean; message: string }> {
         if (chapter.currentPass === "CANON") {
             return { success: false, message: "Chapter is already Canon." };
@@ -102,7 +103,12 @@ export class StructuredProductionStrategy implements IProductionStrategy {
         chapter.continuityLedger.push(ledgerEntry);
         chapter.completedPasses.push(chapter.currentPass);
 
-        const nextPass = STRUCTURED_ORDER[currentPassIndex + 1];
+        let nextPass = "";
+        if (overrideNextPass) {
+            nextPass = overrideNextPass;
+        } else {
+            nextPass = STRUCTURED_ORDER[currentPassIndex + 1];
+        }
         chapter.currentPass = nextPass;
 
         return {

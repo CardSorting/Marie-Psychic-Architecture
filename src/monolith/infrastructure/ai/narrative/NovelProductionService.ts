@@ -57,6 +57,7 @@ export interface NovelVolume {
   chapters: NovelChapter[];
   status: "DRAFT" | "PUBLISHED";
   mode?: string; // "ESSAY" | "STRUCTURED"
+  // ─── UTILS ───
 }
 
 export interface NovelChapter {
@@ -227,6 +228,7 @@ export class NovelProductionService {
   public async advancePass(
     summary: string,
     force: boolean = false,
+    overrideNextPass?: PassPhase,
   ): Promise<{ success: boolean; message: string }> {
     const activeChap = this.getActiveChapter();
     if (!activeChap) return { success: false, message: "No active chapter." };
@@ -235,7 +237,7 @@ export class NovelProductionService {
     const mode = activeChap.mode || "ESSAY";
     const strategy = this.getStrategy(mode);
 
-    const result = await strategy.advancePass(activeChap, this.rootPath, summary, force);
+    const result = await strategy.advancePass(activeChap, this.rootPath, summary, force, overrideNextPass);
     if (result.success) {
       await this.save();
     }
@@ -289,5 +291,19 @@ All Chapters: CANON (Immutable)
     const activeVol = this.structure.volumes.find((v) => v.status === "DRAFT");
     if (!activeVol) return undefined;
     return activeVol.chapters.find((c) => c.currentPass !== "CANON");
+  }
+
+  // ─── UTILS ───
+  public async regressToBlueprint(chId: number) {
+    if (!this.structure) await this.initialize();
+    // Find chapter across all volumes
+    for (const vol of this.structure.volumes) {
+      const ch = vol.chapters.find((c: any) => c.id === chId);
+      if (ch) {
+        ch.currentPass = "BLUEPRINT";
+        await this.save();
+        return;
+      }
+    }
   }
 }
