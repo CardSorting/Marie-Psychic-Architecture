@@ -43,9 +43,8 @@ export class MarieSentinelService {
     specificFile?: string,
   ): Promise<SentinelReport> {
     // Velocity Mode: Check if we should skip expensive scans
-    const { ConfigService } = await import(
-      "../../infrastructure/config/ConfigService.js"
-    );
+    const { ConfigService } =
+      await import("../../infrastructure/config/ConfigService.js");
     const fastMode = ConfigService.isAscensionEnabled() && !specificFile;
 
     const allFiles = await this.getAllFiles(workingDir);
@@ -423,17 +422,17 @@ ${report.graphDefinition}
 
 ## 📜 High-Priority Alerts
 ${report.zoneViolations
-        .slice(0, 5)
-        .map((v) => `- ❌ ${v}`)
-        .join("\n")}
+  .slice(0, 5)
+  .map((v) => `- ❌ ${v}`)
+  .join("\n")}
 ${report.circularDependencies
-        .slice(0, 3)
-        .map((c) => `- 🔄 ${c}`)
-        .join("\n")}
+  .slice(0, 3)
+  .map((c) => `- 🔄 ${c}`)
+  .join("\n")}
 ${report.duplication
-        .slice(0, 3)
-        .map((d) => `- 👯 ${d}`)
-        .join("\n")}
+  .slice(0, 3)
+  .map((d) => `- 👯 ${d}`)
+  .join("\n")}
 
 ---
 *Marie Sentinel v3.1 — Grounded Architectural Guardian*

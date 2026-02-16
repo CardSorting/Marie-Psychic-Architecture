@@ -10,7 +10,7 @@ export class MariePulseService {
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private watchdogTimer: NodeJS.Timeout | null = null;
 
-  constructor(private tracker: MarieProgressTracker) { }
+  constructor(private tracker: MarieProgressTracker) {}
 
   /**
    * SUB-ATOMIC INTEGRITY: Reactive Lock Recovery

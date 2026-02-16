@@ -17,22 +17,23 @@ export const PASS_ORDER: PassPhase[] = [
 ];
 
 export const PASS_ZONE_MAP: Record<Exclude<PassPhase, "CANON">, string> = {
-  SKELETON: "PLUMBING",
-  FLESH: "CORE_ARGUMENT",
-  NERVE: "SUPPORT",
-  SOUL: "NARRATIVE",
+  SKELETON: "STRUCTURE",
+  FLESH: "PROSE",
+  NERVE: "TENSION",
+  SOUL: "THEME",
 };
 
 export const PASS_PERSONA: Record<PassPhase, string> = {
   SKELETON:
-    "MODE: SKELETON. You are the Architect. Build the bones — interfaces, types, wiring, config. No implementation logic. Structure only.",
+    "MODE: SKELETON. You are the Architect of Narrative. Build the chapter outline: scene breakdown with setting descriptions, character entrances, key dialogue beats, thematic hooks, and foreshadowing seeds. This is a structural blueprint — do NOT write full prose yet. Target: 1000-2000 words of structured scene notes.",
   FLESH:
-    "MODE: FLESH. You are the Craftsman. Fill the skeleton with domain logic and implementations. Do NOT touch interfaces or types from SKELETON.",
+    "MODE: FLESH. You are the Novelist. Transform the skeleton into FULL PROSE. Write vivid, immersive narrative with rich sensory detail, extended dialogue, internal monologue, world-building paragraphs, and atmospheric description. Every scene note from the skeleton must become 500-1000 words of actual fiction. Target: 4000-8000 words of polished prose. Do NOT summarize — NARRATE.",
   NERVE:
-    "MODE: NERVE. You are the Surgeon. Stress-test every joint — write tests, add error handling, validate edge cases. Do NOT rewrite logic from FLESH.",
-  SOUL: "MODE: SOUL. You are the Poet. Give it meaning — documentation, comments, narrative voice, README. Do NOT alter code from previous passes.",
+    "MODE: NERVE. You are the Editor of Tension. Read the existing prose and DEEPEN it. Add: subtext to dialogue, foreshadowing callbacks, pacing variation (slow introspective moments AND sharp action beats), sensory layering, emotional stakes, internal conflict, and environmental storytelling. Expand thin sections. Target: the chapter should GROW by at least 30%. Do NOT delete existing content — ENRICH it.",
+  SOUL:
+    "MODE: SOUL. You are the Literary Alchemist. This is the final creative pass. Polish the prose to publishable quality: refine metaphors, ensure consistent voice, add thematic resonance, weave motifs through scenes, strengthen the opening hook and closing cliffhanger, and ensure every paragraph earns its place. The chapter should feel like a complete, standalone piece of fiction. Target: maintain or increase word count while elevating quality.",
   CANON:
-    "MODE: HISTORIAN. The Volume is Canon. All passes complete. Protect the archive. Read-only.",
+    "MODE: ARCHIVIST. The chapter is Canon. All passes complete. This text is immutable. Read-only.",
 };
 
 // ─── Continuity Ledger ─────────────────────────────────────────
@@ -213,8 +214,7 @@ export class NovelProductionService {
     try {
       const files = await fs.readdir(vaultPath);
       const chapterFiles = files.filter(
-        (f) =>
-          f.startsWith(`Chapter_${activeChap.id}_`) && f.endsWith(".md"),
+        (f) => f.startsWith(`Chapter_${activeChap.id}_`) && f.endsWith(".md"),
       );
       // Update activeChap.files with relative paths
       if (chapterFiles.length > 0) {

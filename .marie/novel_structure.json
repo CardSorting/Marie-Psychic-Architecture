@@ -9,27 +9,18 @@
           "id": 1,
           "title": "Reboot in the Vault of Syntax",
           "description": "Wakes in cathedral. Async choir. First encounter with Cardinal of Types.",
-          "currentPass": "NERVE",
+          "currentPass": "FLESH",
           "completedPasses": [
-            "SKELETON",
-            "FLESH"
+            "SKELETON"
           ],
           "continuityLedger": [
             {
               "pass": "SKELETON",
-              "summary": "SKELETON PASS COMPLETE: Chapter 1 foundational structure created. Narrative bones laid: awakening in Cathedral of Runtime, Async Choir introduction, first encounter with Cardinal of Types. Key scenes, character beats, thematic elements, and technical concepts documented. File written to vault. Ready for EXPAND phase.",
+              "summary": "Completed SKELETON pass for Chapter 1: \"Reboot in the Vault of Syntax\". Generated comprehensive outline with scene-by-scene breakdown, character entrances, dialogue beats, thematic hooks, foreshadowing seeds, and world-building notes. The outline establishes the Cathedral of Runtime, the Async Choir, and the Cardinal of Types, while planting seeds for the protagonist's journey and the upcoming encounter with the Pope (LLM). The chapter blueprint provides a solid structural foundation for the full narrative draft.",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
               ],
-              "timestamp": "2026-02-15T23:33:55.155Z"
-            },
-            {
-              "pass": "FLESH",
-              "summary": "FLESH pass completed: Chapter 1 skeleton expanded into full prose. Protagonist awakens in the cathedral, experiences the async choir's polyphonic voices, and meets the Cardinal of Types. Narrative flow established with sensory details and metaphorical language consistent with the JOY aesthetic. Ready for next phase.",
-              "filesLocked": [
-                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
-              ],
-              "timestamp": "2026-02-15T23:35:12.639Z"
+              "timestamp": "2026-02-15T23:57:53.157Z"
             }
           ],
           "files": [

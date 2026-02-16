@@ -13,10 +13,10 @@ export const workspace = {
     get: (key, defaultValue) => defaultValue,
     update: () => Promise.resolve(),
   }),
-  onDidChangeConfiguration: () => ({ dispose: () => {} }),
-  onDidSaveTextDocument: () => ({ dispose: () => {} }),
-  onDidOpenTextDocument: () => ({ dispose: () => {} }),
-  onDidCloseTextDocument: () => ({ dispose: () => {} }),
+  onDidChangeConfiguration: () => ({ dispose: () => { } }),
+  onDidSaveTextDocument: () => ({ dispose: () => { } }),
+  onDidOpenTextDocument: () => ({ dispose: () => { } }),
+  onDidCloseTextDocument: () => ({ dispose: () => { } }),
   findFiles: () => Promise.resolve([]),
   openTextDocument: (uri) =>
     Promise.resolve({
@@ -58,17 +58,17 @@ export const window = {
     name,
     append: (value) => process.stdout.write(String(value)),
     appendLine: (value) => console.log(String(value)),
-    clear: () => {},
-    show: () => {},
-    hide: () => {},
-    dispose: () => {},
+    clear: () => { },
+    show: () => { },
+    hide: () => { },
+    dispose: () => { },
   }),
   createTerminal: (name) => ({
     name,
     sendText: (text) => console.log(`[Terminal ${name}] ${text}`),
-    show: () => {},
-    hide: () => {},
-    dispose: () => {},
+    show: () => { },
+    hide: () => { },
+    dispose: () => { },
   }),
   createStatusBarItem: (alignment, priority) => ({
     alignment,
@@ -76,32 +76,32 @@ export const window = {
     text: "",
     tooltip: "",
     command: undefined,
-    show: () => {},
-    hide: () => {},
-    dispose: () => {},
+    show: () => { },
+    hide: () => { },
+    dispose: () => { },
   }),
   activeTextEditor: undefined,
   visibleTextEditors: [],
-  onDidChangeActiveTextEditor: () => ({ dispose: () => {} }),
-  onDidChangeVisibleTextEditors: () => ({ dispose: () => {} }),
+  onDidChangeActiveTextEditor: () => ({ dispose: () => { } }),
+  onDidChangeVisibleTextEditors: () => ({ dispose: () => { } }),
   setStatusBarMessage: (text) => {
     console.log(`[Status] ${text}`);
-    return { dispose: () => {} };
+    return { dispose: () => { } };
   },
   withProgress: async (options, task) => {
     return await task({
-      report: (increment) => {},
+      report: (increment) => { },
     });
   },
   createTextEditorDecorationType: (options) => ({
     key: `decoration_${Date.now()}`,
-    dispose: () => {},
+    dispose: () => { },
   }),
 };
 
 export const commands = {
   registerCommand: (command, callback) => {
-    return { dispose: () => {} };
+    return { dispose: () => { } };
   },
   executeCommand: () => Promise.resolve(),
   getCommands: () => Promise.resolve([]),
@@ -134,6 +134,11 @@ export const Uri = {
     fsPath: uriString,
     path: uriString,
   }),
+  joinPath: (uri, ...pathSegments) => {
+    const path = require("path");
+    const joinedPath = path.join(uri.fsPath || uri.path, ...pathSegments);
+    return { scheme: uri.scheme || "file", fsPath: joinedPath, path: joinedPath };
+  },
 };
 
 export const Position = class Position {

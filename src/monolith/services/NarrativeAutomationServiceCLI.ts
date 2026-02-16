@@ -24,7 +24,7 @@ export class NarrativeAutomationServiceCLI {
   constructor(
     private readonly workingDir: string,
     private readonly joyService: JoyServiceCLI,
-  ) { }
+  ) {}
 
   public registerProviderFactory(factory: (type: string) => AIProvider) {
     this.providerFactory = factory;

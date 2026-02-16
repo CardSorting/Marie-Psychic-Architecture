@@ -24,7 +24,7 @@ export class NarrativeAutomationService {
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly joyService: JoyService,
-  ) { }
+  ) {}
 
   public registerProviderFactory(factory: (type: string) => AIProvider) {
     this.providerFactory = factory;

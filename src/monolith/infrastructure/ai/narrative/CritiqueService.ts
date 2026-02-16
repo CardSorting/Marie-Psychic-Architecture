@@ -108,61 +108,63 @@ export class CritiqueService {
     return { approved, critique, score };
   }
 
-  // ─── SKELETON: Structure & Interfaces ──────────────────────
+  // ─── SKELETON: Structure & Scene Notes ──────────────────────
   private async critiqueSkeleton(
     file: string,
     content: string,
     points: string[],
     adjust: (n: number) => void,
   ) {
-    // Skeleton files should define interfaces, types, or config
-    const hasInterface =
-      /interface\s+\w+|type\s+\w+\s*=|export\s+(?:interface|type)/i.test(
-        content,
-      );
-    const hasImplementation =
-      /class\s+\w+\s*(?:extends|implements)|new\s+\w+\(/i.test(content);
-
-    if (
-      (!hasInterface && file.includes("port")) ||
-      file.includes("interface") ||
-      file.includes("types")
-    ) {
-      adjust(-10);
+    const words = content.split(/\s+/).length;
+    // Skeleton should have at least 500 words of scene notes
+    if (words < 500) {
+      adjust(-15);
       points.push(
-        `SKELETON: '${file}' should define interfaces/types but none found.`,
+        `SKELETON: '${file}' has only ${words} words. Skeleton should be 1000-2000 words of scene notes.`,
       );
     }
-    if (hasImplementation && !file.includes("test")) {
-      adjust(-5);
+    // Should contain scene/chapter structure markers
+    const hasStructure = /##|scene|setting|dialogue|character/i.test(content);
+    if (!hasStructure) {
+      adjust(-10);
       points.push(
-        `SKELETON: '${file}' contains implementation logic. SKELETON is for structure only.`,
+        `SKELETON: '${file}' lacks structural markers (scenes, settings, characters).`,
       );
     }
   }
 
-  // ─── FLESH: Domain Logic & Implementation ──────────────────
+  // ─── FLESH: Full Prose & Narrative ───────────────────────────
   private async critiqueFlesh(
     file: string,
     content: string,
     points: string[],
     adjust: (n: number) => void,
   ) {
-    const lines = content.split("\n").filter((l) => l.trim().length > 0);
-
-    // Flesh files checks relaxed.
-
-    // Check for empty function bodies
-    const emptyFunctions = (content.match(/\{[\s\n]*\}/g) || []).length;
-    if (emptyFunctions > 2) {
-      adjust(-2 * emptyFunctions); // Reduced penalty
+    const words = content.split(/\s+/).length;
+    // FLESH should produce substantial prose
+    if (words < 2000) {
+      adjust(-20);
       points.push(
-        `FLESH: '${file}' has ${emptyFunctions} empty function bodies.`,
+        `FLESH: '${file}' has only ${words} words. FLESH pass should be 4000-8000 words of prose.`,
+      );
+    }
+    // Should contain actual prose paragraphs (long lines without bullet points)
+    const lines = content.split("\n").filter((l) => l.trim().length > 0);
+    const proseLines = lines.filter(
+      (l) =>
+        l.trim().length > 80 &&
+        !l.trim().startsWith("-") &&
+        !l.trim().startsWith("*"),
+    );
+    if (proseLines.length < 5) {
+      adjust(-10);
+      points.push(
+        `FLESH: '${file}' appears to still be in outline format. Expected full prose paragraphs.`,
       );
     }
   }
 
-  // ─── NERVE: Tests & Validation ─────────────────────────────
+  // ─── NERVE: Tension & Expansion ─────────────────────────────
   private async critiqueNerve(
     file: string,
     content: string,
@@ -170,55 +172,36 @@ export class CritiqueService {
     points: string[],
     adjust: (n: number) => void,
   ) {
-    // Check if test files exist for implementation files
-    const hasTestPattern = /describe\s*\(|it\s*\(|test\s*\(|expect\s*\(/i.test(
-      content,
-    );
-
-    if (file.includes("test") || file.includes("spec")) {
-      if (!hasTestPattern) {
-        adjust(-15);
-        points.push(
-          `NERVE: '${file}' is a test file but contains no test assertions.`,
-        );
-      }
-    }
-
-    // Check for error handling
-    const hasTryCatch = /try\s*\{|\.catch\s*\(/i.test(content);
-    if (file.includes("service") && !hasTryCatch && !file.includes("test")) {
-      adjust(-5);
+    const words = content.split(/\s+/).length;
+    // NERVE should be at least as long as FLESH output
+    if (words < 2500) {
+      adjust(-10);
       points.push(
-        `NERVE: '${file}' has no error handling. Every nerve needs protection.`,
+        `NERVE: '${file}' has only ${words} words. NERVE pass should expand the chapter, not shrink it.`,
       );
     }
   }
 
-  // ─── SOUL: Documentation & Narrative ───────────────────────
+  // ─── SOUL: Polish & Publishing Quality ─────────────────────
   private async critiqueSoul(
     file: string,
     content: string,
     points: string[],
     adjust: (n: number) => void,
   ) {
-    const lines = content.split("\n");
-    const commentLines = lines.filter((l) =>
-      /^\s*(\/\/|\/\*|\*|#)/.test(l),
-    ).length;
-    const commentRatio = commentLines / Math.max(lines.length, 1);
-
-    // Soul pass documentation checks.
-
-    // Check for JSDoc presence on exports
-    const exports = (
-      content.match(/export\s+(function|class|const|interface)/g) || []
-    ).length;
-    const jsdocs = (content.match(/\/\*\*/g) || []).length;
-    if (exports > 0 && jsdocs < exports * 0.5) {
-      adjust(-5);
+    const words = content.split(/\s+/).length;
+    // SOUL should maintain or increase word count
+    if (words < 2500) {
+      adjust(-10);
       points.push(
-        `SOUL: '${file}' has ${exports} exports but only ${jsdocs} JSDoc blocks. Document the public API.`,
+        `SOUL: '${file}' has only ${words} words. SOUL pass should maintain or increase length.`,
       );
+    }
+    // Check for a strong opening
+    const firstLine = content.split("\n").find((l) => l.trim().length > 20);
+    if (firstLine && firstLine.trim().startsWith("#")) {
+      // Just a heading — the actual prose should start strong
+      // This is fine, no penalty
     }
   }
 }
