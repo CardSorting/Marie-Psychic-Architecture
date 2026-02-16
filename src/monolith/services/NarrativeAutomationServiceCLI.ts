@@ -24,7 +24,7 @@ export class NarrativeAutomationServiceCLI {
   constructor(
     private readonly workingDir: string,
     private readonly joyService: JoyServiceCLI,
-  ) {}
+  ) { }
 
   public registerProviderFactory(factory: (type: string) => AIProvider) {
     this.providerFactory = factory;
@@ -227,6 +227,54 @@ export class NarrativeAutomationServiceCLI {
       return log;
     } catch (error: any) {
       return `Hardening Failed: ${error.message}`;
+    }
+  }
+
+  public async generateLinkedInCampaign(
+    theme: string,
+    days: number = 7,
+  ): Promise<{ title: string; description: string; format: string; scheduledDate: string }[]> {
+    if (!this.providerFactory) {
+      throw new Error("AI Provider Factory not registered.");
+    }
+
+    const provider = this.providerFactory(ConfigService.getAiProvider());
+    const model = ConfigService.getModel();
+
+    const prompt = `You are the LINKEDIN_STRATEGIST.
+    Theme: ${theme}
+    Duration: ${days} days
+    
+    Goal: Plan a high-throughput LinkedIn content campaign.
+    Requirement: 
+    1. Output a JSON array of content units. 
+    2. Each unit must have: title, description, format (POST, THREAD, or ARTICLE), and scheduledDate (ISO string starting from today).
+    3. Mix formats for maximum impact (Posts for frequency, Threads/Articles for depth).
+    4. NO PREAMBLE. NO MARKDOWN BLOCKS. JUST RAW JSON.
+
+    Format:
+    [
+      { "title": "...", "description": "...", "format": "POST", "scheduledDate": "..." },
+      ...
+    ]`;
+
+    const response = await provider.createMessage({
+      model,
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 4000,
+    });
+
+    const result = typeof response.content === "string"
+      ? response.content
+      : response.content.map((c) => (c as any).text || "").join("");
+
+    try {
+      // Clean up potential markdown wrappers
+      const jsonStr = result.replace(/```json/g, "").replace(/```/g, "").trim();
+      return JSON.parse(jsonStr);
+    } catch (e) {
+      console.error("Failed to parse campaign JSON:", result);
+      throw new Error("Failed to generate campaign plan.");
     }
   }
 

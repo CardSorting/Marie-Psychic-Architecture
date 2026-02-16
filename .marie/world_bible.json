@@ -1,0 +1,24 @@
+{
+  "name": "New World",
+  "overview": "A newly birthed world.",
+  "entities": [],
+  "timeline": [],
+  "constraints": [],
+  "currentDate": {
+    "year": 1,
+    "month": 1,
+    "day": 1,
+    "hour": 8
+  },
+  "calendar": {
+    "yearLength": 12,
+    "monthLength": 30,
+    "dayLength": 24,
+    "seasons": [
+      "Spring",
+      "Summer",
+      "Autumn",
+      "Winter"
+    ]
+  }
+}

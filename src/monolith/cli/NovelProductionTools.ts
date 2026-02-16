@@ -28,8 +28,8 @@ export function registerNovelTools(
         outlinePath: { type: "string", description: "Path to lightnovel.md" },
         mode: {
           type: "string",
-          description: "Production mode: 'ESSAY' (default) or 'STRUCTURED'",
-          enum: ["ESSAY", "STRUCTURED"]
+          description: "Production mode: 'ESSAY' (default), 'STRUCTURED', or 'LINKEDIN'",
+          enum: ["ESSAY", "STRUCTURED", "LINKEDIN"]
         },
       },
       required: ["outlinePath"],
@@ -362,6 +362,45 @@ export function registerNovelTools(
 
       await fs.writeFile(fullOutputPath, finalContent);
       return `Manuscript compiled successfully to ${outputPath}`;
+    }
+  });
+
+  registry.register({
+    name: "plan_linkedin_campaign",
+    description: "Use the LINKEDIN_STRATEGIST to plan a week of content throughput.",
+    input_schema: {
+      type: "object",
+      properties: {
+        theme: { type: "string", description: "The core theme for the campaign" },
+        days: { type: "number", description: "Duration in days (default 7)" }
+      },
+      required: ["theme"]
+    },
+    execute: async (args) => {
+      const theme = getStringArg(args, "theme");
+      const days = Number(args.days) || 7;
+
+      const plan = await narrativeAutomation.generateLinkedInCampaign(theme, days);
+
+      await novelService.initialize();
+
+      for (const unit of plan) {
+        await novelService.startNewChapter(
+          unit.title,
+          unit.description,
+          "LINKEDIN"
+        );
+        // Set the format and date in the newly created chapter
+        const active = novelService.getActiveChapter();
+        if (active) {
+          active.scheduledDate = unit.scheduledDate;
+          // Format is already inferred from title/desc in LinkedInStrategy, 
+          // but we can be explicit if we add a format property to NovelChapter.
+          // For now, titles/descriptions are generated with format-specific keywords.
+        }
+      }
+
+      return `Successfully planned LinkedIn campaign: ${theme}. Created ${plan.length} content units.`;
     }
   });
 }

@@ -19,6 +19,7 @@ export class RevisionService {
         if (ch.mode === "OP_ED") editors = ["OP_ED_COLUMNIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "ARTICLE") editors = ["JOURNALIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "SHORT_STORY") editors = ["DIRECTOR", "SENSORY_EDITOR", "VOICE_COACH"];
+        else if (ch.mode === "LINKEDIN") editors = ["LINKEDIN_INFLUENCER", "AURA_AUDITOR", "CHIEF_EDITOR", "PROSE"];
 
         const critiques: CritiqueResult[] = [];
 

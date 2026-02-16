@@ -9,7 +9,8 @@ const ContentSelector = ({ onSelect }: { onSelect: (item: any) => void }) => {
         { label: "Novel (Structured)", value: "NOVEL" },
         { label: "Short Story", value: "SHORT_STORY" },
         { label: "Article / Journalism", value: "ARTICLE" },
-        { label: "Op-Ed / Essay", value: "OP_ED" }
+        { label: "Op-Ed / Essay", value: "OP_ED" },
+        { label: "LinkedIn (Influencer)", value: "LINKEDIN" }
     ];
 
     return React.createElement(Box, { flexDirection: "column" },

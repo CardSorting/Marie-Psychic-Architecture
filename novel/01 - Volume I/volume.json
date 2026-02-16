@@ -58,10 +58,10 @@
         }
       ],
       "files": [
-        ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md",
-        ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax_Beats_Partial.md"
+        "novel/01 - Volume I/01 - Reboot in the Vault of Syntax/content.md"
       ],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 13822
     },
     {
       "id": 2,
@@ -123,10 +123,10 @@
         }
       ],
       "files": [
-        ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md",
-        ".vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle_Beats_Partial.md"
+        "novel/01 - Volume I/02 - The Holy Papal Oracle/content.md"
       ],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 18182
     },
     {
       "id": 3,
@@ -182,10 +182,10 @@
         }
       ],
       "files": [
-        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
-        ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats_Partial.md"
+        "novel/01 - Volume I/03 - The Arch Priest of Architects/content.md"
       ],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 16146
     },
     {
       "id": 4,
@@ -253,7 +253,8 @@
         }
       ],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 5,
@@ -263,7 +264,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 6,
@@ -273,7 +275,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 7,
@@ -283,7 +286,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 8,
@@ -293,7 +297,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 9,
@@ -303,7 +308,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 10,
@@ -313,7 +319,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 11,
@@ -323,7 +330,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 12,
@@ -333,7 +341,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 13,
@@ -343,7 +352,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 14,
@@ -353,7 +363,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 15,
@@ -363,7 +374,8 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "STRUCTURED"
+      "mode": "STRUCTURED",
+      "wordCount": 0
     },
     {
       "id": 16,
@@ -373,7 +385,20 @@
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
-      "mode": "SHORT_STORY"
+      "mode": "SHORT_STORY",
+      "wordCount": 0
+    },
+    {
+      "id": 17,
+      "title": "The Inevitability of AGI Gravity Wells",
+      "description": "A post exploring how compute concentration creates inescapable market attractors.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T15:45:46.615Z"
     }
   ]
 }

@@ -11,8 +11,9 @@ import { DraftingService } from "./DraftingService.js";
 import { RevisionService } from "./RevisionService.js";
 import { sleep } from "./ProductionUtils.js";
 import { SimpleContentStrategy, ContentPhase } from "./strategies/SimpleContentStrategy.js";
+import { LinkedInProductionStrategy } from "./strategies/LinkedInStrategy.js";
 
-type ContentMode = "NOVEL" | "SHORT_STORY" | "ARTICLE" | "OP_ED";
+type ContentMode = "NOVEL" | "SHORT_STORY" | "ARTICLE" | "OP_ED" | "LINKEDIN";
 
 export class ContentDirector {
     private workingDir: string;
@@ -40,6 +41,7 @@ export class ContentDirector {
         this.productionSvc.registerStrategy(new SimpleContentStrategy("SHORT_STORY"));
         this.productionSvc.registerStrategy(new SimpleContentStrategy("ARTICLE"));
         this.productionSvc.registerStrategy(new SimpleContentStrategy("OP_ED"));
+        this.productionSvc.registerStrategy(new LinkedInProductionStrategy(this.worldService));
 
         this.novelExecutor = new PassExecutor(
             this.marie,
@@ -120,8 +122,19 @@ export class ContentDirector {
         // Search through all volumes
         for (const vol of structure.volumes) {
             const ch = vol.chapters.find((c: any) => {
-                const chMode = c.mode || vol.mode || "NOVEL"; // defaulting
-                return c.currentPass !== "FINAL" && c.currentPass !== "CANON" && chMode === mode;
+                const chMode = c.mode || vol.mode || "NOVEL";
+                const isFinal = c.currentPass === "FINAL" || c.currentPass === "CANON";
+                if (isFinal) return false;
+                if (chMode !== mode) return false;
+
+                // Scheduling Logic
+                if (c.scheduledDate) {
+                    const scheduled = new Date(c.scheduledDate);
+                    const now = new Date();
+                    if (scheduled > now) return false; // Fail fast if in the future
+                }
+
+                return true;
             });
             if (ch) return { ch, volId: vol.id };
         }

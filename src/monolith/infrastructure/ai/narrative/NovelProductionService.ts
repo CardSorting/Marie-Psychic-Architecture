@@ -4,6 +4,7 @@ import { NarrativeFileSystem } from "./NarrativeFileSystem.js";
 import { IProductionStrategy } from "./strategies/IProductionStrategy.js";
 import { EssayProductionStrategy } from "./strategies/EssayStrategy.js";
 import { StructuredProductionStrategy } from "./strategies/StructuredStrategy.js";
+import { LinkedInProductionStrategy } from "./strategies/LinkedInStrategy.js";
 import { WorldService } from "./WorldService.js";
 
 // ─── Pass Phases ───────────────────────────────────────────────
@@ -76,6 +77,7 @@ export interface NovelChapter {
   mode?: string;
   wordCount?: number;
   lastModified?: string;
+  scheduledDate?: string; // ISO format
 }
 
 // ─── Service ───────────────────────────────────────────────────
@@ -94,6 +96,7 @@ export class NovelProductionService {
     // Register strategies
     this.registerStrategy(new EssayProductionStrategy());
     this.registerStrategy(new StructuredProductionStrategy(this.worldService));
+    this.registerStrategy(new LinkedInProductionStrategy(this.worldService));
   }
 
   public registerStrategy(strategy: IProductionStrategy) {
