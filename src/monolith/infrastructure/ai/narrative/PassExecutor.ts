@@ -15,6 +15,9 @@ import { passSoul } from "./passes/PassSoul.js";
 import { passContinuity } from "./passes/PassContinuity.js";
 import { passReception } from "./passes/PassReception.js";
 import { passEvolve } from "./passes/PassEvolve.js";
+import { passSimulation } from "./passes/PassSimulation.js";
+import { passFoundation } from "./passes/PassFoundation.js";
+import { passBeats } from "./passes/PassBeats.js";
 
 export interface ExecutionResult {
     success: boolean;
@@ -49,6 +52,69 @@ export class PassExecutor {
         let feedback: any = undefined;
 
         switch (pass) {
+            case "SIMULATION":
+                passOk = await passSimulation(this.marie, ch, this.log, this.worldService);
+                if (passOk) nextPass = "FOUNDATION";
+                break;
+
+            case "FOUNDATION":
+                passOk = await passFoundation(
+                    this.marie,
+                    ch,
+                    blueprintPath,
+                    this.log,
+                    this.worldService,
+                    prevSummary
+                );
+                if (passOk) nextPass = "BEATS";
+                break;
+
+            case "BEATS":
+                passOk = await passBeats(
+                    this.marie,
+                    ch,
+                    blueprintPath,
+                    targetPath,
+                    this.log,
+                    this.worldService.getWorldContext([ch.title])
+                );
+                if (passOk) nextPass = "DRAFT";
+                break;
+
+            case "DRAFT":
+                passOk = await passFlesh(
+                    this.marie,
+                    ch,
+                    targetPath,
+                    this.log,
+                    this.worldService.getWorldContext([ch.title]),
+                    this.editorialService,
+                    this.worldService
+                );
+                if (passOk) nextPass = "COHESION";
+                break;
+
+            case "COHESION":
+                // Structured cohesion combines Nerve and Soul
+                await passNerve(
+                    this.marie,
+                    ch,
+                    targetPath,
+                    this.log,
+                    this.worldService.getWorldContext([ch.title]),
+                    this.editorialService
+                );
+                passOk = await passSoul(
+                    this.marie,
+                    ch,
+                    targetPath,
+                    this.log,
+                    this.worldService.getWorldContext([ch.title]),
+                    this.editorialService
+                );
+                if (passOk) nextPass = "CANON";
+                break;
+
             case "BLUEPRINT":
                 // 1. Showrunner Check (only if not a retry)
                 if (!rejectionFeedback) {

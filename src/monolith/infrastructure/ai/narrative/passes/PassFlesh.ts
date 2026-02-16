@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { MarieCLI } from "../../../../adapters/CliMarieAdapter.js";
 import { Log } from "../ProductionLogger.js";
 import { EditorialService, CritiqueResult } from "../EditorialService.js";
@@ -17,18 +18,58 @@ export async function passFlesh(
 ): Promise<boolean> {
     const skeleton = await readSafe(targetPath);
     // Parse scenes from Skeleton using simple regex since we structured it
-    const scenes = skeleton.split(/(?=\*\*Scene \d+:)/).filter(s => s.trim().length > 0);
+    const scenes = skeleton.split(/(?=\*\*Scene \d+:)/).filter(s => s.trim().length > 0 && s.includes("**Scene"));
+
+    if (scenes.length === 0) {
+        await log.write(ch.id, "FLESH", "❌ No scenes detected in skeleton. Check BEATS/SKELETON output.");
+        return false;
+    }
+
+    // ─── TEMP DIRECTORY FOR ATOMIC RESUMPTION ───
+    const tempDir = targetPath.replace(".md", "_Temp");
+    await fs.mkdir(tempDir, { recursive: true });
 
     const proseParts: string[] = [`# Chapter ${ch.id}: ${ch.title}\n\n`];
     let previousSceneEnding = "";
+
+    // Load existing progress into proseParts
+    for (const sceneBlock of scenes) {
+        const titleMatch = sceneBlock.match(/\*\*Scene (\d+): (.+?)\*\*/);
+        if (!titleMatch) continue;
+        const id = titleMatch[1];
+        const title = titleMatch[2];
+        const sceneFile = path.join(tempDir, `Scene_${id}.md`);
+
+        const existingProse = await readSafe(sceneFile);
+        if (existingProse.length > 500) {
+            process.stdout.write(`   📜 Scene ${id} loaded from temp cache.\n`);
+            proseParts.push(`## Scene ${id}: ${title}\n\n${existingProse}\n\n---\n\n`);
+            previousSceneEnding = existingProse;
+        } else {
+            // This is the first missing scene
+            break;
+        }
+    }
+
+    // Incremental writer helper
+    const syncChapterFile = async () => {
+        await fs.writeFile(targetPath, proseParts.join(""));
+    };
+
+    // Initialize/Sync starting state
+    await syncChapterFile();
 
     for (const sceneBlock of scenes) {
         const titleMatch = sceneBlock.match(/\*\*Scene (\d+): (.+?)\*\*/);
         const id = titleMatch ? titleMatch[1] : "?";
         const title = titleMatch ? titleMatch[2] : "Unix scene";
+        const sceneFile = path.join(tempDir, `Scene_${id}.md`);
+        const partialFile = path.join(tempDir, `Scene_${id}_Partial.md`);
+
+        // Skip if already in proseParts (loaded from cache)
+        if (proseParts.some(p => p.startsWith(`## Scene ${id}:`))) continue;
 
         // ─── CONTEXT INJECTION ───
-        // Extract capitalized names as a heuristic for characters present
         const possibleNames = sceneBlock.match(/\b[A-Z][a-z]+\b/g) || [];
         const uniqueNames = [...new Set(possibleNames)];
         const actorCards = worldService.getCharacterProfiles(uniqueNames);
@@ -42,10 +83,7 @@ export async function passFlesh(
             attempt++;
 
             // ─── QUANTUM WRITING (Parallel Generation) ───
-            // If attempt > 1, we deploy the "Quantum Array" to break the deadlock
-            let variances = [];
             if (attempt === 1) {
-                // Standard single-shot
                 const p = `Novelist Mode. Write prose for Scene ${id}: "${title}".
                 ${lore}
                 ACTOR PROFILES: ${actorCards}
@@ -53,17 +91,17 @@ export async function passFlesh(
                 NOTES: ${sceneBlock}
                 Write 600-1000 words. High drama.`;
 
-                currentProse = await captureWithRetry(marie, p, log, ch.id, "FLESH", `Scene ${id}`, 300);
+                // Uses streamToFile for the current attempt
+                currentProse = await captureWithRetry(marie, p, log, ch.id, "FLESH", `Scene ${id}`, 300, 2, partialFile);
             } else {
                 process.stdout.write(`   ⚛️  QUANTUM MODE ENGAGED (Generating 3 Variants)...\n`);
-                // Parallel generation of 3 distinct flavors
                 const flavors = [
                     { type: "ACTION", focus: "Pacing, Kinetic Movement, Impact" },
                     { type: "SUBTEXT", focus: "Hidden Meanings, Psychological Tension, Silence" },
                     { type: "SENSORY", focus: "Atmosphere, Smell, Texture, Immersion" }
                 ];
 
-                const promises = flavors.map(async (flavor) => {
+                const promises = flavors.map(async (flavor, idx) => {
                     const qPrompt = `Novelist Mode. Write prose for Scene ${id}: "${title}".
                     STYLE FOCUS: ${flavor.type} (${flavor.focus})
                     ${lore}
@@ -71,42 +109,29 @@ export async function passFlesh(
                     PREVIOUS: ...${previousSceneEnding.slice(-500)}
                     NOTES: ${sceneBlock}
                     Write 600-1000 words.`;
-                    return captureWithRetry(marie, qPrompt, log, ch.id, "FLESH", `Variant ${flavor.type}`, 300);
+                    const vPartial = path.join(tempDir, `Scene_${id}_V${idx}_Partial.md`);
+                    return captureWithRetry(marie, qPrompt, log, ch.id, "FLESH", `Variant ${flavor.type}`, 300, 2, vPartial);
                 });
 
                 const results = await Promise.all(promises);
-
-                // Editor selects the best one (Simplified: Chief Editor picks)
-                const selectionPrompt = `Chief Editor Mode. Select the best version of Scene ${id}.
-                
-                VARIANT A (ACTION):
-                ${results[0].slice(0, 500)}...
-                
-                VARIANT B (SUBTEXT):
-                ${results[1].slice(0, 500)}...
-                
-                VARIANT C (SENSORY):
-                ${results[2].slice(0, 500)}...
-                
-                TASK: Return the Index (0, 1, or 2) of the best version. Just the number.`;
+                const selectionPrompt = `Chief Editor Mode. Select the best version of Scene ${id}.\nVARIANT A (ACTION):\n${results[0].slice(0, 500)}...\nVARIANT B (SUBTEXT):\n${results[1].slice(0, 500)}...\nVARIANT C (SENSORY):\n${results[2].slice(0, 500)}...\nTASK: Return the Index (0, 1, or 2) of the best version. Just the number.`;
 
                 const choice = await captureAgentOutput(marie, selectionPrompt);
                 const winnerIndex = parseInt(choice.match(/\d/)?.[0] || "0");
                 process.stdout.write(`   🏆 Quantum Collapse: Variant ${flavors[winnerIndex].type} Selected.\n`);
 
                 currentProse = results[winnerIndex];
+                await fs.writeFile(partialFile, currentProse); // Upgrade partial to the winner
                 await log.write(ch.id, "FLESH", `Quantum Selection: ${flavors[winnerIndex].type}`);
             }
 
             // ─── THE GAUNTLET ───
             process.stdout.write(`\n⚔️  Entering The Gauntlet (Scene ${id}, Attempt ${attempt})...\n`);
             const critiques: CritiqueResult[] = [];
-
             const editors = attempt > 1 ? ["CHIEF_EDITOR", "DIRECTOR", "LOGICIAN", "THE_FIXER"] as const : ["CHIEF_EDITOR", "DIRECTOR", "LOGICIAN"] as const;
 
             for (const role of editors) {
                 const cPrompt = editorialService.getPrompt(role, currentProse, lore);
-                // Casting strict role 
                 const res = await captureAgentOutput(marie, cPrompt);
                 critiques.push(editorialService.parseCritique(role as any, res));
             }
@@ -122,9 +147,10 @@ export async function passFlesh(
 
                 if (decision.strategy === "PROSE_FIX") {
                     const fixPrompt = editorialService.generateRevisionDirectives(decision, currentProse);
-                    const fixed = await captureWithRetry(marie, fixPrompt, log, ch.id, "FLESH", `Fix Scene ${id}`, countWords(currentProse));
+                    const fixed = await captureWithRetry(marie, fixPrompt, log, ch.id, "FLESH", `Fix Scene ${id}`, countWords(currentProse), 2, partialFile + "_fixed");
                     if (countWords(fixed) > countWords(currentProse) * 0.5) {
                         currentProse = fixed;
+                        await fs.writeFile(partialFile, currentProse);
                         const fatal = critiques.some(c => c.blocking);
                         if (!fatal) solved = true;
                     }
@@ -133,40 +159,33 @@ export async function passFlesh(
                     const doctorPrompt = editorialService.getPrompt("PLOT_DOCTOR", currentProse, lore);
                     const doctorRaw = await captureAgentOutput(marie, doctorPrompt);
                     const prescription = editorialService.parseCritique("PLOT_DOCTOR" as any, doctorRaw);
-
                     process.stdout.write(`   💉 Doctor's Orders: ${prescription.feedback}\n`);
-
                     await log.write(ch.id, "FLESH", `DOCTOR INTERVENTION: ${prescription.feedback}`);
 
-                    // Rewrite with Doctor's Orders
-                    const rewritePrompt = `Novelist Mode. REWRITE Scene ${id} completely.
-          
-          DOCTOR'S ORDERS (STRICT):
-          ${prescription.feedback}
-          
-          Previous Context:
-          ${lore}
-          
-          Write 800-1200 words. Execute the intervention.`;
-
-                    currentProse = await captureWithRetry(marie, rewritePrompt, log, ch.id, "FLESH", `Doctor Rewrite ${id}`, 400);
-
-                    // The Doctor's rewrite is usually final for this attempt loop
+                    const rewritePrompt = `Novelist Mode. REWRITE Scene ${id} completely.\nDOCTOR'S ORDERS (STRICT):\n${prescription.feedback}\nPrevious Context:\n${lore}\nWrite 800-1200 words. Execute the intervention.`;
+                    currentProse = await captureWithRetry(marie, rewritePrompt, log, ch.id, "FLESH", `Doctor Rewrite ${id}`, 400, 2, partialFile + "_doctor");
                     solved = true;
                 }
             }
         }
+
         if (!solved) {
             await log.write(ch.id, "FLESH", `Scene ${id} FAILED after 3 attempts. Manual Review Required.`);
-            proseParts.push(`## Scene ${id}: ${title} [FAILED]\n\n> [!WARNING] DEADLOCK\n> The AI could not resolve this scene.\n\n${currentProse}\n\n---\n\n`);
+            const failedBlock = `## Scene ${id}: ${title} [FAILED]\n\n> [!WARNING] DEADLOCK\n> The AI could not resolve this scene.\n\n${currentProse}\n\n---\n\n`;
+            proseParts.push(failedBlock);
         } else {
+            // Save to temp file
+            await fs.writeFile(sceneFile, currentProse);
             proseParts.push(`## Scene ${id}: ${title}\n\n${currentProse}\n\n---\n\n`);
             previousSceneEnding = currentProse;
+            // Clean partial
+            await readSafe(partialFile).then(() => fs.unlink(partialFile).catch(() => { }));
         }
+
+        // IMMEDIATELY SYNC CHAPTER FILE AFTER EACH SCENE
+        await syncChapterFile();
     }
 
-    await fs.writeFile(targetPath, proseParts.join(""));
-    await sleep(3000);
-
+    await sleep(2000);
     return true;
 }

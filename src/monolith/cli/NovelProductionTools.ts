@@ -312,4 +312,50 @@ export function registerNovelTools(
       return `Consistency Issues Found:\n${issues.join("\n")}`;
     }
   });
+
+  registry.register({
+    name: "compile_manuscript",
+    description: "Compile all CANON chapters into a single lightnovel.md manuscript.",
+    input_schema: {
+      type: "object",
+      properties: {
+        outputPath: { type: "string", description: "Path to write the final manuscript" }
+      },
+      required: ["outputPath"]
+    },
+    execute: async (args) => {
+      await novelService.initialize();
+      const outputPath = getStringArg(args, "outputPath");
+      const fullOutputPath = path.isAbsolute(outputPath) ? outputPath : path.join(workingDir, outputPath);
+
+      const structure = (novelService as any).structure;
+      if (!structure || !structure.volumes) return "Error: No novel structure found.";
+
+      let finalContent = "";
+      const volumes = structure.volumes;
+
+      for (const vol of volumes) {
+        finalContent += `# ${vol.title}\n\n`;
+        for (const chap of vol.chapters) {
+          if (chap.currentPass === "CANON") {
+            const chapFilePath = chap.files[0];
+            if (chapFilePath) {
+              const fullChapPath = path.join(workingDir, chapFilePath);
+              try {
+                const content = await fs.readFile(fullChapPath, "utf-8");
+                finalContent += `## Chapter ${chap.id}: ${chap.title}\n\n${content}\n\n`;
+              } catch (e) {
+                finalContent += `## Chapter ${chap.id}: ${chap.title}\n\n*[Error reading chapter file]*\n\n`;
+              }
+            }
+          } else {
+            finalContent += `## Chapter ${chap.id}: ${chap.title}\n\n*[Chapter not yet CANON]*\n\n`;
+          }
+        }
+      }
+
+      await fs.writeFile(fullOutputPath, finalContent);
+      return `Manuscript compiled successfully to ${outputPath}`;
+    }
+  });
 }

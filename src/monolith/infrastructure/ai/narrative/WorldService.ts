@@ -58,6 +58,7 @@ export class WorldService {
     // ─── ENTITY MANAGEMENT ─────────────────────────────────────────────────
 
     public async addEntity(entity: WorldEntity) {
+        if (!entity.id) return;
         const existingIndex = this.bible.entities.findIndex((e) => e.id === entity.id);
         if (existingIndex >= 0) {
             this.bible.entities[existingIndex] = entity;
@@ -84,6 +85,7 @@ export class WorldService {
         if (existingRelIndex >= 0) {
             source.relationships[existingRelIndex] = { targetId, type, description };
         } else {
+            if (!source.relationships) source.relationships = [];
             source.relationships.push({ targetId, type, description });
         }
 
@@ -142,10 +144,12 @@ export class WorldService {
         // 1. Direct Matches
         for (const entity of this.bible.entities) {
             // Simplified keyword matching
-            const isMatch = keywords.some(k =>
-                entity.name.toLowerCase().includes(k.toLowerCase()) ||
-                entity.tags.some(t => t.toLowerCase() === k.toLowerCase())
-            );
+            const isMatch = keywords.some(k => {
+                if (!k) return false;
+                const nameMatch = entity.name ? entity.name.toLowerCase().includes(k.toLowerCase()) : false;
+                const tagMatch = entity.tags ? entity.tags.some(t => t && t.toLowerCase() === k.toLowerCase()) : false;
+                return nameMatch || tagMatch;
+            });
 
             if (isMatch) {
                 relevantNodes.set(entity.id, { entity, relevance: 1.0, reason: "Direct Match" });
@@ -155,15 +159,17 @@ export class WorldService {
         // 2. Traversal (1st Degree)
         const directMatches = Array.from(relevantNodes.values());
         for (const node of directMatches) {
-            for (const rel of node.entity.relationships) {
-                if (!relevantNodes.has(rel.targetId)) {
-                    const target = this.bible.entities.find(e => e.id === rel.targetId);
-                    if (target) {
-                        relevantNodes.set(target.id, {
-                            entity: target,
-                            relevance: 0.5,
-                            reason: `Linked to ${node.entity.name} (${rel.type})`
-                        });
+            if (node.entity.relationships) {
+                for (const rel of node.entity.relationships) {
+                    if (!relevantNodes.has(rel.targetId)) {
+                        const target = this.bible.entities.find(e => e.id === rel.targetId);
+                        if (target) {
+                            relevantNodes.set(target.id, {
+                                entity: target,
+                                relevance: 0.5,
+                                reason: `Linked to ${node.entity.name || node.entity.id} (${rel.type})`
+                            });
+                        }
                     }
                 }
             }
@@ -191,7 +197,7 @@ export class WorldService {
         if (factions.length > 0) {
             context += `[ACTIVE FACTIONS & GOALS]\n`;
             factions.forEach(f => {
-                context += `### ${f.name} (${f.state || "Active"})\n`;
+                context += `### ${f.name || f.id} (${f.state || "Active"})\n`;
                 if (f.goals) context += `   - Goals: ${f.goals.join(", ")}\n`;
                 if (f.resources) context += `   - Resources: ${f.resources.join(", ")}\n`;
                 context += `\n`;
@@ -202,15 +208,16 @@ export class WorldService {
         const sorted = Array.from(relevantNodes.values()).sort((a, b) => b.relevance - a.relevance);
 
         for (const node of sorted) {
-            context += `### ${node.entity.name} (${node.entity.type})\n`;
+            context += `### ${node.entity.name || node.entity.id} (${node.entity.type})\n`;
             context += `   - Description: ${node.entity.description}\n`;
-            if (Object.keys(node.entity.attributes).length > 0) {
+            if (node.entity.attributes && Object.keys(node.entity.attributes).length > 0) {
                 context += `   - Attributes: ${JSON.stringify(node.entity.attributes)}\n`;
             }
-            if (node.entity.relationships.length > 0) {
+            if (node.entity.relationships && node.entity.relationships.length > 0) {
                 context += `   - Relationships:\n`;
                 node.entity.relationships.forEach(r => {
-                    const targetName = this.bible.entities.find(e => e.id === r.targetId)?.name || r.targetId;
+                    const target = this.bible.entities.find(e => e.id === r.targetId);
+                    const targetName = target ? (target.name || target.id) : r.targetId;
                     context += `     * ${r.type} -> ${targetName}: ${r.description || ""}\n`;
                 });
             }
@@ -381,14 +388,14 @@ export class WorldService {
     public getCharacterProfiles(names: string[]): string {
         const actingTroupe = this.bible.entities.filter(e =>
             e.type === "CHARACTER" &&
-            names.some(n => e.name.toLowerCase().includes(n.toLowerCase()))
+            names.some(n => n && e.name && e.name.toLowerCase().includes(n.toLowerCase()))
         );
 
         if (actingTroupe.length === 0) return "";
 
         let profiles = `[ACTOR CARDS]\n`;
         for (const actor of actingTroupe) {
-            profiles += `### ${actor.name}\n`;
+            profiles += `### ${actor.name || actor.id}\n`;
             profiles += `   - Role: ${actor.description}\n`;
             profiles += `   - Motivation: ${actor.goals ? actor.goals[0] : "Unknown"}\n`;
             if (actor.voiceProfile) {

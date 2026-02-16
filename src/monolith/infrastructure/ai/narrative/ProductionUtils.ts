@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { MarieCLI } from "../../../adapters/CliMarieAdapter.js";
 import { Log } from "./ProductionLogger.js";
 
@@ -27,15 +28,37 @@ export function cleanStreamOutput(raw: string): string {
     return text.trim();
 }
 
+/** Robustly extract JSON block from text even if it has preamble */
+export function extractJSON(text: string): any {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start === -1 || end === -1) return null;
+    const jsonBody = text.substring(start, end + 1);
+    try {
+        return JSON.parse(jsonBody);
+    } catch {
+        return null;
+    }
+}
+
 export async function captureAgentOutput(
     marie: MarieCLI,
     prompt: string,
+    streamToFile?: string
 ): Promise<string> {
     const chunks: string[] = [];
+    if (streamToFile) {
+        await fs.mkdir(path.dirname(streamToFile), { recursive: true });
+        await fs.writeFile(streamToFile, ""); // clear
+    }
+
     await marie.handleMessage(prompt, {
-        onStream: (chunk) => {
+        onStream: async (chunk) => {
             chunks.push(chunk);
             process.stdout.write(chunk);
+            if (streamToFile) {
+                await fs.appendFile(streamToFile, chunk);
+            }
         },
         onTool: (tool) => {
             process.stdout.write(`\n🛠️ Tool: ${tool.name}\n`);
@@ -61,13 +84,14 @@ export async function captureWithRetry(
     label: string,
     minWords: number = 50,
     maxRetries: number = 2,
+    streamFile?: string
 ): Promise<string> {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         const finalPrompt = attempt === 1 ? prompt : `${prompt}\n\nCRITICAL: RESPONSE TOO SHORT. Must be > ${minWords} words. Attempt ${attempt}/${maxRetries}.`;
 
         let captured = "";
         try {
-            captured = await captureAgentOutput(marie, finalPrompt);
+            captured = await captureAgentOutput(marie, finalPrompt, streamFile);
         } catch (err: any) {
             await log.write(ch, pass, `${label}: agent error (${err.message})`);
         }

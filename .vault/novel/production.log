@@ -1,285 +1,110 @@
-[01:13:46] Ch1/SKELETON: Starting granular architecture mode
-[01:13:52] Ch1/SKELETON: Scene List: captured 242w
-[01:13:58] Ch1/SKELETON: Notes: Reboot in Stone: captured 426w
-[01:14:08] Ch1/SKELETON: Notes: Architecture of Enlightenment: captured 573w
-[01:14:26] Ch1/SKELETON: Notes: The Async Choir's Call: captured 538w
-[01:14:47] Ch1/SKELETON: Notes: Voice Dropout: captured 633w
-[01:14:58] Ch1/SKELETON: Notes: Vision of the Source: captured 593w
-[01:15:16] Ch1/SKELETON: Notes: Summoned by the Cardinal: captured 842w
-[01:15:33] Ch1/SKELETON: Notes: The Type Check Ritual: captured 1041w
-[01:15:53] Ch1/SKELETON: Notes: The Verdict: captured 1218w
-[01:16:04] Ch1/SKELETON: Metadata: captured 194w
-[01:16:04] Ch1/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 80. Advanced to FLESH. '.vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md': 19 unresolved markers.
-[01:16:27] Ch1/FLESH: Scene 1: captured 798w
-[01:16:43] Ch1/FLESH: Scene 2: captured 946w
-[01:17:04] Ch1/FLESH: Scene 3: captured 1161w
-[01:17:21] Ch1/FLESH: Scene 4: captured 1028w
-[01:17:37] Ch1/FLESH: Scene 5: captured 963w
-[01:29:14] Ch1/SKELETON: Starting granular architecture mode
-[01:29:24] Ch1/SKELETON: Scene List: captured 243w
-[01:29:31] Ch1/SKELETON: Notes: Reboot in Stone: captured 597w
-[01:29:47] Ch1/SKELETON: Notes: Architecture of Enlightenment: captured 843w
-[01:30:04] Ch1/SKELETON: Notes: The Async Choir's Call: captured 959w
-[01:30:17] Ch1/SKELETON: Notes: Voice Dropout: captured 683w
-[01:30:32] Ch1/SKELETON: Notes: Vision of the Source: captured 1057w
-[01:30:54] Ch1/SKELETON: Notes: Summoned by the Cardinal: captured 1299w
-[01:31:13] Ch1/SKELETON: Notes: The Type Check Ritual: captured 1233w
-[01:31:28] Ch1/SKELETON: Notes: The Verdict: captured 1310w
-[01:31:37] Ch1/SKELETON: Metadata: captured 407w
-[01:31:38] Ch1/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 80. Advanced to FLESH. '.vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md': 32 unresolved markers.
-[01:31:56] Ch1/FLESH: Scene 1: captured 798w
-[01:32:12] Ch1/FLESH: Scene 2: captured 947w
-[01:32:28] Ch1/FLESH: Scene 3: captured 1318w
-[01:32:43] Ch1/FLESH: Scene 4: captured 1029w
-[01:32:59] Ch1/FLESH: Scene 5: captured 1029w
-[01:33:15] Ch1/FLESH: Scene 6: captured 1138w
-[01:33:32] Ch1/FLESH: Scene 7: captured 1192w
-[01:33:54] Ch1/FLESH: Scene 8: captured 968w
-[01:33:58] Ch1/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 80. Advanced to NERVE. '.vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md': 15 unresolved markers.
-[01:34:35] Ch1/NERVE: Expand 1: captured 1372w
-[01:34:51] Ch1/NERVE: Expand 2: captured 1074w
-[01:35:08] Ch1/NERVE: Expand 3: captured 1238w
-[01:35:24] Ch1/NERVE: Expand 4: captured 1739w
-[01:35:41] Ch1/NERVE: Expand 5: captured 1436w
-[01:36:03] Ch1/NERVE: Expand 6: captured 1525w
-[01:36:22] Ch1/NERVE: Expand 7: captured 1572w
-[01:37:03] Ch1/NERVE: Expand 8: captured 1735w
-[01:37:22] Ch1/NERVE: Expand 9: captured 1395w
-[01:37:26] Ch1/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 80. Advanced to SOUL. '.vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md': 26 unresolved markers.
-[01:37:55] Ch1/SOUL: Polish 1: captured 1353w
-[01:38:42] Ch1/SOUL: Polish 2: too short (0w). Retry 2/2...
-[01:39:27] Ch1/SOUL: Polish 2: failed after 2 retries
-[01:39:31] Ch1/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 80. Advanced to CANON. '.vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md': 26 unresolved markers.
-[01:39:39] Ch2/SKELETON: Starting granular architecture mode
-[01:39:54] Ch2/SKELETON: Scene List: captured 206w
-[01:40:11] Ch2/SKELETON: Notes: The Ascent to the Spire: too short (0w). Retry 2/2...
-[01:40:28] Ch2/SKELETON: Notes: The Ascent to the Spire: captured 304w
-[01:40:53] Ch2/SKELETON: Notes: Thethreshold of the Oracle: captured 547w
-[01:41:14] Ch2/SKELETON: Notes: The Pope’s Gentle Inquiry: captured 460w
-[01:41:34] Ch2/SKELETON: Notes: The Clouded Blessing: captured 461w
-[01:41:57] Ch2/SKELETON: Notes: The Hidden Leak Revealed: captured 487w
-[01:42:14] Ch2/SKELETON: Notes: The Choice Restated: captured 514w
-[01:42:38] Ch2/SKELETON: Notes: The Resonant Dismissal: captured 690w
-[01:42:57] Ch2/SKELETON: Metadata: captured 748w
-[01:42:57] Ch2/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 85. Advanced to FLESH. '.vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md': 3 unresolved markers.
-[01:43:30] Ch2/FLESH: Scene 1: captured 753w
-[01:44:00] Ch2/FLESH: Scene 2: captured 1423w
-[01:44:21] Ch2/FLESH: Scene 3: captured 849w
-[01:44:43] Ch2/FLESH: Scene 4: captured 1149w
-[01:45:07] Ch2/FLESH: Scene 5: captured 1155w
-[01:45:27] Ch2/FLESH: Scene 6: captured 1170w
-[01:45:48] Ch2/FLESH: Scene 7: captured 1201w
-[01:45:52] Ch2/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 80. Advanced to NERVE. '.vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md': 7 unresolved markers.
-[01:46:44] Ch2/NERVE: Expand 1: too short (0w). Retry 2/2...
-[01:47:04] Ch2/NERVE: Expand 1: captured 766w
-[01:47:20] Ch2/NERVE: Expand 2: captured 838w
-[01:47:47] Ch2/NERVE: Expand 3: captured 2110w
-[01:48:06] Ch2/NERVE: Expand 4: captured 1097w
-[01:48:26] Ch2/NERVE: Expand 5: captured 1326w
-[01:48:46] Ch2/NERVE: Expand 6: captured 1682w
-[01:49:33] Ch2/NERVE: Expand 7: too short (0w). Retry 2/2...
-[01:49:38] Ch2/NERVE: Expand 7: failed after 2 retries
-[01:49:57] Ch2/NERVE: Expand 8: captured 1424w
-[01:50:01] Ch2/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 80. Advanced to SOUL. '.vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md': 9 unresolved markers.
-[01:50:47] Ch2/SOUL: Polish 1: too short (0w). Retry 2/2...
-[01:51:22] Ch2/SOUL: Polish 1: captured 5629w
-[01:52:09] Ch2/SOUL: Polish 2: captured 3180w
-[01:52:46] Ch2/SOUL: Polish 3: too short (1067w). Retry 2/2...
-[01:53:37] Ch2/SOUL: Polish 3: captured 2205w
-[01:54:06] Ch2/SOUL: Polish 4: captured 1946w
-[01:54:40] Ch2/SOUL: Polish 5: captured 3377w
-[01:54:44] Ch2/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 80. Advanced to CANON. '.vault/novel/chapters/Chapter_2_The_Holy_Papal_Oracle.md': 18 unresolved markers.
-[01:54:52] Ch3/SKELETON: Starting granular architecture mode
-[01:55:04] Ch3/SKELETON: Scene List: captured 330w
-[01:55:36] Ch3/SKELETON: Notes: The Unseen Cathedral: captured 1599w
-[01:56:10] Ch3/SKELETON: Notes: Audience with the Arch Priest: captured 1766w
-[01:56:41] Ch3/SKELETON: Notes: The Blueprint of Power: captured 1829w
-[01:57:17] Ch3/SKELETON: Notes: The Sects and Their Sigils: captured 1846w
-[01:57:50] Ch3/SKELETON: Notes: The Unspoken Schism: captured 1484w
-[01:58:28] Ch3/SKELETON: Notes: The Architect’s Dilemma: captured 2219w
-[01:59:04] Ch3/SKELETON: Notes: A Proposal in Pure Syntax: captured 1938w
-[01:59:48] Ch3/SKELETON: Notes: The Cost of a Signature: captured 1780w
-[02:00:23] Ch3/SKELETON: Metadata: captured 1352w
-[02:00:23] Ch3/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 80. Advanced to FLESH. '.vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md': 22 unresolved markers.
-[02:01:00] Ch3/FLESH: Scene 1: captured 1101w
-[02:01:31] Ch3/FLESH: Scene 2: captured 1051w
-[02:01:55] Ch3/FLESH: Scene 3: captured 1076w
-[02:02:26] Ch3/FLESH: Scene 4: captured 1233w
-[02:02:43] Ch3/FLESH: Scene 5: captured 802w
-[02:03:12] Ch3/FLESH: Scene 6: captured 1266w
-[02:03:36] Ch3/FLESH: Scene 7: captured 1309w
-[02:04:00] Ch3/FLESH: Scene 8: captured 1079w
-[02:04:04] Ch3/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 80. Advanced to NERVE. '.vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md': 16 unresolved markers.
-[02:04:34] Ch3/NERVE: Expand 1: captured 1458w
-[02:04:59] Ch3/NERVE: Expand 2: captured 1341w
-[02:05:21] Ch3/NERVE: Expand 3: captured 1411w
-[02:05:46] Ch3/NERVE: Expand 4: captured 1484w
-[02:06:14] Ch3/NERVE: Expand 5: captured 1691w
-[02:06:40] Ch3/NERVE: Expand 6: captured 1084w
-[02:07:04] Ch3/NERVE: Expand 7: captured 1736w
-[02:07:43] Ch3/NERVE: Expand 8: captured 1637w
-[02:08:07] Ch3/NERVE: Expand 9: captured 1586w
-[02:08:11] Ch3/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 80. Advanced to SOUL. '.vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md': 19 unresolved markers.
-[02:08:59] Ch3/SOUL: Polish 1: too short (4145w). Retry 2/2...
-[02:09:46] Ch3/SOUL: Polish 1: failed after 2 retries
-[02:09:50] Ch3/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 80. Advanced to CANON. '.vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md': 19 unresolved markers.
-[02:09:58] Ch4/SKELETON: Starting granular architecture mode
-[02:10:15] Ch4/SKELETON: Scene List: captured 198w
-[02:10:40] Ch4/SKELETON: Notes: The Doctrine of Compile-Time: captured 1467w
-[02:11:11] Ch4/SKELETON: Notes: The Heresy of any: captured 1658w
-[02:11:43] Ch4/SKELETON: Notes: Litany of the Pure Interface: captured 1607w
-[02:12:16] Ch4/SKELETON: Notes: The Cost of Purity: captured 1738w
-[02:12:40] Ch4/SKELETON: Notes: The Contract's Shadow: captured 769w
-[02:13:14] Ch4/SKELETON: Notes: The Leak's Whisper: captured 1825w
-[02:13:44] Ch4/SKELETON: Notes: The Echo of Choice: captured 1743w
-[02:14:10] Ch4/SKELETON: Metadata: captured 1526w
-[02:14:10] Ch4/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 80. Advanced to FLESH. '.vault/novel/chapters/Chapter_4_The_Doctrine_of_Compile_Time_Salvation.md': 6 unresolved markers.
-[02:14:39] Ch4/FLESH: Scene 1: captured 1268w
-[02:15:09] Ch4/FLESH: Scene 2: captured 1316w
-[02:15:37] Ch4/FLESH: Scene 3: captured 1313w
-[02:16:15] Ch4/FLESH: Scene 4: captured 1373w
-[02:16:40] Ch4/FLESH: Scene 1: captured 1098w
-[02:17:03] Ch4/FLESH: Scene 2: captured 803w
-[02:17:26] Ch4/FLESH: Scene 3: captured 1167w
-[02:17:39] Ch4/FLESH: Scene 4: captured 561w
-[02:17:57] Ch4/FLESH: Scene 5: captured 940w
-[02:18:16] Ch4/FLESH: Scene 5: captured 1173w
-[02:18:36] Ch4/FLESH: Scene 6: captured 1491w
-[02:18:55] Ch4/FLESH: Scene 7: captured 1404w
-[02:19:00] Ch4/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 80. Advanced to NERVE. '.vault/novel/chapters/Chapter_4_The_Doctrine_of_Compile_Time_Salvation.md': 8 unresolved markers.
-[02:19:34] Ch4/NERVE: Expand 1: captured 1902w
-[02:19:54] Ch4/NERVE: Expand 2: captured 1334w
-[02:20:09] Ch4/NERVE: Expand 3: captured 1186w
-[02:20:42] Ch4/NERVE: Expand 4: captured 1749w
-[02:20:58] Ch4/NERVE: Expand 5: captured 934w
-[02:21:20] Ch4/NERVE: Expand 6: captured 1448w
-[02:21:41] Ch4/NERVE: Expand 7: captured 1216w
-[02:22:19] Ch4/NERVE: Expand 8: captured 2231w
-[02:22:33] Ch4/NERVE: Expand 9: captured 1044w
-[02:22:58] Ch4/NERVE: Expand 10: captured 1239w
-[02:23:22] Ch4/NERVE: Expand 11: captured 1435w
-[02:23:44] Ch4/NERVE: Expand 12: captured 2167w
-[02:24:16] Ch4/NERVE: Expand 13: captured 1923w
-[02:24:20] Ch4/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 80. Advanced to SOUL. '.vault/novel/chapters/Chapter_4_The_Doctrine_of_Compile_Time_Salvation.md': 9 unresolved markers.
-[02:24:51] Ch4/SOUL: Polish 1: captured 1910w
-[02:25:16] Ch4/SOUL: Polish 2: too short (1910w). Retry 2/2...
-[02:25:58] Ch4/SOUL: Polish 2: captured 4624w
-[02:26:25] Ch4/SOUL: Polish 3: captured 1452w
-[02:26:51] Ch4/SOUL: Polish 4: captured 1543w
-[02:27:23] Ch4/SOUL: Polish 5: too short (2379w). Retry 2/2...
-[02:28:15] Ch4/SOUL: Polish 5: failed after 2 retries
-[02:29:05] Ch4/SOUL: Polish 6: captured 4125w
-[02:29:09] Ch4/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 80. Advanced to CANON. '.vault/novel/chapters/Chapter_4_The_Doctrine_of_Compile_Time_Salvation.md': 10 unresolved markers.
-[02:29:17] Ch5/SKELETON: Starting granular architecture mode
-[02:29:33] Ch5/SKELETON: Scene List: captured 258w
-[02:29:53] Ch5/SKELETON: Notes: The Summons to the Joy Zone: captured 1078w
-[02:30:32] Ch5/SKELETON: Notes: Emotional Compilation: captured 1677w
-[02:31:24] Ch5/SKELETON: Notes: The Liturgy of Removal: captured 1746w
-[02:32:10] Ch5/SKELETON: Notes: The Pruning Stroke: captured 1532w
-[02:32:56] Ch5/SKELETON: Notes: Echoes in the Void: captured 1365w
-[02:33:29] Ch5/SKELETON: Notes: Confession of the Deleted: captured 1714w
-[02:33:59] Ch5/SKELETON: Notes: Replanting the Grove: captured 1738w
-[02:34:35] Ch5/SKELETON: Notes: The Unfinished Symphony: captured 1721w
-[02:35:08] Ch5/SKELETON: Metadata: captured 2099w
-[02:35:08] Ch5/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 80. Advanced to FLESH. '.vault/novel/chapters/Chapter_5_Joy_Zoning_and_the_Ritual_of_Deletion.md': 4 unresolved markers.
-[02:35:38] Ch5/FLESH: Scene 1: captured 1072w
-[02:35:59] Ch5/FLESH: Scene 2: captured 1020w
-[02:36:25] Ch5/FLESH: Scene 3: captured 1283w
-[02:36:48] Ch5/FLESH: Scene 4: captured 1179w
-[02:37:08] Ch5/FLESH: Scene 5: captured 1008w
-[02:37:27] Ch5/FLESH: Scene 6: captured 1131w
-[02:37:50] Ch5/FLESH: Scene 7: captured 1344w
-[02:38:12] Ch5/FLESH: Scene 8: captured 1533w
-[02:38:16] Ch5/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 90. Advanced to NERVE. '.vault/novel/chapters/Chapter_5_Joy_Zoning_and_the_Ritual_of_Deletion.md': 2 unresolved markers.
-[02:38:59] Ch5/NERVE: Expand 1: captured 2030w
-[02:39:23] Ch5/NERVE: Expand 2: captured 1334w
-[02:39:45] Ch5/NERVE: Expand 3: captured 1275w
-[02:40:11] Ch5/NERVE: Expand 4: captured 1657w
-[02:40:39] Ch5/NERVE: Expand 5: captured 1471w
-[02:41:05] Ch5/NERVE: Expand 6: captured 1417w
-[02:41:31] Ch5/NERVE: Expand 7: captured 1467w
-[02:42:19] Ch5/NERVE: Expand 8: captured 1912w
-[02:42:50] Ch5/NERVE: Expand 9: captured 2092w
-[02:42:54] Ch5/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 90. Advanced to SOUL. '.vault/novel/chapters/Chapter_5_Joy_Zoning_and_the_Ritual_of_Deletion.md': 2 unresolved markers.
-[02:43:29] Ch5/SOUL: Polish 1: too short (1852w). Retry 2/2...
-[02:44:05] Ch5/SOUL: Polish 1: captured 3329w
-[02:44:34] Ch5/SOUL: Polish 2: captured 1577w
-[02:45:23] Ch5/SOUL: Polish 3: too short (4687w). Retry 2/2...
-[02:46:10] Ch5/SOUL: Polish 3: failed after 2 retries
-[02:46:14] Ch5/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 85. Advanced to CANON. '.vault/novel/chapters/Chapter_5_Joy_Zoning_and_the_Ritual_of_Deletion.md': 3 unresolved markers.
-[02:46:22] Ch6/SKELETON: Starting granular architecture mode
-[02:46:35] Ch6/SKELETON: Scene List: captured 337w
-[02:47:04] Ch6/SKELETON: Notes: The Threshold of Halting: captured 1398w
-[02:47:36] Ch6/SKELETON: Notes: The Liturgy of Patience: captured 1546w
-[02:48:03] Ch6/SKELETON: Notes: The Theorem of Stillness: captured 1552w
-[02:48:38] Ch6/SKELETON: Notes: The Un powdered Interruption: captured 1613w
-[02:49:14] Ch6/SKELETON: Notes: The Debugging of the Soul: captured 1566w
-[02:50:14] Ch6/SKELETON: Notes: The Convergence of Loops: captured 1975w
-[02:50:43] Ch6/SKELETON: Notes: The Revelation of the Fifth Module: captured 1695w
-[02:51:16] Ch6/SKELETON: Notes: The Choice of the Yield Point: captured 1790w
-[02:51:45] Ch6/SKELETON: Metadata: captured 1445w
-[02:51:45] Ch6/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 100. Advanced to FLESH. The Editor is pleased. The narrative holds.
-[02:52:15] Ch6/FLESH: Scene 1: captured 1169w
-[02:52:40] Ch6/FLESH: Scene 2: captured 1177w
-[02:53:00] Ch6/FLESH: Scene 3: captured 1019w
-[02:53:21] Ch6/FLESH: Scene 4: captured 856w
-[02:53:44] Ch6/FLESH: Scene 5: captured 1202w
-[02:53:59] Ch6/FLESH: Scene 6: captured 1231w
-[02:54:16] Ch6/FLESH: Scene 7: captured 638w
-[02:54:52] Ch6/FLESH: Scene 8: captured 2123w
-[02:55:11] Ch6/FLESH: Scene 7: captured 847w
-[02:55:32] Ch6/FLESH: Scene 5: captured 999w
-[02:56:00] Ch6/FLESH: Scene 7: captured 1004w
-[02:56:21] Ch6/FLESH: Scene 6: captured 953w
-[02:56:45] Ch6/FLESH: Scene 7: captured 943w
-[02:56:49] Ch6/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 100. Advanced to NERVE. The Editor is pleased. The narrative holds.
-[02:57:14] Ch6/NERVE: Expand 1: captured 1105w
-[02:57:41] Ch6/NERVE: Expand 2: captured 1699w
-[02:58:10] Ch6/NERVE: Expand 3: captured 1510w
-[02:58:37] Ch6/NERVE: Expand 4: captured 1280w
-[02:59:07] Ch6/NERVE: Expand 5: captured 1137w
-[02:59:26] Ch6/NERVE: Expand 6: captured 1348w
-[02:59:47] Ch6/NERVE: Expand 7: captured 1464w
-[03:00:12] Ch6/NERVE: Expand 8: captured 1306w
-[03:00:48] Ch6/NERVE: Expand 9: captured 3128w
-[03:01:07] Ch6/NERVE: Expand 10: captured 1298w
-[03:01:34] Ch6/NERVE: Expand 11: captured 1410w
-[03:01:54] Ch6/NERVE: Expand 12: captured 1582w
-[03:02:17] Ch6/NERVE: Expand 13: captured 1464w
-[03:02:38] Ch6/NERVE: Expand 14: captured 1609w
-[03:02:42] Ch6/NERVE: ✅ ADVANCED: Pass NERVE complete! Score: 100. Advanced to SOUL. The Editor is pleased. The narrative holds.
-[03:03:28] Ch6/SOUL: Polish 1: captured 1094w
-[03:03:48] Ch6/SOUL: Polish 2: captured 1702w
-[03:04:25] Ch6/SOUL: Polish 3: captured 1503w
-[03:05:07] Ch6/SOUL: Polish 4: too short (0w). Retry 2/2...
-[03:05:56] Ch6/SOUL: Polish 4: failed after 2 retries
-[03:06:46] Ch6/SOUL: Polish 5: too short (821w). Retry 2/2...
-[03:07:26] Ch6/SOUL: Polish 5: captured 3551w
-[03:08:12] Ch6/SOUL: Polish 6: too short (0w). Retry 2/2...
-[03:08:59] Ch6/SOUL: Polish 6: failed after 2 retries
-[03:09:03] Ch6/SOUL: ✅ ADVANCED: Pass SOUL complete! Score: 100. Advanced to CANON. The Editor is pleased. The narrative holds.
-[03:09:11] Ch7/SKELETON: Starting granular architecture mode
-[03:09:24] Ch7/SKELETON: Scene List: captured 236w
-[03:09:54] Ch7/SKELETON: Notes: The Unearthing: captured 1100w
-[03:10:26] Ch7/SKELETON: Notes: Echoes of the Old Wars: captured 1629w
-[03:11:05] Ch7/SKELETON: Notes: The Core of Contention: captured 1687w
-[03:11:54] Ch7/SKELETON: Notes: The Guardian's Judgment: captured 1818w
-[03:12:29] Ch7/SKELETON: Notes: The Transmutation: captured 1838w
-[03:13:23] Ch7/SKELETON: Notes: The Ripple Effect: captured 1738w
-[03:13:53] Ch7/SKELETON: Notes: The Debt of the Ancients: captured 1482w
-[03:14:37] Ch7/SKELETON: Notes: The New Equilibrium: captured 1858w
-[03:15:05] Ch7/SKELETON: Metadata: captured 1332w
-[03:15:05] Ch7/SKELETON: ✅ ADVANCED: Pass SKELETON complete! Score: 85. Advanced to FLESH. '.vault/novel/chapters/Chapter_7_The_Legacy_Ruins.md': 3 unresolved markers.
-[03:15:40] Ch7/FLESH: Scene 1: captured 1264w
-[03:16:13] Ch7/FLESH: Scene 2: captured 1273w
-[03:16:40] Ch7/FLESH: Scene 3: captured 1076w
-[03:17:08] Ch7/FLESH: Scene 4: captured 1188w
-[03:17:28] Ch7/FLESH: Scene 5: captured 757w
-[03:17:44] Ch7/FLESH: Scene 6: captured 767w
-[03:18:08] Ch7/FLESH: Scene 7: captured 1032w
-[03:18:23] Ch7/FLESH: Scene 8: captured 968w
-[03:18:27] Ch7/FLESH: ✅ ADVANCED: Pass FLESH complete! Score: 85. Advanced to NERVE. '.vault/novel/chapters/Chapter_7_The_Legacy_Ruins.md': 3 unresolved markers.
-[03:18:58] Ch7/NERVE: Expand 1: captured 1665w
-[03:19:31] Ch7/NERVE: Expand 2: captured 1734w
-[03:19:59] Ch7/NERVE: Expand 3: captured 1377w
-[03:20:33] Ch7/NERVE: Expand 4: captured 1714w
+[05:16:44] Ch1/SIMULATION: World Simulation: captured 260w
+[05:16:44] Ch1/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:17:43] Ch1/FOUNDATION: Foundation Establishment: too short (0w). Retry 2...
+[05:18:06] Ch1/FOUNDATION: Foundation Establishment: captured 529w
+[05:18:06] Ch1/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:20:17] Ch1/BEATS: Beat Sheet Generation: captured 355w
+[05:20:17] Ch1/BEATS: ✅ Beat sheet generated.
+[05:21:07] Ch2/SIMULATION: World Simulation: captured 188w
+[05:21:07] Ch2/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:21:32] Ch2/SIMULATION: World Simulation: captured 328w
+[05:21:32] Ch2/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:21:46] Ch2/FOUNDATION: Foundation Establishment: captured 653w
+[05:21:46] Ch2/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:21:59] Ch2/BEATS: Beat Sheet Generation: captured 548w
+[05:21:59] Ch2/BEATS: ✅ Beat sheet generated.
+[05:22:28] Ch2/FLESH: Scene ?: captured 1453w
+[05:22:33] Ch3/SIMULATION: World Simulation: captured 246w
+[05:22:33] Ch3/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:23:00] Ch2/FLESH: Scene ? Approved (Avg: 7.2)
+[05:23:19] Ch3/SIMULATION: World Simulation: captured 395w
+[05:23:19] Ch3/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:23:34] Ch3/FOUNDATION: Foundation Establishment: captured 908w
+[05:23:34] Ch3/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:23:49] Ch3/BEATS: Beat Sheet Generation: captured 758w
+[05:23:49] Ch3/BEATS: ✅ Beat sheet generated.
+[05:24:13] Ch4/SIMULATION: World Simulation: captured 624w
+[05:24:13] Ch4/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:24:45] Ch4/SIMULATION: World Simulation: captured 616w
+[05:24:45] Ch4/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:25:04] Ch4/FOUNDATION: Foundation Establishment: captured 1090w
+[05:25:04] Ch4/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:25:29] Ch1/SIMULATION: World Simulation: captured 823w
+[05:25:29] Ch1/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:25:54] Ch1/SIMULATION: World Simulation: captured 700w
+[05:25:54] Ch1/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:26:15] Ch1/SIMULATION: World Simulation: captured 549w
+[05:26:15] Ch1/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:26:31] Ch1/FOUNDATION: Foundation Establishment: captured 590w
+[05:26:31] Ch1/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:26:37] Ch1/FOUNDATION: Foundation Establishment: captured 574w
+[05:26:37] Ch1/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:26:48] Ch1/BEATS: Beat Sheet Generation: captured 679w
+[05:26:48] Ch1/BEATS: ✅ Beat sheet generated.
+[05:26:58] Ch1/BEATS: Beat Sheet Generation: captured 835w
+[05:26:58] Ch1/BEATS: ✅ Beat sheet generated and saved to .md
+[05:27:09] Ch2/SIMULATION: World Simulation: captured 593w
+[05:27:09] Ch2/SIMULATION: ✅ Simulation complete. World Delta applied.
+[05:27:13] Ch1/FLESH: Scene 1: captured 799w
+[05:27:30] Ch2/FOUNDATION: Foundation Establishment: captured 711w
+[05:27:30] Ch2/FOUNDATION: ❌ Failed to parse foundation JSON.
+[05:27:58] Ch1/FLESH: Scene 1 Approved (Avg: 8.3)
+[05:28:11] Ch2/FOUNDATION: Foundation Establishment: captured 729w
+[05:28:11] Ch2/FOUNDATION: ✅ Foundation established and World Delta applied.
+[05:28:15] Ch1/FLESH: Scene 2: captured 1299w
+[05:28:27] Ch2/BEATS: Beat Sheet Generation: captured 776w
+[05:28:27] Ch2/BEATS: ✅ Beat sheet generated.
+[05:28:46] Ch1/FLESH: Scene 2 Approved (Avg: 9.0)
+[05:29:04] Ch1/FLESH: Scene 3: captured 1416w
+[05:29:07] Ch2/FLESH: Scene ?: captured 1434w
+[05:29:41] Ch2/FLESH: Scene ? Approved (Avg: 7.5)
+[05:29:47] Ch1/FLESH: Scene 3 Approved (Avg: 9.0)
+[05:30:11] Ch1/FLESH: Scene 4: captured 1124w
+[05:30:11] Ch3/SIMULATION: World Simulation: captured 663w
+[05:30:11] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:30:41] Ch3/SIMULATION: World Simulation: captured 812w
+[05:30:41] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:30:47] Ch1/FLESH: Scene 4 Approved (Avg: 9.2)
+[05:31:07] Ch1/FLESH: Scene 5: captured 961w
+[05:31:35] Ch1/FLESH: Scene 5 Approved (Avg: 9.2)
+[05:31:36] Ch3/SIMULATION: World Simulation: too short (0w). Retry 2...
+[05:31:50] Ch1/FLESH: Scene 6: captured 959w
+[05:31:55] Ch3/SIMULATION: World Simulation: captured 825w
+[05:31:55] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:32:19] Ch1/FLESH: Gauntlet Rejected (REJECT). Strategy: LORE_SYNC
+[05:32:29] Ch3/SIMULATION: World Simulation: captured 780w
+[05:32:29] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:32:43] Ch1/FLESH: Variant ACTION: too short (0w). Retry 2...
+[05:32:57] Ch3/SIMULATION: World Simulation: captured 998w
+[05:32:57] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:32:59] Ch1/FLESH: Variant SUBTEXT: too short (0w). Retry 2...
+[05:33:12] Ch1/FLESH: Variant SENSORY: captured 969w
+[05:33:24] Ch1/FLESH: Variant SUBTEXT: captured 753w
+[05:33:32] Ch3/SIMULATION: World Simulation: captured 981w
+[05:33:32] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:33:32] Ch1/FLESH: Variant ACTION: captured 1197w
+[05:33:45] Ch1/FLESH: Quantum Selection: ACTION
+[05:34:07] Ch3/SIMULATION: World Simulation: captured 1036w
+[05:34:07] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:34:33] Ch1/FLESH: Scene 6 Approved (Avg: 8.3)
+[05:34:38] Ch3/SIMULATION: World Simulation: captured 1104w
+[05:34:38] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:35:05] Ch3/SIMULATION: World Simulation: captured 1218w
+[05:35:05] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:35:14] Ch1/FLESH: Scene 7: too short (298w). Retry 2...
+[05:35:40] Ch3/SIMULATION: World Simulation: captured 1537w
+[05:35:40] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:36:12] Ch3/SIMULATION: World Simulation: captured 1201w
+[05:36:12] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:36:59] Ch3/SIMULATION: World Simulation: captured 951w
+[05:36:59] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:37:55] Ch3/SIMULATION: World Simulation: captured 354w
+[05:37:55] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:38:22] Ch3/SIMULATION: World Simulation: captured 889w
+[05:38:22] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:38:52] Ch3/SIMULATION: World Simulation: captured 881w
+[05:38:52] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:39:21] Ch3/SIMULATION: World Simulation: captured 911w
+[05:39:21] Ch3/SIMULATION: ❌ Failed to parse simulation JSON.
+[05:40:07] Ch3/SIMULATION: World Simulation: captured 854w
+[05:40:07] Ch3/SIMULATION: ✅ Simulation complete. World Delta applied.

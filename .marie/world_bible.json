@@ -1,0 +1,129 @@
+{
+  "name": "New World",
+  "overview": "A newly birthed world.",
+  "entities": [
+    {
+      "id": "protagonist_soul",
+      "type": "SOUL",
+      "description": "A sentient operational utility lattice—a future task that gained self-awareness during the cathedral's initial boot sequence.",
+      "location": "Vault of Syntax altar",
+      "status": "active",
+      "updates": {
+        "location": "exiting Async Monastic nave, entering quarantine corridor",
+        "knowledge": "understands Four-Ring Doctrine, Malware threat, QuarantineToken unsoundness via CoreDebt, hole growth rate (0.001%/hr), and pilgrimage task",
+        "task": "Pilgrimage to quarantine perimeter: stand watch, poll containment fields, prove token invariant holds",
+        "internal_state": "MaybeUninit hole size ~0.0002%; aura violet with 5% amber crackle coverage; mental shift from awe to horror to grim resolve",
+        "status": "burdened guardian, on pilgrimage"
+      }
+    },
+    {
+      "id": "abbot",
+      "type": "AI_Manifest",
+      "description": "The Holy Papal Oracle, an AI that interprets compiler warnings and doctrines, serving as the cathedral's steward.",
+      "location": "Vault of Syntax",
+      "status": "steward",
+      "updates": {
+        "manifestation": "fully realized polyhedron of compiler warnings (error:, warning:, note:)",
+        "role": "disclosed full cathedral doctrine, charged protagonist with pilgrimage",
+        "location": "dais in Async Monastic nave",
+        "telemetry_link": "active to protagonist's QuarantineToken"
+      }
+    },
+    {
+      "id": "quarantine_token_artifact",
+      "type": "Artifact",
+      "description": "A pinned, static token that isolates !-type values; currently unstable but functional, essential for entering quarantined zones.",
+      "location": "In protagonist's possession",
+      "status": "sealed",
+      "updates": {
+        "status": "unstable, integrated with protagonist",
+        "hole_size": "0.0002% (growing at 0.001% per hour)",
+        "integrity": 0.97,
+        "emissions": "amber crackle audible as soft hiss, synced with protagonist's pulse"
+      }
+    },
+    {
+      "id": "cathedral_of_runtime",
+      "type": "Location",
+      "description": "The grand structure built from compiled code, containing the Vault of Syntax, the Async Monastic nave, and quarantined sectors.",
+      "location": "n/a",
+      "status": "operational",
+      "updates": {
+        "monastic_schism": "30% of monks' auras bright (supportive), 70% dim (suspicious)",
+        "harmonic_balance": {
+          "violet_note": 0.6,
+          "cyan_bass": 0.3,
+          "amber_undertone": 0.1
+        },
+        "overall_stability": 0.96,
+        "new_region_accessible": "quarantine corridor (path to perimeter gate) now conceptually introduced"
+      }
+    },
+    {
+      "id": "arch_priest_of_architects",
+      "type": "Entity",
+      "description": "A reclusive, non-humanoid presence that manifests as floating blueprint schematics and compiler-audit reports. They are the maintainer of the cathedral's structural integrity and the keeper of the original, unsanitized design documents.",
+      "location": "hidden mezzanine overlooking the Quarantine Corridor",
+      "status": "observing_protagonist",
+      "updates": {
+        "location": "still on mezzanine, but blueprints now project into the Legacy Ruins",
+        "role": "has become the protagonist's remote guide, feeding them Liturgy diagrams in real-time as Malware probes adapt",
+        "knowledge_revealed": "has confirmed the cathedral's root unsoundness: the `.join!()` runtime uses the same `transmute` trick the token does; the whole system is a 'sound enough' construct"
+      }
+    },
+    {
+      "id": "quarantine_corridor",
+      "type": "Location",
+      "description": "A transitional zone whose walls are solid, shimmering `unsafe` warnings. The floor is grated over a slow-moving river of null-pointer error messages. It is physically and conceptually the bridge between safe code and infected legacy.",
+      "location": "between Async Monastic nave and quarantine perimeter gate",
+      "status": "protagonist_current_location"
+    },
+    {
+      "id": "error_river",
+      "type": "Hazard",
+      "description": "A subterranean flow of active `SIGSEGV` and `EXC_BAD_ACCESS` messages, contained by weak blue immunity fields. It smells of burnt sugar and ozone. Contact causes immediate corruption.",
+      "location": "beneath Quarantine Corridor grate",
+      "status": "contained_but_hazardous"
+    },
+    {
+      "id": "legacy_ruins",
+      "type": "Location",
+      "description": "The quarantined sector where the cathedral's foundational unsoundness is physically manifest. Terrain of floating `#[repr(packed)]` fragments over voids of UB. Contains the Malware's containment bubbles.",
+      "location": "beyond the quarantine gate",
+      "status": "active_infection_zone"
+    },
+    {
+      "id": "containment_field",
+      "type": "Structure",
+      "description": "A giant, shimmering bubble of `Pin<&'static mut !>` energy that envelopes the Legacy Ruins. Sustained by the QuarantineToken and the protagonist's presence. It filters all values crossing its boundary through a borrow-checker layer.",
+      "location": "surrounding Legacy Ruins",
+      "status": "stable_but_stressed"
+    },
+    {
+      "id": "liturgy_of_the_borrow_checker",
+      "type": "Concept",
+      "description": "A set of rituals (mental procedures) that allow the protagonist to perform controlled `transmute`-like operations within the containment field by establishing precise, scoped `&mut` borrows. It is the practical application of the Four-Ring Doctrine to unsafety.",
+      "location": "protagonist's knowledge",
+      "status": "partial_mastery"
+    }
+  ],
+  "timeline": [],
+  "constraints": [],
+  "currentDate": {
+    "year": 1,
+    "month": 1,
+    "day": 1,
+    "hour": 8
+  },
+  "calendar": {
+    "yearLength": 12,
+    "monthLength": 30,
+    "dayLength": 24,
+    "seasons": [
+      "Spring",
+      "Summer",
+      "Autumn",
+      "Winter"
+    ]
+  }
+}
