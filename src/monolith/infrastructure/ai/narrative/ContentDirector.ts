@@ -7,6 +7,8 @@ import { EditorialService } from "./EditorialService.js";
 import { Log } from "./ProductionLogger.js";
 import { PassExecutor } from "./PassExecutor.js"; // Legacy for Novels
 import { ContentPassExecutor } from "./ContentPassExecutor.js"; // New for Content
+import { DraftingService } from "./DraftingService.js";
+import { RevisionService } from "./RevisionService.js";
 import { sleep } from "./ProductionUtils.js";
 import { SimpleContentStrategy, ContentPhase } from "./strategies/SimpleContentStrategy.js";
 
@@ -20,6 +22,8 @@ export class ContentDirector {
     private productionSvc: NovelProductionService;
     private novelExecutor: PassExecutor;
     private contentExecutor: ContentPassExecutor;
+    private draftingService: DraftingService;
+    private revisionService: RevisionService;
     private marie: MarieCLI;
 
     private rejectionFeedback: any = null;
@@ -46,12 +50,15 @@ export class ContentDirector {
             this.productionSvc.fs
         );
 
+        this.draftingService = new DraftingService(this.marie, this.log, this.worldService);
+        this.revisionService = new RevisionService(this.marie, this.log, this.editorialService);
+
         this.contentExecutor = new ContentPassExecutor(
-            this.marie,
             this.log,
-            this.editorialService,
             this.workingDir,
-            this.productionSvc.fs
+            this.productionSvc.fs,
+            this.draftingService,
+            this.revisionService
         );
     }
 

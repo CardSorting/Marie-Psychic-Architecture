@@ -201,3 +201,33 @@ Just deliver the rest of the text until complete.`;
     await log.write(ch, pass, `${label}: failed after ${maxRetries} retries`);
     return "";
 }
+
+export function extractKeywords(text: string, max: number = 5): string[] {
+    if (!text) return [];
+
+    // Simple heuristic: Look for capitalized words that aren't at the start of sentences? 
+    // Or just all Nouns? 
+    // Let's go with: Proper Nouns (Capitalized words in middle of sentences) + Frequent large words.
+
+    // Remove common stop words
+    const stopWords = new Set(["The", "A", "An", "Is", "Are", "Was", "Were", "In", "On", "At", "To", "For", "Of", "With", "By", "And", "But", "Or", "So", "If", "When", "Then", "It", "He", "She", "They", "We", "You", "I", "My", "His", "Her", "Their", "Our", "Your", "This", "That", "These", "Those", "What", "Who", "Where", "Why", "How"]);
+
+    const words = text.replace(/[^\w\s]/g, "").split(/\s+/);
+    const candidates = new Map<string, number>();
+
+    for (const w of words) {
+        if (w.length < 3) continue;
+        // Check if capitalized
+        if (w[0] === w[0].toUpperCase() && w[0] !== w[0].toLowerCase()) {
+            if (!stopWords.has(w)) {
+                candidates.set(w, (candidates.get(w) || 0) + 1);
+            }
+        }
+    }
+
+    // Sort by frequency
+    return Array.from(candidates.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, max)
+        .map(e => e[0]);
+}
