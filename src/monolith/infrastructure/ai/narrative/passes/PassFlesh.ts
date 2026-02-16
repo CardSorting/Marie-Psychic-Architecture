@@ -41,27 +41,61 @@ export async function passFlesh(
         while (attempt < 3 && !solved) {
             attempt++;
 
-            // GENERATE (Level 0 or Retry)
-            const prompt = `Novelist Mode. Write prose for Scene ${id}: "${title}".
-            ${lore}
-
-            ACTOR PROFILES (VOICE & MOTIVATION):
-            ${actorCards}
-            
-            PREVIOUS SCENE ENDING:
-            ...${previousSceneEnding.slice(-500)}
-
-            NOTES:
-            ${sceneBlock}
-            
-            ${attempt > 1 ? "PREVIOUS ATTEMPT FAILED. TRY A DIFFERENT ANGLE." : ""}
-
-            Write 600-1000 words. High drama. Show, don't tell. Start immediately.`;
-
+            // ─── QUANTUM WRITING (Parallel Generation) ───
+            // If attempt > 1, we deploy the "Quantum Array" to break the deadlock
+            let variances = [];
             if (attempt === 1) {
-                currentProse = await captureWithRetry(marie, prompt, log, ch.id, "FLESH", `Scene ${id}`, 300);
+                // Standard single-shot
+                const p = `Novelist Mode. Write prose for Scene ${id}: "${title}".
+                ${lore}
+                ACTOR PROFILES: ${actorCards}
+                PREVIOUS: ...${previousSceneEnding.slice(-500)}
+                NOTES: ${sceneBlock}
+                Write 600-1000 words. High drama.`;
+
+                currentProse = await captureWithRetry(marie, p, log, ch.id, "FLESH", `Scene ${id}`, 300);
             } else {
-                currentProse = await captureWithRetry(marie, prompt, log, ch.id, "FLESH", `Scene ${id} (Retry ${attempt})`, 300);
+                process.stdout.write(`   ⚛️  QUANTUM MODE ENGAGED (Generating 3 Variants)...\n`);
+                // Parallel generation of 3 distinct flavors
+                const flavors = [
+                    { type: "ACTION", focus: "Pacing, Kinetic Movement, Impact" },
+                    { type: "SUBTEXT", focus: "Hidden Meanings, Psychological Tension, Silence" },
+                    { type: "SENSORY", focus: "Atmosphere, Smell, Texture, Immersion" }
+                ];
+
+                const promises = flavors.map(async (flavor) => {
+                    const qPrompt = `Novelist Mode. Write prose for Scene ${id}: "${title}".
+                    STYLE FOCUS: ${flavor.type} (${flavor.focus})
+                    ${lore}
+                    ACTOR PROFILES: ${actorCards}
+                    PREVIOUS: ...${previousSceneEnding.slice(-500)}
+                    NOTES: ${sceneBlock}
+                    Write 600-1000 words.`;
+                    return captureWithRetry(marie, qPrompt, log, ch.id, "FLESH", `Variant ${flavor.type}`, 300);
+                });
+
+                const results = await Promise.all(promises);
+
+                // Editor selects the best one (Simplified: Chief Editor picks)
+                const selectionPrompt = `Chief Editor Mode. Select the best version of Scene ${id}.
+                
+                VARIANT A (ACTION):
+                ${results[0].slice(0, 500)}...
+                
+                VARIANT B (SUBTEXT):
+                ${results[1].slice(0, 500)}...
+                
+                VARIANT C (SENSORY):
+                ${results[2].slice(0, 500)}...
+                
+                TASK: Return the Index (0, 1, or 2) of the best version. Just the number.`;
+
+                const choice = await captureAgentOutput(marie, selectionPrompt);
+                const winnerIndex = parseInt(choice.match(/\d/)?.[0] || "0");
+                process.stdout.write(`   🏆 Quantum Collapse: Variant ${flavors[winnerIndex].type} Selected.\n`);
+
+                currentProse = results[winnerIndex];
+                await log.write(ch.id, "FLESH", `Quantum Selection: ${flavors[winnerIndex].type}`);
             }
 
             // ─── THE GAUNTLET ───

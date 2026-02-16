@@ -32,6 +32,7 @@ import { passFlesh } from "../monolith/infrastructure/ai/narrative/passes/PassFl
 import { passNerve } from "../monolith/infrastructure/ai/narrative/passes/PassNerve.js";
 import { passSoul } from "../monolith/infrastructure/ai/narrative/passes/PassSoul.js";
 import { passContinuity } from "../monolith/infrastructure/ai/narrative/passes/PassContinuity.js";
+import { passReception } from "../monolith/infrastructure/ai/narrative/passes/PassReception.js";
 
 // ═══════════════════════════════════════════════════════════════
 //  MAIN
@@ -154,6 +155,11 @@ async function main() {
         case "SOUL":
           passOk = await passSoul(marie, ch, targetPath, log, lore, editorialService);
           break;
+        case "RECEPTION":
+          // The "Simulated Reader" pass
+          passOk = await passReception(marie, targetPath, log, ch.id);
+          break;
+        case "CANON": passOk = true;
         default: passOk = true;
       }
     } catch (err: any) { await log.write(ch.id, pass, `Error: ${err.message}`); }
