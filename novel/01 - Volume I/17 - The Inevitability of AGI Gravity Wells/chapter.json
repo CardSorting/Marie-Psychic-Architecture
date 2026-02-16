@@ -2,11 +2,29 @@
   "id": 17,
   "title": "The Inevitability of AGI Gravity Wells",
   "description": "A post exploring how compute concentration creates inescapable market attractors.",
-  "currentPass": "STRATEGY",
-  "completedPasses": [],
-  "continuityLedger": [],
-  "files": [],
+  "currentPass": "DRAFT",
+  "completedPasses": [
+    "STRATEGY",
+    "OUTLINE"
+  ],
+  "continuityLedger": [
+    {
+      "pass": "STRATEGY",
+      "summary": "Completed STRATEGY",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T16:17:24.622Z"
+    },
+    {
+      "pass": "OUTLINE",
+      "summary": "Completed OUTLINE",
+      "filesLocked": [],
+      "timestamp": "2026-02-16T16:18:11.402Z"
+    }
+  ],
+  "files": [
+    "novel/01 - Volume I/17 - The Inevitability of AGI Gravity Wells/outline.md"
+  ],
   "mode": "LINKEDIN",
   "wordCount": 0,
-  "lastModified": "2026-02-16T15:45:46.615Z"
+  "lastModified": "2026-02-16T16:25:57.515Z"
 }

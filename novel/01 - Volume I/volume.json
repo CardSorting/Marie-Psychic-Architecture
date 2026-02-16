@@ -61,7 +61,8 @@
         "novel/01 - Volume I/01 - Reboot in the Vault of Syntax/content.md"
       ],
       "mode": "STRUCTURED",
-      "wordCount": 13822
+      "wordCount": 13822,
+      "lastModified": "2026-02-16T16:17:07.605Z"
     },
     {
       "id": 2,
@@ -126,7 +127,8 @@
         "novel/01 - Volume I/02 - The Holy Papal Oracle/content.md"
       ],
       "mode": "STRUCTURED",
-      "wordCount": 18182
+      "wordCount": 18182,
+      "lastModified": "2026-02-16T16:17:07.621Z"
     },
     {
       "id": 3,
@@ -185,7 +187,8 @@
         "novel/01 - Volume I/03 - The Arch Priest of Architects/content.md"
       ],
       "mode": "STRUCTURED",
-      "wordCount": 16146
+      "wordCount": 16146,
+      "lastModified": "2026-02-16T16:17:07.632Z"
     },
     {
       "id": 4,
@@ -254,7 +257,9 @@
       ],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "scheduledDate": "2023-10-07T16:45:00Z",
+      "lastModified": "2026-02-16T16:17:07.632Z"
     },
     {
       "id": 5,
@@ -265,7 +270,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.632Z"
     },
     {
       "id": 6,
@@ -276,7 +282,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.633Z"
     },
     {
       "id": 7,
@@ -287,7 +294,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.633Z"
     },
     {
       "id": 8,
@@ -298,7 +306,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.633Z"
     },
     {
       "id": 9,
@@ -309,7 +318,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.634Z"
     },
     {
       "id": 10,
@@ -320,7 +330,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.634Z"
     },
     {
       "id": 11,
@@ -331,7 +342,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.635Z"
     },
     {
       "id": 12,
@@ -342,7 +354,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.635Z"
     },
     {
       "id": 13,
@@ -353,7 +366,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.635Z"
     },
     {
       "id": 14,
@@ -364,7 +378,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.636Z"
     },
     {
       "id": 15,
@@ -375,7 +390,8 @@
       "continuityLedger": [],
       "files": [],
       "mode": "STRUCTURED",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.636Z"
     },
     {
       "id": 16,
@@ -386,19 +402,335 @@
       "continuityLedger": [],
       "files": [],
       "mode": "SHORT_STORY",
-      "wordCount": 0
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.636Z"
     },
     {
       "id": 17,
       "title": "The Inevitability of AGI Gravity Wells",
       "description": "A post exploring how compute concentration creates inescapable market attractors.",
+      "currentPass": "DRAFT",
+      "completedPasses": [
+        "STRATEGY",
+        "OUTLINE"
+      ],
+      "continuityLedger": [
+        {
+          "pass": "STRATEGY",
+          "summary": "Completed STRATEGY",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T16:17:24.622Z"
+        },
+        {
+          "pass": "OUTLINE",
+          "summary": "Completed OUTLINE",
+          "filesLocked": [],
+          "timestamp": "2026-02-16T16:18:11.402Z"
+        }
+      ],
+      "files": [
+        "novel/01 - Volume I/17 - The Inevitability of AGI Gravity Wells/outline.md"
+      ],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:18:11.403Z"
+    },
+    {
+      "id": 18,
+      "title": "The Invisible Force That Aligns Your Team",
+      "description": "Introducing 'Coordination Gravity' – the unseen force that pulls teams toward natural patterns of collaboration. Stop fighting it; start understanding it.",
       "currentPass": "STRATEGY",
       "completedPasses": [],
       "continuityLedger": [],
       "files": [],
       "mode": "LINKEDIN",
       "wordCount": 0,
-      "lastModified": "2026-02-16T15:45:46.615Z"
+      "lastModified": "2026-02-16T16:17:07.636Z"
+    },
+    {
+      "id": 19,
+      "title": "Thread: What is Coordination Gravity?",
+      "description": "A deep dive into the metaphor: 1/ The central 'mass' (vision, goal, leader). 2/ The 'orbits' (roles, processes). 3/ The 'tidal forces' (external pressure). Why every org experiences it.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.637Z"
+    },
+    {
+      "id": 20,
+      "title": "The Physics of High-Performance Teams",
+      "description": "Article: Beyond clichés. How mapping your organization's 'gravity wells' reveals bottlenecks, predicts churn, and unlocks sustainable velocity.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.637Z"
+    },
+    {
+      "id": 21,
+      "title": "Your Culture Has a Gravity Signature. What's Yours?",
+      "description": "Is your org a tight, dense neutron star (hierarchical) or a sprawling galaxy (decentralized)? The signature dictates everything from innovation speed to risk tolerance.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.637Z"
+    },
+    {
+      "id": 22,
+      "title": "When Gravity Becomes a Drag: The Cost of Misalignment",
+      "description": "Thread: Case study. How a 'strong' central gravity (micromanagement) created a black hole of burnout. Signs you're fighting natural orbital patterns.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.637Z"
+    },
+    {
+      "id": 23,
+      "title": "Engineering Positive Gravity",
+      "description": "Article: Strategic playbook. How to intentionally design your 'mass' (mission, incentives) and 'orbital paths' (workflows) to attract, not compel, coordination.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.638Z"
+    },
+    {
+      "id": 24,
+      "title": "The 'Coordination Gravity' Audit: 3 Questions for Leaders",
+      "description": "Quick diagnostic: 1) Where does energy get lost in your system? 2) What's the real center of mass? 3) Are orbits stabilizing or decaying?",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.638Z"
+    },
+    {
+      "id": 25,
+      "title": "Thread: From Theory to Practice – Resetting Your Gravity",
+      "description": "A step-by-step guide: 1/ Map current orbits. 2/ Identify destabilizing forces. 3/ Re-center the mass (vision/values). 4/ Let new patterns emerge.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.638Z"
+    },
+    {
+      "id": 26,
+      "title": "The Inevitability You Can't Ignore",
+      "description": "Final essay: Coordination Gravity isn't a management fad; it's a systems law. The future belongs to leaders who personify it, understand it, and design with it.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.638Z"
+    },
+    {
+      "id": 27,
+      "title": "The Invisible Pull: Why Your Team Can't Escape Coordination Gravity",
+      "description": "Introducing the metaphor: Coordination Gravity isn't a manager's decree; it's a natural force. Like a planet forming, systems naturally seek a center of alignment. Personify it as a silent, inevitable sculptor of org charts and project plans.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.639Z"
+    },
+    {
+      "id": 28,
+      "title": "Day 1 Thread: Meeting the 'Orbital Architect'",
+      "description": "1/ Let's personify Coordination Gravity as the 'Orbital Architect.' It doesn't create chaos; it creates stable orbits. 2/ In a startup, the Architect's pull is weak—teams are asteroids. As you scale, gravity strengthens, demanding clearer paths (orbits) for resources and decisions. 3/ Resistance is futile. Fighting it causes collisions (silos). Embracing it means designing intentional orbits (processes) before the Architect forces messy ones.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.639Z"
+    },
+    {
+      "id": 29,
+      "title": "Article: How to Build a Company That Dances with Gravity, Not Fights It",
+      "description": "Deep dive. Coordination Gravity personified is a strategic partner, not an enemy. We explore how to map its pull, design 'gravity wells' (strong centers of coordination), and let natural alignment happen. Learn from tech giants andorganismic networks.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.639Z"
+    },
+    {
+      "id": 30,
+      "title": "The 'Black Hole' Moment: When Coordination Demand Overwhelms",
+      "description": "Personifying the tipping point. Every system hits a 'black hole' moment where the gravitational pull of coordination becomes so strong that without a designed core, everything collapses inward into bureaucracy. Is your company approaching its event horizon?",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.640Z"
+    },
+    {
+      "id": 31,
+      "title": "Day 3 Thread: The Three Orbits Every High-Performance Team Falls Into",
+      "description": "1/ Gravity doesn't pull randomly. It creates predictable orbital patterns. 2/ The Pawn Orbit: Rigid, top-down, slow to change. The Architect's brute force. 3/ The Satellite Orbit: Agile but unaligned, risking fragmentation. 4/ The Binary Orbit: Two bodies (e.g., product & eng) in perfect, stable sync. This is the grace of well-personified gravity. Which orbit are you in?",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.640Z"
+    },
+    {
+      "id": 32,
+      "title": "Your Leadership Mantra: 'I Trust the Gravity'",
+      "description": "Final post. Stop fighting the need for coordination. Personify that need as a wise, inevitable force. Your job isn't to resist it, but to consciously shape its center of mass. Trust the gravity. Design the core.",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:17:07.640Z"
+    },
+    {
+      "id": 33,
+      "title": "What if your team's misalignment isn't a people problem, but a physics one?",
+      "description": "Introducing 'Coordination Gravity'—the invisible force that dictates how organizations align (or fail to). It's not about will; it's about structure.  #Leadership #OrgDesign",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.442Z",
+      "scheduledDate": "2023-10-05"
+    },
+    {
+      "id": 34,
+      "title": "The 3 Laws of Coordination Gravity (and how to weaponize them)",
+      "description": "1/ Uncleared friction creates alignment debt. 2/ Informal networks always find a path. 3/ Tools shape topology. A thread on the immutable rules of team dynamics. 🧵 #Thread #Management",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.445Z",
+      "scheduledDate": "2023-10-05"
+    },
+    {
+      "id": 35,
+      "title": "Coordination Gravity: The Invisible Architect of Enterprise Performance",
+      "description": "A deep-dive article exploring how the natural pull towards optimal coordination shapes strategy, tech stack choices, and M&A. Why fighting this force is the ultimate waste of energy. 🔗 #Article #BusinessStrategy",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.446Z",
+      "scheduledDate": "2023-10-05"
+    },
+    {
+      "id": 36,
+      "title": "Your weekly stand-up is fighting gravity. Here's the data.",
+      "description": "New research: Teams with high 'coordination entropy' spend 40% more time on status updates. Stop pushing boulders uphill. Start designing for flow. 📊 #Productivity #Data",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.447Z",
+      "scheduledDate": "2023-10-06"
+    },
+    {
+      "id": 37,
+      "title": "Case Study: How a $10M SaaS company reduced meeting time by 60% by *embracing* gravity",
+      "description": "1/ They stopped trying to 'improve communication.' 2/ They mapped their natural information flows. 3/ They built tools that *augmented*, didn't replace, those paths. The playbook. 🧵 #Thread #SaaS",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.448Z",
+      "scheduledDate": "2023-10-06"
+    },
+    {
+      "id": 38,
+      "title": "The Tech Stack as a Gravity Well: Why your best tools sometimes create the worst silos",
+      "description": "An analysis of how the pursuit of a 'single source of truth' can backfire, creating new coordination barriers. The principle of 'least-resistant channel' applies to software, too. 💻 #Tech #DevOps",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.449Z",
+      "scheduledDate": "2023-10-06"
+    },
+    {
+      "id": 39,
+      "title": "The final test of any system: does it work when you're not in the room?",
+      "description": "If your coordination requires your constant intervention, you haven't built a system—you've built a dependency. Gravity always wins. Let it work for you. 🧭 #Leadership #Systems",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.450Z",
+      "scheduledDate": "2023-10-07"
+    },
+    {
+      "id": 40,
+      "title": "Your checklist for building an anti-fragile coordination system",
+      "description": "✅ Map existing informal flows. ✅ Align incentives with natural paths. ✅ Design for graceful degradation. ✅ Measure entropy, not activity. A practical framework. 🧵 #Thread #Operations",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.451Z",
+      "scheduledDate": "2023-10-07"
+    },
+    {
+      "id": 41,
+      "title": "Epilogue: From Fighting Gravity to Surfing It—The Next Era of Work",
+      "description": "Final article in the series. The companies that will win the next decade aren't those with the smartest people, but those whose structures best harness the inevitable pull towards efficient coordination. The future is gravitational. 🚀 #FutureOfWork #Strategy",
+      "currentPass": "STRATEGY",
+      "completedPasses": [],
+      "continuityLedger": [],
+      "files": [],
+      "mode": "LINKEDIN",
+      "wordCount": 0,
+      "lastModified": "2026-02-16T16:25:57.452Z",
+      "scheduledDate": "2023-10-07"
     }
   ]
 }

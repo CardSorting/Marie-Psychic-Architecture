@@ -43,7 +43,17 @@ export class ContentPassExecutor {
         let success = false;
         let nextPass: ContentPhase | undefined;
 
-        switch (pass) {
+        switch (pass as any) {
+            case "STRATEGY":
+                const strategy = await this.draftingService.generateLinkedInStrategy(ch);
+                if (strategy) {
+                    await this.fileSystem.writeContent(conceptPath, strategy);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "OUTLINE";
+                }
+                break;
+
             case "CONCEPT":
                 const concept = await this.draftingService.generateConcept(ch, rejectionFeedback);
                 if (concept) {
@@ -69,7 +79,18 @@ export class ContentPassExecutor {
                 if (draft) {
                     await this.fileSystem.writeContent(targetPath, draft);
                     success = true;
-                    nextPass = "REVIEW";
+                    nextPass = (ch.mode === "LINKEDIN" ? "HARDENING" : "REVIEW") as any;
+                }
+                break;
+
+            case "HARDENING":
+                const draftForHardening = await readSafe(targetPath);
+                const hardened = await this.revisionService.applyLinkedInHardening(ch, draftForHardening);
+                if (hardened) {
+                    await this.fileSystem.writeContent(targetPath, hardened);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "CANON";
                 }
                 break;
 
@@ -87,9 +108,6 @@ export class ContentPassExecutor {
                     if (fixed) {
                         await this.fileSystem.writeContent(targetPath, fixed);
                         success = true;
-                        // Stay in review? Or move to polish? 
-                        // Implementation plan says "move to POLISH" if success=true, but traditionally we might re-review. 
-                        // Taking the "Forward Momentum" approach: Fix -> Polish.
                         nextPass = "POLISH";
                     } else {
                         return { success: false, feedback: decision };

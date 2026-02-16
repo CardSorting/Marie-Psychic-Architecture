@@ -278,6 +278,43 @@ export class NarrativeAutomationServiceCLI {
     }
   }
 
+  public async generateCampaignBrief(
+    theme: string,
+    plan: { title: string; description: string }[],
+  ): Promise<string> {
+    if (!this.providerFactory) {
+      throw new Error("AI Provider Factory not registered.");
+    }
+
+    const provider = this.providerFactory(ConfigService.getAiProvider());
+    const model = ConfigService.getModel();
+
+    const prompt = `You are the ZENITH CHIEF STRATEGIST.
+    Theme: ${theme}
+    Campaign Units:
+    ${plan.map((unit, i) => `${i + 1}. ${unit.title}: ${unit.description}`).join("\n")}
+    
+    TASK: Write a COMPREHENSIVE STRATEGY BRIEF explaining the "Posturing and Positioning" of this campaign.
+    Focus on:
+    1. The Signal Cluster being exploited.
+    2. The intended "Aura" projected by this sequence.
+    3. How this campaign frames the user as an "Inevitability."
+    4. The Cosmic Metaphors being established.
+    5. The "Zenith Yield" objective.
+    
+    OUTPUT FORMAT: Markdown. Use H1, H2, H3 headers. No preamble.`;
+
+    const response = await provider.createMessage({
+      model,
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 3000,
+    });
+
+    return typeof response.content === "string"
+      ? response.content
+      : response.content.map((c) => (c as any).text || "").join("");
+  }
+
   public async auditIntegrity(path: string): Promise<string> {
     return `Narrative Integrity Audit for ${path}\n
 - Status: Bypassed for Velocity

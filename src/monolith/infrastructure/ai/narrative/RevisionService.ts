@@ -76,4 +76,27 @@ ${draft}`;
         }
         return null;
     }
+
+    public async applyLinkedInHardening(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   �️  Applying Zenith Gauntlet (Hardening)...\n`);
+
+        const prompt = `ZENITH GAUNTLET MODE (GROUNDED).
+DRAFT:
+${draft}
+
+TASK:
+1. Strip all "TechJesus" over-inflation and cosmic noun-stacks (trim by 30%).
+2. Inject THE GROUNDING PATCH:
+   - 1 Real-world constraint (e.g., compute supply, physical infrastructure, jurisdictional friction).
+   - 1 Uncertainty (a "known unknown" that prevents total closure).
+   - 1 Plausible counter-scenario (validation through acknowledging the alternative).
+3. Maximize Impression Yield through serious-tier authority.
+4. Verify "Aura Aura" is radiant but NOT satirical.
+5. Ensure 0% Friction in the flow, but 100% Truth in the grounding.
+6. Enforce Destabilize -> Simplify (Grounded Pivot) -> Escalate -> Bless framework.
+
+OUTPUT: The final hardened and perfected Zenith-tier content. Move from satire-tier to serious-tier.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "HARDENING", "Zenith Hardened", 400);
+    }
 }

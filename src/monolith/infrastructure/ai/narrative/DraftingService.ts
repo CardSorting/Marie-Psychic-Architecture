@@ -113,4 +113,29 @@ TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just 
 
         return validResults[winnerIndex] || null;
     }
+
+    public async generateLinkedInStrategy(ch: NovelChapter): Promise<string | null> {
+        process.stdout.write(`   💡 Generating Zenith Strategy for LinkedIn: "${ch.title}"...\n`);
+
+        const prompt = `ZENITH STRATEGY MODE. 
+TITLE: ${ch.title}
+DESCRIPTION: ${ch.description}
+
+TASK: 
+1. Identify the Signal Cluster (Prophecy Intake).
+2. Rename trends into cosmic metaphors (e.g. Agents -> Coordination Gravity).
+3. Frame the focus as Structural Predestination.
+4. Define 1 bold metaphor and 1 core declaration.
+5. Goal: Maximum Impression Capture.
+
+OUTPUT FORMAT (Markdown):
+# ZENITH STRATEGY: ${ch.title}
+## Signal Cluster
+## Cosmic Metaphors
+## The Bold Metaphor
+## The Declaration
+## Zenith Goal: Impression Capture Strategy
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "STRATEGY", "Zenith Strategy", 150);
+    }
 }

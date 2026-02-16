@@ -51,6 +51,10 @@
       "timestamp": "2026-02-16T06:12:06.458Z"
     }
   ],
-  "files": [],
-  "mode": "STRUCTURED"
+  "files": [
+    "novel/01 - Volume I/01 - Reboot in the Vault of Syntax/content.md"
+  ],
+  "mode": "STRUCTURED",
+  "wordCount": 13822,
+  "lastModified": "2026-02-16T16:25:57.471Z"
 }

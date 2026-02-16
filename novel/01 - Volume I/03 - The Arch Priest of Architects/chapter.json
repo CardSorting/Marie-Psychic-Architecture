@@ -51,6 +51,10 @@
       "timestamp": "2026-02-16T06:52:01.606Z"
     }
   ],
-  "files": [],
-  "mode": "STRUCTURED"
+  "files": [
+    "novel/01 - Volume I/03 - The Arch Priest of Architects/content.md"
+  ],
+  "mode": "STRUCTURED",
+  "wordCount": 16146,
+  "lastModified": "2026-02-16T16:25:57.504Z"
 }
