@@ -4,7 +4,7 @@ import { NarrativeFileSystem } from "./NarrativeFileSystem.js";
 import { IProductionStrategy } from "./strategies/IProductionStrategy.js";
 import { EssayProductionStrategy } from "./strategies/EssayStrategy.js";
 import { StructuredProductionStrategy } from "./strategies/StructuredStrategy.js";
-import { LinkedInProductionStrategy } from "./strategies/LinkedInStrategy.js";
+import { MusicStudioProductionStrategy } from "./strategies/MusicStudioStrategy.js";
 import { WorldService } from "./WorldService.js";
 
 // ─── Pass Phases ───────────────────────────────────────────────
@@ -96,7 +96,7 @@ export class NovelProductionService {
     // Register strategies
     this.registerStrategy(new EssayProductionStrategy());
     this.registerStrategy(new StructuredProductionStrategy(this.worldService));
-    this.registerStrategy(new LinkedInProductionStrategy(this.worldService));
+    this.registerStrategy(new MusicStudioProductionStrategy(this.worldService));
   }
 
   public registerStrategy(strategy: IProductionStrategy) {

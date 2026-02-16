@@ -44,13 +44,25 @@ export class ContentPassExecutor {
         let nextPass: ContentPhase | undefined;
 
         switch (pass as any) {
+            case "BRIEF":
             case "STRATEGY":
-                const strategy = await this.draftingService.generateLinkedInStrategy(ch);
+                const strategy = await this.draftingService.generateMusicStudioBrief(ch);
                 if (strategy) {
                     await this.fileSystem.writeContent(conceptPath, strategy);
                     success = true;
                     // @ts-ignore
-                    nextPass = "OUTLINE";
+                    nextPass = ch.mode === "MUSIC_STUDIO" ? "HOOK_ISOLATION" : "BEAT_SHEET";
+                }
+                break;
+
+            case "HOOK_ISOLATION":
+                const hook = await this.draftingService.generateHookSnippets(ch);
+                if (hook) {
+                    const hookPath = path.join(targetDir, `hook.md`);
+                    await this.fileSystem.writeContent(hookPath, hook);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "BEAT_SHEET";
                 }
                 break;
 
@@ -63,36 +75,99 @@ export class ContentPassExecutor {
                 }
                 break;
 
+            case "BEAT_SHEET":
             case "OUTLINE":
                 const conceptContent = await readSafe(conceptPath);
                 const outline = await this.draftingService.generateOutline(ch, conceptContent);
                 if (outline) {
                     await this.fileSystem.writeContent(outlinePath, outline);
                     success = true;
-                    nextPass = "DRAFT";
+                    nextPass = (ch.mode === "MUSIC_STUDIO" ? "RECORDING" : "DRAFT") as any;
                 }
                 break;
 
+            case "RECORDING":
             case "DRAFT":
                 const outlineContent = await readSafe(outlinePath);
                 const draft = await this.draftingService.generateDraft(ch, outlineContent);
                 if (draft) {
                     await this.fileSystem.writeContent(targetPath, draft);
                     success = true;
-                    nextPass = (ch.mode === "LINKEDIN" ? "HARDENING" : "REVIEW") as any;
+                    // @ts-ignore
+                    nextPass = ch.mode === "MUSIC_STUDIO" ? "RE_AMPING" : "REVIEW";
                 }
                 break;
 
-            case "HARDENING":
-                const draftForHardening = await readSafe(targetPath);
-                const hardened = await this.revisionService.applyLinkedInHardening(ch, draftForHardening);
-                if (hardened) {
-                    await this.fileSystem.writeContent(targetPath, hardened);
+            case "RE_AMPING": {
+                const draftRef = await readSafe(targetPath);
+                const reAmpedResult = await this.revisionService.applyRecursiveReAmping(ch, draftRef);
+                if (reAmpedResult) {
+                    await this.fileSystem.writeContent(targetPath, reAmpedResult);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "POLARIZATION";
+                }
+                break;
+            }
+
+            case "POLARIZATION": {
+                const draftPol = await readSafe(targetPath);
+                const polarizedResult = await this.revisionService.applyPolarizationPass(ch, draftPol);
+                if (polarizedResult) {
+                    await this.fileSystem.writeContent(targetPath, polarizedResult);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "LOCALIZATION";
+                }
+                break;
+            }
+
+            case "LOCALIZATION": {
+                const draftLoc = await readSafe(targetPath);
+                const localizedResult = await this.revisionService.applyGlobalLocalization(ch, draftLoc);
+                if (localizedResult) {
+                    await this.fileSystem.writeContent(targetPath, localizedResult);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "MIX_AND_MASTER";
+                }
+                break;
+            }
+
+            case "MIX_AND_MASTER":
+            case "HARDENING": {
+                const draftHard = await readSafe(targetPath);
+                const hardenedResult = await this.revisionService.applyStudioMastering(ch, draftHard);
+                if (hardenedResult) {
+                    await this.fileSystem.writeContent(targetPath, hardenedResult);
+                    success = true;
+                    // @ts-ignore
+                    nextPass = "VIRAL_PROMO";
+                }
+                break;
+            }
+
+            case "VIRAL_PROMO": {
+                const finalTrackContent = await readSafe(targetPath);
+
+                // 1. Audit/Forecast the track
+                const forecastedResult = await this.revisionService.applyViralForecasting(ch, finalTrackContent);
+                if (forecastedResult) {
+                    await this.fileSystem.writeContent(targetPath, forecastedResult);
+                }
+
+                // 2. Generate Social Assets
+                const updatedTrackContent = await readSafe(targetPath);
+                const socialAssets = await this.draftingService.generateViralPromos(ch, updatedTrackContent);
+                if (socialAssets) {
+                    const promoPath = path.join(targetDir, `promo.md`);
+                    await this.fileSystem.writeContent(promoPath, socialAssets);
                     success = true;
                     // @ts-ignore
                     nextPass = "CANON";
                 }
                 break;
+            }
 
             case "REVIEW":
                 const draftForReview = await readSafe(targetPath);

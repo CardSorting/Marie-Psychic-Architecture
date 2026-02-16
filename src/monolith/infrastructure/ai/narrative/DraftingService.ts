@@ -114,28 +114,68 @@ TASK: Return the Index (0-${validResults.length - 1}) of the best version. Just 
         return validResults[winnerIndex] || null;
     }
 
-    public async generateLinkedInStrategy(ch: NovelChapter): Promise<string | null> {
-        process.stdout.write(`   💡 Generating Zenith Strategy for LinkedIn: "${ch.title}"...\n`);
+    public async generateMusicStudioBrief(ch: NovelChapter): Promise<string | null> {
+        process.stdout.write(`   💡 Generating Billboard-Tier Brief for Track: "${ch.title}"...\n`);
 
-        const prompt = `ZENITH STRATEGY MODE. 
+        const prompt = `STUDIO BRIEF MODE. 
 TITLE: ${ch.title}
 DESCRIPTION: ${ch.description}
 
 TASK: 
-1. Identify the Signal Cluster (Prophecy Intake).
-2. Rename trends into cosmic metaphors (e.g. Agents -> Coordination Gravity).
-3. Frame the focus as Structural Predestination.
-4. Define 1 bold metaphor and 1 core declaration.
-5. Goal: Maximum Impression Capture.
+1. Identify the 'Hit Factor' (The Hook).
+2. Define the 'Sonic Texture' and 'Atmosphere' of the track.
+3. Define the 'Billboard Trajectory' — why will this dominate the charts?
+4. Define 1 core 'Earworm Motif' that must be repeated.
+5. Goal: Billboard 100 Dominance.
 
 OUTPUT FORMAT (Markdown):
-# ZENITH STRATEGY: ${ch.title}
-## Signal Cluster
-## Cosmic Metaphors
-## The Bold Metaphor
-## The Declaration
-## Zenith Goal: Impression Capture Strategy
+# STUDIO BRIEF: ${ch.title}
+## The Hook
+## Sonic Texture
+## Billboard Trajectory
+## Earworm Motif
+## Production Goal: Chart Dominance Strategy
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "STRATEGY", "Zenith Strategy", 150);
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "BRIEF", "Studio Brief", 150);
+    }
+
+    public async generateHookSnippets(ch: NovelChapter): Promise<string | null> {
+        process.stdout.write(`   🪝  Isolating Billboard Hooks & Motifs...\n`);
+
+        const prompt = `HOOK ISOLATION MODE.
+CHAPTER DETAILS:
+Title: ${ch.title}
+Brief: ${ch.description}
+
+TASK:
+1. Extract the 3 most potential 'Hooks' from the concept.
+2. Identify a 'Core Motif' (a recurring word, sound, or image) that will become the Earworm.
+3. Rank them based on 'Viral Potential' and 'Chart Trajectory'.
+
+OUTPUT: A ranked list of hooks and their earworm motifs.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "HOOK_ISOLATION", "Hook Selection", 150);
+    }
+
+    public async generateViralPromos(ch: NovelChapter, finalTrack: string): Promise<string | null> {
+        process.stdout.write(`   📢 Generating Empire Marketing Assets (Viral Promo)...\n`);
+
+        const prompt = `VIRAL PROMO GENERATION.
+FINAL TRACK:
+${finalTrack}
+
+TASK:
+1. Generate 5 Social Media Captions (Short, Viral-focused).
+2. Create a 'Platform Script' for a 15-second teaser.
+3. Identify 10 high-impact Hashtags for Global Saturation.
+4. Write a 'Press Release' snippet for the global release.
+
+OUTPUT: The complete Empire Marketing Bundle for the track.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Marketing Bundle Assets", 400);
     }
 }
+
+
+
+

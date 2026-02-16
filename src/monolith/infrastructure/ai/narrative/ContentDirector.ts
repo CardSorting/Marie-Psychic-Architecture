@@ -11,9 +11,9 @@ import { DraftingService } from "./DraftingService.js";
 import { RevisionService } from "./RevisionService.js";
 import { sleep } from "./ProductionUtils.js";
 import { SimpleContentStrategy, ContentPhase } from "./strategies/SimpleContentStrategy.js";
-import { LinkedInProductionStrategy } from "./strategies/LinkedInStrategy.js";
+import { MusicStudioProductionStrategy } from "./strategies/MusicStudioStrategy.js";
 
-type ContentMode = "NOVEL" | "SHORT_STORY" | "ARTICLE" | "OP_ED" | "LINKEDIN";
+type ContentMode = "NOVEL" | "SHORT_STORY" | "ARTICLE" | "OP_ED" | "MUSIC_STUDIO";
 
 export class ContentDirector {
     private workingDir: string;
@@ -41,7 +41,7 @@ export class ContentDirector {
         this.productionSvc.registerStrategy(new SimpleContentStrategy("SHORT_STORY"));
         this.productionSvc.registerStrategy(new SimpleContentStrategy("ARTICLE"));
         this.productionSvc.registerStrategy(new SimpleContentStrategy("OP_ED"));
-        this.productionSvc.registerStrategy(new LinkedInProductionStrategy(this.worldService));
+        this.productionSvc.registerStrategy(new MusicStudioProductionStrategy(this.worldService));
 
         this.novelExecutor = new PassExecutor(
             this.marie,

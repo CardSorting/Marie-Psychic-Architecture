@@ -19,7 +19,7 @@ export class RevisionService {
         if (ch.mode === "OP_ED") editors = ["OP_ED_COLUMNIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "ARTICLE") editors = ["JOURNALIST", "LOGICIAN", "CHIEF_EDITOR"];
         else if (ch.mode === "SHORT_STORY") editors = ["DIRECTOR", "SENSORY_EDITOR", "VOICE_COACH"];
-        else if (ch.mode === "LINKEDIN") editors = ["LINKEDIN_INFLUENCER", "AURA_AUDITOR", "CHIEF_EDITOR", "PROSE"];
+        else if (ch.mode === "MUSIC_STUDIO") editors = ["STUDIO_HEAD", "BEAT_ARCHITECT", "CHART_ANALYST", "LYRICAL_GENIUS", "MIX_ENGINEER"];
 
         const critiques: CritiqueResult[] = [];
 
@@ -77,26 +77,119 @@ ${draft}`;
         return null;
     }
 
-    public async applyLinkedInHardening(ch: NovelChapter, draft: string): Promise<string | null> {
-        process.stdout.write(`   �️  Applying Zenith Gauntlet (Hardening)...\n`);
+    public async applyStudioMastering(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🎚️  Applying Billboard Master (Final Polish)...\n`);
 
-        const prompt = `ZENITH GAUNTLET MODE (GROUNDED).
+        const prompt = `BILLBOARD MASTERING MODE.
+DRAFT (Raw Recording):
+${draft}
+
+TASK:
+1. Polish for 'Earworm Density'. Ensure the core hook is inescapable.
+2. Inject THE VIRAL AUDIT:
+   - Identify the 15-second "TikTok" moment (a high-impact snippet).
+   - Ensure the "30-Second Rule" is met (conflict/hook established immediately).
+   - Verify "Sonic Clarity" — strip all narrative 'mud'.
+3. Maximize the 'Star Power' and 'Edge' of the performance.
+4. Verify the 'Vocal Presence' (Character Voice) is commanding.
+5. Enforce Brief -> Hook -> Beat Sheet -> Recording -> Re-Amping -> Polarization -> Billboard Master -> Remix framework.
+
+OUTPUT: The final mastered and perfected Billboard #1 content.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "MIX_AND_MASTER", "Billboard Mastered", 400);
+    }
+
+    public async applyRecursiveReAmping(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🔌 Re-Amping Prose (Recursive Layering)...\n`);
+
+        const prompt = `RE-AMPING MODE (Recursive Layering).
 DRAFT:
 ${draft}
 
 TASK:
-1. Strip all "TechJesus" over-inflation and cosmic noun-stacks (trim by 30%).
-2. Inject THE GROUNDING PATCH:
-   - 1 Real-world constraint (e.g., compute supply, physical infrastructure, jurisdictional friction).
-   - 1 Uncertainty (a "known unknown" that prevents total closure).
-   - 1 Plausible counter-scenario (validation through acknowledging the alternative).
-3. Maximize Impression Yield through serious-tier authority.
-4. Verify "Aura Aura" is radiant but NOT satirical.
-5. Ensure 0% Friction in the flow, but 100% Truth in the grounding.
-6. Enforce Destabilize -> Simplify (Grounded Pivot) -> Escalate -> Bless framework.
+1. Increase the 'Emotional Volume'. 
+2. Layer in 3-5 subtle 'Motif Callbacks' from the Brief and Beat Sheet.
+3. Inject 'Production Value' — elevate the vocabulary and sentence cadence.
+4. Ensure the 'Rhythm Section' (sentence length variation) is dynamic.
+5. Focus on the 'Deep Subtext' of the dialogue.
 
-OUTPUT: The final hardened and perfected Zenith-tier content. Move from satire-tier to serious-tier.
+OUTPUT: The re-amped and layered multi-platinum prose.
 `;
-        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "HARDENING", "Zenith Hardened", 400);
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "RE_AMPING", "Re-Amped Recording", 400);
+    }
+
+    public async applyPolarizationPass(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   ⚡ Injecting Polarization (The Edge)...\n`);
+
+        const prompt = `POLARIZATION PASS.
+DRAFT:
+${draft}
+
+TASK:
+1. Add an 'Edge'. A choice, a line, or a realization that forces the reader into an emotional response.
+2. Sharpen the 'Conversation Starter' moment. Make it unignorable.
+3. Ensure high situational urgency.
+4. Polish the X-Factor moment for maximum impact.
+
+OUTPUT: The polarized and unignorable Billboard-tier track.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "POLARIZATION", "Polarized Track", 400);
+    }
+
+    public async applyPsychoacousticTuning(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🎧 Psychoacoustic Tuning (The Swing)...\n`);
+
+        const prompt = `PSYCHOACOUSTIC TUNING.
+DRAFT:
+${draft}
+
+TASK:
+1. Audit the syllabic density and 'Swing' of every sentence.
+2. Ensure clear cognitive ease for the Hook and key punchlines.
+3. Resolve paragraphs on satisfying, 'consonant' notes.
+4. Final check for Earworm Saturation — make it feel earned and powerful.
+
+OUTPUT: The perfectly tuned and cognitively satisfied Dynasty-ready track.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "REMIXING", "Remixed/Tuned Track", 400);
+    }
+
+    public async applyGlobalLocalization(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🌎 Applying Global Localization (Universal Resonance)...\n`);
+
+        const prompt = `GLOBAL LOCALIZATION PASS.
+DRAFT:
+${draft}
+
+TASK:
+1. Audit for international appeal. Are motifs universally relatable?
+2. Smooth out idioms that might block global understanding.
+3. Inject the 'Cultural Bridge' — ensure the narrative gravity works across borders.
+4. Prepare the track for international 'Icon' status.
+
+OUTPUT: The globally localized and universally resonant Billboard track.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "LOCALIZATION", "Localized Track", 400);
+    }
+
+    public async applyViralForecasting(ch: NovelChapter, draft: string): Promise<string | null> {
+        process.stdout.write(`   🔭 Viral Forecasting (Platform Audit)...\n`);
+
+        const prompt = `VIRAL FORECASTING & PLATFORM AUDIT.
+DRAFT:
+${draft}
+
+TASK:
+1. Audit for 'Scroll-Stop' potential. Is the energy immediate?
+2. Ensure high 'Shareable Wisdom' — identify the ultimate pull-quotes.
+3. Verify Algorithmic Friction: eliminate anything that slows down the viral spread.
+4. Polish the 'TikTok Hook' for maximum retention.
+
+OUTPUT: The algorithmically optimized and viral-ready Billboard masterpiece.
+`;
+        return await captureWithRetry(this.marie, prompt, this.log, ch.id, "VIRAL_PROMO", "Forecasted Track", 400);
     }
 }
+
+
+
