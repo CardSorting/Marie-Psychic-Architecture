@@ -333,4 +333,71 @@ export class WorldService {
 
         return issues;
     }
+    // ─── NARRATIVE STATE MANAGEMENT ────────────────────────────────────────
+
+    private narrativeState: any = null; // Lazy load
+
+    public async getNarrativeState(): Promise<any> {
+        if (this.narrativeState) return this.narrativeState;
+
+        const statePath = path.join(this.rootPath, ".marie/narrative_state.json");
+        try {
+            const data = await fs.readFile(statePath, "utf-8");
+            this.narrativeState = JSON.parse(data);
+        } catch {
+            // Default State
+            this.narrativeState = {
+                volumeArc: { goal: "Survive", theme: "Survival", progress: 0 },
+                currentChapterId: 1,
+                plotThreads: [],
+                characterStates: {},
+                globalTension: 1,
+                pendingRevelations: []
+            };
+        }
+        return this.narrativeState;
+    }
+
+    public async saveNarrativeState(state: any) {
+        this.narrativeState = state;
+        const statePath = path.join(this.rootPath, ".marie/narrative_state.json");
+        await fs.mkdir(path.dirname(statePath), { recursive: true });
+        await fs.writeFile(statePath, JSON.stringify(state, null, 2));
+    }
+
+    public async updatePlotThread(threadId: string, updates: any) {
+        const state = await this.getNarrativeState();
+        const thread = state.plotThreads.find((t: any) => t.id === threadId);
+        if (thread) {
+            Object.assign(thread, updates);
+        } else {
+            state.plotThreads.push({ id: threadId, ...updates });
+        }
+        await this.saveNarrativeState(state);
+    }
+
+    // ─── ACTOR MANAGEMENT ────────────────────────────────────────
+
+    public getCharacterProfiles(names: string[]): string {
+        const actingTroupe = this.bible.entities.filter(e =>
+            e.type === "CHARACTER" &&
+            names.some(n => e.name.toLowerCase().includes(n.toLowerCase()))
+        );
+
+        if (actingTroupe.length === 0) return "";
+
+        let profiles = `[ACTOR CARDS]\n`;
+        for (const actor of actingTroupe) {
+            profiles += `### ${actor.name}\n`;
+            profiles += `   - Role: ${actor.description}\n`;
+            profiles += `   - Motivation: ${actor.goals ? actor.goals[0] : "Unknown"}\n`;
+            if (actor.voiceProfile) {
+                profiles += `   - VOICE: ${actor.voiceProfile.tone}\n`;
+                profiles += `   - SPEAKING STYLE: ${actor.voiceProfile.sentenceStructure}\n`;
+                profiles += `   - CATCHPHRASES: "${actor.voiceProfile.catchphrases.join('", "')}"\n`;
+            }
+            profiles += `\n`;
+        }
+        return profiles;
+    }
 }

@@ -4,13 +4,16 @@ import { Log } from "../ProductionLogger.js";
 import { EditorialService, CritiqueResult } from "../EditorialService.js";
 import { captureWithRetry, captureAgentOutput, readSafe, countWords, sleep } from "../ProductionUtils.js";
 
+import { WorldService } from "../WorldService.js";
+
 export async function passFlesh(
     marie: MarieCLI,
     ch: any,
     targetPath: string,
     log: Log,
     lore: string,
-    editorialService: EditorialService
+    editorialService: EditorialService,
+    worldService: WorldService
 ): Promise<boolean> {
     const skeleton = await readSafe(targetPath);
     // Parse scenes from Skeleton using simple regex since we structured it
@@ -24,6 +27,12 @@ export async function passFlesh(
         const id = titleMatch ? titleMatch[1] : "?";
         const title = titleMatch ? titleMatch[2] : "Unix scene";
 
+        // ─── CONTEXT INJECTION ───
+        // Extract capitalized names as a heuristic for characters present
+        const possibleNames = sceneBlock.match(/\b[A-Z][a-z]+\b/g) || [];
+        const uniqueNames = [...new Set(possibleNames)];
+        const actorCards = worldService.getCharacterProfiles(uniqueNames);
+
         // ─── ESCALATION MANAGER ───
         let currentProse = "";
         let attempt = 0;
@@ -35,6 +44,9 @@ export async function passFlesh(
             // GENERATE (Level 0 or Retry)
             const prompt = `Novelist Mode. Write prose for Scene ${id}: "${title}".
             ${lore}
+
+            ACTOR PROFILES (VOICE & MOTIVATION):
+            ${actorCards}
             
             PREVIOUS SCENE ENDING:
             ...${previousSceneEnding.slice(-500)}
@@ -82,18 +94,34 @@ export async function passFlesh(
                         const fatal = critiques.some(c => c.blocking);
                         if (!fatal) solved = true;
                     }
-                } else if (decision.strategy === "STRUCTURAL_REWRITE") {
-                    process.stdout.write(`   🚨 ACTIVATING THE FIXER (Structural Rewrite Needed)...\n`);
-                    const fixerPrompt = editorialService.getPrompt("THE_FIXER", currentProse, lore);
-                    const fixerRaw = await captureAgentOutput(marie, fixerPrompt);
-                    const fixerCritique = editorialService.parseCritique("THE_FIXER", fixerRaw);
+                } else if (decision.strategy === "STRUCTURAL_REWRITE" || attempt === 3) {
+                    process.stdout.write(`   🚨 CALLING THE PLOT DOCTOR (Structural Emergency)...\n`);
+                    const doctorPrompt = editorialService.getPrompt("PLOT_DOCTOR", currentProse, lore);
+                    const doctorRaw = await captureAgentOutput(marie, doctorPrompt);
+                    const prescription = editorialService.parseCritique("PLOT_DOCTOR" as any, doctorRaw);
 
-                    process.stdout.write(`   🔧 Fixer Proposal: ${fixerCritique.feedback}\n`);
-                    // In full impl, this feeds back into next prompt
+                    process.stdout.write(`   💉 Doctor's Orders: ${prescription.feedback}\n`);
+
+                    await log.write(ch.id, "FLESH", `DOCTOR INTERVENTION: ${prescription.feedback}`);
+
+                    // Rewrite with Doctor's Orders
+                    const rewritePrompt = `Novelist Mode. REWRITE Scene ${id} completely.
+          
+          DOCTOR'S ORDERS (STRICT):
+          ${prescription.feedback}
+          
+          Previous Context:
+          ${lore}
+          
+          Write 800-1200 words. Execute the intervention.`;
+
+                    currentProse = await captureWithRetry(marie, rewritePrompt, log, ch.id, "FLESH", `Doctor Rewrite ${id}`, 400);
+
+                    // The Doctor's rewrite is usually final for this attempt loop
+                    solved = true;
                 }
             }
         }
-
         if (!solved) {
             await log.write(ch.id, "FLESH", `Scene ${id} FAILED after 3 attempts. Manual Review Required.`);
             proseParts.push(`## Scene ${id}: ${title} [FAILED]\n\n> [!WARNING] DEADLOCK\n> The AI could not resolve this scene.\n\n${currentProse}\n\n---\n\n`);
@@ -101,10 +129,10 @@ export async function passFlesh(
             proseParts.push(`## Scene ${id}: ${title}\n\n${currentProse}\n\n---\n\n`);
             previousSceneEnding = currentProse;
         }
-
-        await fs.writeFile(targetPath, proseParts.join(""));
-        await sleep(3000);
     }
+
+    await fs.writeFile(targetPath, proseParts.join(""));
+    await sleep(3000);
 
     return true;
 }

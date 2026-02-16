@@ -31,6 +31,7 @@ import { passSkeleton } from "../monolith/infrastructure/ai/narrative/passes/Pas
 import { passFlesh } from "../monolith/infrastructure/ai/narrative/passes/PassFlesh.js";
 import { passNerve } from "../monolith/infrastructure/ai/narrative/passes/PassNerve.js";
 import { passSoul } from "../monolith/infrastructure/ai/narrative/passes/PassSoul.js";
+import { passContinuity } from "../monolith/infrastructure/ai/narrative/passes/PassContinuity.js";
 
 // ═══════════════════════════════════════════════════════════════
 //  MAIN
@@ -136,13 +137,16 @@ async function main() {
     try {
       switch (pass) {
         case "BLUEPRINT":
+          // Run Continuity First
+          process.stdout.write("   Running Continuity Check...\n");
+          await passContinuity(marie, ch, log, worldService, prevSummary);
           passOk = await passBlueprint(marie, ch, blueprintPath, log, worldService, prevSummary);
           break;
         case "SKELETON":
           passOk = await passSkeleton(marie, ch, blueprintPath, targetPath, log, lore);
           break;
         case "FLESH":
-          passOk = await passFlesh(marie, ch, targetPath, log, lore, editorialService);
+          passOk = await passFlesh(marie, ch, targetPath, log, worldService.getWorldContext([ch.title]), editorialService, worldService);
           break;
         case "NERVE":
           passOk = await passNerve(marie, ch, targetPath, log, lore, editorialService);
