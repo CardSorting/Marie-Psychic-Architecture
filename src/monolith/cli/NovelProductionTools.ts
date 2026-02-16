@@ -25,11 +25,18 @@ export function registerNovelTools(
       type: "object",
       properties: {
         outlinePath: { type: "string", description: "Path to lightnovel.md" },
+        mode: {
+          type: "string",
+          description: "Production mode: 'ESSAY' (default) or 'STRUCTURED'",
+          enum: ["ESSAY", "STRUCTURED"]
+        },
       },
       required: ["outlinePath"],
     },
     execute: async (args) => {
       const p = getStringArg(args, "outlinePath");
+      const mode = getStringArg(args, "mode") || "ESSAY"; // Default to ESSAY
+
       const fullPath = path.isAbsolute(p) ? p : path.join(workingDir, p);
       const content = await fs.readFile(fullPath, "utf-8");
 
@@ -58,10 +65,10 @@ export function registerNovelTools(
       }
 
       for (const chap of chapters) {
-        await novelService.startNewChapter(chap.title, chap.description.trim());
+        await novelService.startNewChapter(chap.title, chap.description.trim(), mode);
       }
 
-      return `Successfully initialized novel with ${chapters.length} chapters from ${p}.`;
+      return `Successfully initialized novel with ${chapters.length} chapters from ${p} in ${mode} mode.`;
     },
   });
 

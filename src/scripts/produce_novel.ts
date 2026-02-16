@@ -16,8 +16,9 @@
  */
 import { MarieCLI } from "../monolith/adapters/CliMarieAdapter.js";
 import { NovelProductionService } from "../monolith/infrastructure/ai/narrative/NovelProductionService.js";
-import * as fs from "fs/promises";
-import * as path from "path";
+import * as fs from "node:fs/promises";
+import * as fsSync from "node:fs";
+import * as path from "node:path";
 
 // ═══════════════════════════════════════════════════════════════
 //  TYPES
