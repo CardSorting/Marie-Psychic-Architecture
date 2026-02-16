@@ -24,7 +24,8 @@ export async function passSimulation(
     Do NOT write prose. 
     Format your output as valid JSON.`;
 
-    const raw = await captureWithRetry(marie, prompt, log, ch.id, "SIMULATION", "World Simulation", 100);
+    const simPartial = `.vault/novel/chapters/Simulation_Ch${ch.id}_Partial.json`;
+    const raw = await captureWithRetry(marie, prompt, log, ch.id, "SIMULATION", "Simulation JSON Blueprint", 100, 2, simPartial);
 
     try {
         const delta = extractJSON(raw);

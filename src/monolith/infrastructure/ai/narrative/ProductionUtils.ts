@@ -28,28 +28,67 @@ export function cleanStreamOutput(raw: string): string {
     return text.trim();
 }
 
-/** Robustly extract JSON block from text even if it has preamble */
+/** Robustly extract JSON block from text even if it has preamble. 
+ * Supports basic recovery for truncated JSON. */
 export function extractJSON(text: string): any {
+    let jsonBody = "";
     const start = text.indexOf("{");
+    if (start === -1) return null;
+
     const end = text.lastIndexOf("}");
-    if (start === -1 || end === -1) return null;
-    const jsonBody = text.substring(start, end + 1);
+    if (end !== -1 && end > start) {
+        jsonBody = text.substring(start, end + 1);
+    } else {
+        // Truncated! Attempt recovery
+        jsonBody = repairJSON(text.substring(start));
+    }
+
     try {
         return JSON.parse(jsonBody);
     } catch {
-        return null;
+        // Second attempt: brutal extraction
+        try {
+            const possible = jsonBody + "}";
+            return JSON.parse(possible);
+        } catch {
+            return null;
+        }
     }
+}
+
+export function repairJSON(truncated: string): string {
+    let balanced = truncated.trim();
+
+    // 1. Balance quotes
+    const quoteCount = (balanced.match(/"/g) || []).length;
+    if (quoteCount % 2 !== 0) balanced += '"';
+
+    // 2. Balance braces
+    let depth = 0;
+    for (const char of balanced) {
+        if (char === "{") depth++;
+        if (char === "}") depth--;
+    }
+    while (depth > 0) {
+        balanced += "}";
+        depth--;
+    }
+
+    return balanced;
 }
 
 export async function captureAgentOutput(
     marie: MarieCLI,
     prompt: string,
-    streamToFile?: string
+    streamToFile?: string,
+    append: boolean = false
 ): Promise<string> {
     const chunks: string[] = [];
     if (streamToFile) {
         await fs.mkdir(path.dirname(streamToFile), { recursive: true });
-        await fs.writeFile(streamToFile, ""); // clear
+        if (!append) {
+            await fs.writeFile(streamToFile, ""); // clear only if not appending
+        }
     }
 
     await marie.handleMessage(prompt, {
@@ -87,24 +126,50 @@ export async function captureWithRetry(
     streamFile?: string
 ): Promise<string> {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        const finalPrompt = attempt === 1 ? prompt : `${prompt}\n\nCRITICAL: RESPONSE TOO SHORT. Must be > ${minWords} words. Attempt ${attempt}/${maxRetries}.`;
+        let finalPrompt = attempt === 1 ? prompt : `${prompt}\n\nCRITICAL: RESPONSE TOO SHORT. Must be > ${minWords} words. Attempt ${attempt}/${maxRetries}.`;
+        let resumption = false;
+
+        // RESUMPTION LOGIC
+        if (streamFile) {
+            const existing = await readSafe(streamFile);
+            if (existing.length > 200 && countWords(existing) < minWords) {
+                await log.write(ch, pass, `${label}: ⚡ RESUMING truncated stream (${countWords(existing)}w)...`);
+                finalPrompt = `You were generating content for: ${label}.
+The stream was interrupted. 
+HERE IS THE CONTENT GENERATED SO FAR:
+---
+${existing}
+---
+PLEASE CONTINUE EXACTLY FROM THE LAST WORD. 
+Do NOT repeat the start. Do NOT preamble.
+Just deliver the rest of the text until complete.`;
+                resumption = true;
+            }
+        }
 
         let captured = "";
         try {
-            captured = await captureAgentOutput(marie, finalPrompt, streamFile);
+            captured = await captureAgentOutput(marie, finalPrompt, streamFile, resumption);
         } catch (err: any) {
             await log.write(ch, pass, `${label}: agent error (${err.message})`);
         }
 
-        // Heuristic: If we expect JSON, don't count words the same way
-        if (label.includes("JSON") || label.includes("Blueprint")) {
-            if (captured.trim().startsWith("{") && captured.trim().endsWith("}")) return captured;
+        // If we resumed, the "captured" is just the new part. We need the full thing for word count and return.
+        let fullText = captured;
+        if (resumption && streamFile) {
+            fullText = await readSafe(streamFile);
         }
 
-        const words = countWords(captured);
+        // Heuristic: If we expect JSON, don't count words the same way
+        if (label.includes("JSON") || label.includes("Blueprint")) {
+            const parsed = extractJSON(fullText);
+            if (parsed) return fullText;
+        }
+
+        const words = countWords(fullText);
         if (words >= minWords) {
             await log.write(ch, pass, `${label}: captured ${words}w`);
-            return captured;
+            return fullText;
         }
 
         if (attempt < maxRetries) {

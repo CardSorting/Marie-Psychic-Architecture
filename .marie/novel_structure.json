@@ -133,9 +133,13 @@
           "id": 3,
           "title": "The Arch Priest of Architects",
           "description": "Introduction to sect hierarchy. World governance explained.",
-          "currentPass": "FOUNDATION",
+          "currentPass": "CANON",
           "completedPasses": [
-            "SIMULATION"
+            "SIMULATION",
+            "FOUNDATION",
+            "BEATS",
+            "DRAFT",
+            "COHESION"
           ],
           "continuityLedger": [
             {
@@ -146,6 +150,41 @@
                 ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
               ],
               "timestamp": "2026-02-16T05:40:07.506Z"
+            },
+            {
+              "pass": "FOUNDATION",
+              "summary": "Completed FOUNDATION",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+              ],
+              "timestamp": "2026-02-16T05:40:50.459Z"
+            },
+            {
+              "pass": "BEATS",
+              "summary": "Completed BEATS",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+              ],
+              "timestamp": "2026-02-16T05:41:15.850Z"
+            },
+            {
+              "pass": "DRAFT",
+              "summary": "Completed DRAFT",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+              ],
+              "timestamp": "2026-02-16T05:41:20.854Z"
+            },
+            {
+              "pass": "COHESION",
+              "summary": "Completed COHESION",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects.md",
+                ".vault/novel/chapters/Chapter_3_The_Arch_Priest_of_Architects_Beats.md"
+              ],
+              "timestamp": "2026-02-16T05:41:22.859Z"
             }
           ],
           "files": [

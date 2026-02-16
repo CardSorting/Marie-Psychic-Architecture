@@ -33,7 +33,8 @@ export async function passFoundation(
     
     Ensure strict adherence to the World Bible.`;
 
-    const raw = await captureWithRetry(marie, prompt, log, ch.id, "FOUNDATION", "Foundation Generation", 100);
+    const blueprintPartial = targetPath.replace(".json", "_Blueprint_Partial.json");
+    const raw = await captureWithRetry(marie, prompt, log, ch.id, "FOUNDATION", "Foundation JSON Blueprint", 100, 2, blueprintPartial);
 
     try {
         const foundation = extractJSON(raw);
