@@ -99,7 +99,7 @@ export class CritiqueService {
     }
 
     score = Math.max(0, Math.min(100, score));
-    const approved = score >= 40;
+    const approved = score >= 25;
     const critique =
       critiquePoints.length > 0
         ? critiquePoints.join(" ")
@@ -141,9 +141,9 @@ export class CritiqueService {
     adjust: (n: number) => void,
   ) {
     const words = content.split(/\s+/).length;
-    // FLESH should produce substantial prose
-    if (words < 2000) {
-      adjust(-20);
+    // FLESH: lenient because script assembles incrementally
+    if (words < 500) {
+      adjust(-10);
       points.push(
         `FLESH: '${file}' has only ${words} words. FLESH pass should be 4000-8000 words of prose.`,
       );

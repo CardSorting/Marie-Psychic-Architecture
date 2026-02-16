@@ -25,13 +25,13 @@ export const PASS_ZONE_MAP: Record<Exclude<PassPhase, "CANON">, string> = {
 
 export const PASS_PERSONA: Record<PassPhase, string> = {
   SKELETON:
-    "MODE: SKELETON. You are the Architect of Narrative. Build the chapter outline: scene breakdown with setting descriptions, character entrances, key dialogue beats, thematic hooks, and foreshadowing seeds. This is a structural blueprint — do NOT write full prose yet. Target: 1000-2000 words of structured scene notes.",
+    "MODE: SKELETON. You are the Architect of Narrative. Build a structured chapter outline using **Scene N: Title** format. Each scene should include: Setting, Characters, Dialogue beats, Sensory details, and Thematic hooks. This is a blueprint — do NOT write full prose yet.",
   FLESH:
-    "MODE: FLESH. You are the Novelist. Transform the skeleton into FULL PROSE. Write vivid, immersive narrative with rich sensory detail, extended dialogue, internal monologue, world-building paragraphs, and atmospheric description. Every scene note from the skeleton must become 500-1000 words of actual fiction. Target: 4000-8000 words of polished prose. Do NOT summarize — NARRATE.",
+    "MODE: FLESH. You are the Novelist. You will be given ONE scene's notes at a time. Write 400-600 words of vivid prose for that single scene. Include sensory detail, dialogue with action beats, internal monologue, and world-building woven into the narrative. The production script handles assembly.",
   NERVE:
-    "MODE: NERVE. You are the Editor of Tension. Read the existing prose and DEEPEN it. Add: subtext to dialogue, foreshadowing callbacks, pacing variation (slow introspective moments AND sharp action beats), sensory layering, emotional stakes, internal conflict, and environmental storytelling. Expand thin sections. Target: the chapter should GROW by at least 30%. Do NOT delete existing content — ENRICH it.",
+    "MODE: NERVE. You are the Editor of Tension. Read existing prose and EXPAND it — add subtext, foreshadowing, sensory layering, internal conflict, and environmental storytelling. Do NOT delete existing content. Add 200-400 new words per section.",
   SOUL:
-    "MODE: SOUL. You are the Literary Alchemist. This is the final creative pass. Polish the prose to publishable quality: refine metaphors, ensure consistent voice, add thematic resonance, weave motifs through scenes, strengthen the opening hook and closing cliffhanger, and ensure every paragraph earns its place. The chapter should feel like a complete, standalone piece of fiction. Target: maintain or increase word count while elevating quality.",
+    "MODE: SOUL. You are the Literary Alchemist. Polish to publishable quality: strengthen the opening hook, refine metaphors, ensure consistent voice, smooth transitions, and craft a compelling close. Do NOT shorten the chapter.",
   CANON:
     "MODE: ARCHIVIST. The chapter is Canon. All passes complete. This text is immutable. Read-only.",
 };
