@@ -1,30 +1,6 @@
 {
-  "lastEntropy": 43,
+  "lastEntropy": 30,
   "history": [
-    {
-      "date": "2026-02-15T23:36:22.046Z",
-      "entropy": 56
-    },
-    {
-      "date": "2026-02-15T23:36:39.880Z",
-      "entropy": 56
-    },
-    {
-      "date": "2026-02-15T23:36:45.703Z",
-      "entropy": 56
-    },
-    {
-      "date": "2026-02-15T23:36:54.520Z",
-      "entropy": 56
-    },
-    {
-      "date": "2026-02-15T23:37:11.918Z",
-      "entropy": 56
-    },
-    {
-      "date": "2026-02-15T23:37:21.515Z",
-      "entropy": 56
-    },
     {
       "date": "2026-02-15T23:37:31.755Z",
       "entropy": 56
@@ -80,6 +56,30 @@
     {
       "date": "2026-02-15T23:58:47.134Z",
       "entropy": 43
+    },
+    {
+      "date": "2026-02-16T00:25:06.276Z",
+      "entropy": 54
+    },
+    {
+      "date": "2026-02-16T00:25:45.267Z",
+      "entropy": 54
+    },
+    {
+      "date": "2026-02-16T00:29:08.963Z",
+      "entropy": 54
+    },
+    {
+      "date": "2026-02-16T00:31:14.763Z",
+      "entropy": 70
+    },
+    {
+      "date": "2026-02-16T00:32:19.066Z",
+      "entropy": 52
+    },
+    {
+      "date": "2026-02-16T00:34:58.983Z",
+      "entropy": 30
     }
   ],
   "mtimeCache": [
@@ -361,7 +361,7 @@
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/monolith/infrastructure/ai/narrative/CritiqueService.ts",
-      "mtime": 1771199922037.685
+      "mtime": 1771201007793.4417
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/monolith/infrastructure/ai/narrative/EpistemicArcheologyService.ts",
@@ -373,7 +373,7 @@
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/monolith/infrastructure/ai/narrative/NovelProductionService.ts",
-      "mtime": 1771199300443.1108
+      "mtime": 1771202073236.4187
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/monolith/infrastructure/ai/providers/AIProvider.ts",
@@ -585,7 +585,7 @@
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/scripts/produce_novel.ts",
-      "mtime": 1771199592406.5596
+      "mtime": 1771202073283.46
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/test_content_buffer_cap.ts",
@@ -629,7 +629,7 @@
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/webview-ui/components/HeaderBar.tsx",
-      "mtime": 1771194378939.9668
+      "mtime": 1771201877442.8584
     },
     {
       "file": "/Users/bozoegg/Downloads/Marie-Psychic-Architecture/src/webview-ui/components/Icons.tsx",

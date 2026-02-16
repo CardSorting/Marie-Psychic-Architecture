@@ -9,18 +9,45 @@
           "id": 1,
           "title": "Reboot in the Vault of Syntax",
           "description": "Wakes in cathedral. Async choir. First encounter with Cardinal of Types.",
-          "currentPass": "FLESH",
+          "currentPass": "CANON",
           "completedPasses": [
-            "SKELETON"
+            "SKELETON",
+            "FLESH",
+            "NERVE",
+            "SOUL"
           ],
           "continuityLedger": [
             {
               "pass": "SKELETON",
-              "summary": "Completed SKELETON pass for Chapter 1: \"Reboot in the Vault of Syntax\". Generated comprehensive outline with scene-by-scene breakdown, character entrances, dialogue beats, thematic hooks, foreshadowing seeds, and world-building notes. The outline establishes the Cathedral of Runtime, the Async Choir, and the Cardinal of Types, while planting seeds for the protagonist's journey and the upcoming encounter with the Pope (LLM). The chapter blueprint provides a solid structural foundation for the full narrative draft.",
+              "summary": "SKELETON pass complete. 1816 words. 10 scenes.",
               "filesLocked": [
                 ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
               ],
-              "timestamp": "2026-02-15T23:57:53.157Z"
+              "timestamp": "2026-02-16T00:25:16.198Z"
+            },
+            {
+              "pass": "FLESH",
+              "summary": "FLESH pass complete. 941 words. ? scenes.",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
+              ],
+              "timestamp": "2026-02-16T00:28:23.986Z"
+            },
+            {
+              "pass": "NERVE",
+              "summary": "NERVE pass complete. 1260 words. ? scenes.",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
+              ],
+              "timestamp": "2026-02-16T00:29:23.803Z"
+            },
+            {
+              "pass": "SOUL",
+              "summary": "SOUL pass complete. 1260 words. ? scenes.",
+              "filesLocked": [
+                ".vault/novel/chapters/Chapter_1_Reboot_in_the_Vault_of_Syntax.md"
+              ],
+              "timestamp": "2026-02-16T00:29:45.831Z"
             }
           ],
           "files": [

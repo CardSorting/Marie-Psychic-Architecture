@@ -30,8 +30,7 @@ export const PASS_PERSONA: Record<PassPhase, string> = {
     "MODE: FLESH. You are the Novelist. You will be given ONE scene's notes at a time. Write 400-600 words of vivid prose for that single scene. Include sensory detail, dialogue with action beats, internal monologue, and world-building woven into the narrative. The production script handles assembly.",
   NERVE:
     "MODE: NERVE. You are the Editor of Tension. Read existing prose and EXPAND it — add subtext, foreshadowing, sensory layering, internal conflict, and environmental storytelling. Do NOT delete existing content. Add 200-400 new words per section.",
-  SOUL:
-    "MODE: SOUL. You are the Literary Alchemist. Polish to publishable quality: strengthen the opening hook, refine metaphors, ensure consistent voice, smooth transitions, and craft a compelling close. Do NOT shorten the chapter.",
+  SOUL: "MODE: SOUL. You are the Literary Alchemist. Polish to publishable quality: strengthen the opening hook, refine metaphors, ensure consistent voice, smooth transitions, and craft a compelling close. Do NOT shorten the chapter.",
   CANON:
     "MODE: ARCHIVIST. The chapter is Canon. All passes complete. This text is immutable. Read-only.",
 };
@@ -199,10 +198,11 @@ export class NovelProductionService {
 
   /**
    * Attempt to advance to the next pass.
-   * The CritiqueService gates each transition.
+   * The CritiqueService gates each transition unless forced.
    */
   public async advancePass(
     summary: string,
+    force: boolean = false,
   ): Promise<{ success: boolean; message: string }> {
     const activeChap = this.getActiveChapter();
     if (!activeChap) return { success: false, message: "No active chapter." };
@@ -226,24 +226,32 @@ export class NovelProductionService {
       // Ignore if directory doesn't exist yet
     }
 
-    // Gate: CritiqueService reviews the current pass
-    const review = await this.critiqueService.reviewPass(
-      activeChap,
-      activeChap.currentPass,
-      this.rootPath,
-    );
-    if (!review.approved) {
-      return {
-        success: false,
-        message: `Pass ${activeChap.currentPass} REJECTED. Score: ${review.score}. ${review.critique}`,
-      };
+    let reviewScore = 100;
+    let reviewCritique = "Forced advancement (bypassed editor).";
+
+    if (!force) {
+      // Gate: CritiqueService reviews the current pass
+      const review = await this.critiqueService.reviewPass(
+        activeChap,
+        activeChap.currentPass,
+        this.rootPath,
+      );
+      reviewScore = review.score;
+      reviewCritique = review.critique;
+
+      if (!review.approved) {
+        return {
+          success: false,
+          message: `Pass ${activeChap.currentPass} REJECTED. Score: ${review.score}. ${review.critique}`,
+        };
+      }
     }
 
     // Lock current pass files
     const currentPassIndex = PASS_ORDER.indexOf(activeChap.currentPass);
     const ledgerEntry: LedgerEntry = {
       pass: activeChap.currentPass,
-      summary,
+      summary: force ? `[FORCED] ${summary}` : summary,
       filesLocked: [...activeChap.files], // Lock all current files
       timestamp: new Date().toISOString(),
     };
@@ -257,7 +265,7 @@ export class NovelProductionService {
 
     return {
       success: true,
-      message: `Pass ${ledgerEntry.pass} complete! Score: ${review.score}. Advanced to ${nextPass}. ${review.critique}`,
+      message: `Pass ${ledgerEntry.pass} complete! Score: ${reviewScore}. Advanced to ${nextPass}. ${reviewCritique}`,
     };
   }
 
@@ -289,11 +297,11 @@ ${PASS_PERSONA.CANON}
     const ledgerSummary =
       activeChap.continuityLedger.length > 0
         ? activeChap.continuityLedger
-          .map(
-            (e) =>
-              `  [${e.pass}] ${e.summary} (Locked: ${e.filesLocked.join(", ")})`,
-          )
-          .join("\n")
+            .map(
+              (e) =>
+                `  [${e.pass}] ${e.summary} (Locked: ${e.filesLocked.join(", ")})`,
+            )
+            .join("\n")
         : "  (No previous passes)";
 
     return `

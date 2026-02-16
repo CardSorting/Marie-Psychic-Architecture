@@ -31,29 +31,44 @@ export function HeaderBar({
   const toastTimerRef = useRef<number | null>(null);
   const modelSaveTimerRef = useRef<number | null>(null);
 
-  const resetDrafts = () => {
+  const resetDrafts = useCallback(() => {
     setModelDraft(config.model);
     setProviderDraft(config.provider);
     setApiKeyDraft("");
-  };
+  }, [config.model, config.provider]);
 
-  const showToast = (message: string, tone: "success" | "info" = "success") => {
-    setToast({ message, tone });
-    if (toastTimerRef.current) {
-      window.clearTimeout(toastTimerRef.current);
-    }
-    toastTimerRef.current = window.setTimeout(() => {
-      setToast(null);
-      toastTimerRef.current = null;
-    }, 2200);
-  };
+  const showToast = useCallback(
+    (message: string, tone: "success" | "info" = "success") => {
+      setToast({ message, tone });
+      if (toastTimerRef.current) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+      toastTimerRef.current = window.setTimeout(() => {
+        setToast(null);
+        toastTimerRef.current = null;
+      }, 2200);
+    },
+    [],
+  );
 
   const modelOptions = useMemo(() => {
     const merged = [...availableModels, config.model];
     return Array.from(new Set(merged.filter(Boolean)));
   }, [availableModels, config.model]);
 
-  const closeConfig = () => {
+  const commitModel = useCallback(
+    (next: string, toastOnSave = true) => {
+      const trimmed = next.trim();
+      if (!trimmed || trimmed === config.model) return;
+      onModel(trimmed);
+      if (toastOnSave) {
+        showToast(`Model set to ${trimmed}`, "success");
+      }
+    },
+    [config.model, onModel, showToast],
+  );
+
+  const closeConfig = useCallback(() => {
     if (modelSaveTimerRef.current) {
       window.clearTimeout(modelSaveTimerRef.current);
       modelSaveTimerRef.current = null;
@@ -64,16 +79,7 @@ export function HeaderBar({
     }
     resetDrafts();
     setIsConfigOpen(false);
-  };
-
-  const commitModel = (next: string, toastOnSave = true) => {
-    const trimmed = next.trim();
-    if (!trimmed || trimmed === config.model) return;
-    onModel(trimmed);
-    if (toastOnSave) {
-      showToast(`Model set to ${trimmed}`, "success");
-    }
-  };
+  }, [modelDraft, config.model, commitModel, resetDrafts, setIsConfigOpen]);
 
   useEffect(() => {
     if (!isConfigOpen) return;
