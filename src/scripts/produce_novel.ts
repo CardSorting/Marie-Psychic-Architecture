@@ -101,6 +101,8 @@ async function main() {
   }
 
   // 2. Production Loop (one iteration per chapter×pass)
+  // Safety: Track attempts per chapter+pass to prevent infinite loops
+  const attemptMap = new Map<string, number>();
   while (true) {
     let structure;
     try {
@@ -141,6 +143,35 @@ async function main() {
     );
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
 
+    // Circuit breaker: prevent infinite loops
+    const attemptKey = `${activeChap.id}:${currentPass}`;
+    const attemptCount = (attemptMap.get(attemptKey) || 0) + 1;
+    attemptMap.set(attemptKey, attemptCount);
+
+    if (attemptCount > 3) {
+      process.stderr.write(
+        `\n🚨 CIRCUIT BREAKER: Chapter ${activeChap.id} has failed ${attemptCount} times at ${currentPass}.\n`,
+      );
+      process.stderr.write("   Force-advancing to prevent infinite loop...\n");
+      // Force-advance by directly calling the service
+      try {
+        const forceService = new NovelProductionService(workingDir);
+        await forceService.initialize();
+        await forceService.advancePass(
+          `FORCED ADVANCEMENT after ${attemptCount} failed attempts.`,
+        );
+        process.stdout.write("✅ Force-advanced. Continuing...\n");
+        attemptMap.delete(attemptKey); // Reset counter
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        continue; // Skip to next iteration
+      } catch (err: any) {
+        process.stderr.write(
+          `❌ Force-advance failed: ${err.message}. Giving up on this chapter.\n`,
+        );
+        break; // Exit production loop entirely
+      }
+    }
+
     process.stdout.write(
       `\n${"═".repeat(67)}\n`,
     );
@@ -148,7 +179,7 @@ async function main() {
       `📖 Chapter ${activeChap.id}: "${activeChap.title}"\n`,
     );
     process.stdout.write(
-      `🛠️  Pass: ${currentPass} (${activeChap.completedPasses.length + 1}/5)\n`,
+      `🛠️  Pass: ${currentPass} (${activeChap.completedPasses.length + 1}/5) | Attempt ${attemptCount}\n`,
     );
     process.stdout.write(
       `🎯 Target: ${passConfig.min}+ words | Max turns: ${passConfig.maxTurns}\n`,
@@ -216,6 +247,8 @@ async function main() {
           process.stdout.write(
             `\n✨ Advanced: ${currentPass} -> ${updatedChap.currentPass}.\n`,
           );
+          // Reset attempt counter for this pass since it succeeded
+          attemptMap.delete(`${activeChap.id}:${currentPass}`);
         }
       } catch {
         // Ignore read errors, will retry
@@ -266,6 +299,38 @@ async function main() {
             },
           },
         );
+
+        // Verify advancement after nudge
+        try {
+          const postNudgeData = await fs.readFile(novelStructurePath, "utf-8");
+          const postNudgeStructure = JSON.parse(postNudgeData);
+          const postNudgeVol = postNudgeStructure.volumes.find(
+            (v: any) => v.id === activeVol.id,
+          );
+          const postNudgeChap = postNudgeVol.chapters.find(
+            (c: any) => c.id === activeChap.id,
+          );
+
+          if (postNudgeChap.currentPass !== currentPass) {
+            passAdvanced = true;
+            process.stdout.write(
+              `\n✨ Advanced after nudge: ${currentPass} -> ${postNudgeChap.currentPass}.\n`,
+            );
+          } else {
+            process.stderr.write(
+              `\n💀 CRITICAL: Pass still did not advance after nudge. The AI may be refusing to advance.\n`,
+            );
+            process.stderr.write(
+              `   Chapter ${activeChap.id} is stuck at ${currentPass}. Skipping to next chapter...\n`,
+            );
+            // Force-skip this chapter to prevent infinite loop
+            // (In a production system, you might want to mark this chapter as "failed" instead)
+          }
+        } catch (err: any) {
+          process.stderr.write(
+            `\n❌ Failed to verify post-nudge state: ${err.message}\n`,
+          );
+        }
       } catch (err: any) {
         process.stderr.write(`\n❌ Nudge failed: ${err.message}\n`);
       }
