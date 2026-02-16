@@ -51,6 +51,23 @@ async function readSafe(filePath: string): Promise<string> {
   }
 }
 
+async function getLore(workingDir: string): Promise<string> {
+  try {
+    const memoryPath = path.join(workingDir, ".marie", "ghostwriter_memory.json");
+    const raw = await fs.readFile(memoryPath, "utf-8");
+    const memory = JSON.parse(raw);
+    const bible = (memory.characterBible || [])
+      .map((c: any) => `- ${c.name}: ${c.archetype}. Voice: ${c.voice} Traits: ${c.traits?.join(", ")}`)
+      .join("\n");
+    const lexicon = Object.entries(memory.worldLexicon?.terms || {})
+      .map(([k, v]) => `- ${k}: ${v}`)
+      .join("\n");
+    return `\nCHARACTER BIBLE:\n${bible}\n\nWORLD LEXICON:\n${lexicon}\n`;
+  } catch {
+    return "";
+  }
+}
+
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -253,406 +270,190 @@ async function captureWithRetry(
 
 /**
  * Pass: SKELETON (Granular Depth Mode)
- *
- * 1. Generate high-level list of scenes
- * 2. For each scene, generate deep architectural notes
- * 3. Generate thematic/foreshadowing metadata
- * 4. Assemble and write
  */
 async function passSkeleton(
   marie: MarieCLI,
   ch: any,
   targetPath: string,
   log: Log,
+  lore: string,
+  feedback: string = "",
 ): Promise<boolean> {
   await log.write(ch.id, "SKELETON", "Starting granular architecture mode");
 
   // PHASE 1: Structure
   const structurePrompt = `Create a high-level scene list for Chapter ${ch.id}: "${ch.title}".
 Description: ${ch.description}
+${lore}
+${feedback ? `\nFEEDBACK FROM EDITOR:\n${feedback}\n` : ""}
 
 Write 5-8 scene titles with a one-sentence summary for each.
 Format:
 **Scene 1: [Title]** — [Summary]
-**Scene 2: [Title]** — [Summary]
 ...
 
-Do NOT write full notes yet. Output ONLY the list. Then STOP.`;
+Output ONLY the list. Then STOP.`;
 
-  const structureRaw = await captureWithRetry(
-    marie,
-    structurePrompt,
-    log,
-    ch.id,
-    "SKELETON",
-    "Scene List",
-    50,
-  );
-
+  const structureRaw = await captureWithRetry(marie, structurePrompt, log, ch.id, "SKELETON", "Scene List", 50);
   if (!structureRaw) return false;
 
   const sceneTitles: { id: number; title: string; summary: string }[] = [];
-  const lines = structureRaw.split("\n");
-  for (const line of lines) {
-    // Permissive regex for scene headers
+  for (const line of structureRaw.split("\n")) {
     const m = line.match(/\*\*Scene\s+(\d+)\s*[:—–-]?\s*(.+?)\*\*\s*[:—–-]?\s*(.+)/i);
-    if (m) {
-      sceneTitles.push({
-        id: parseInt(m[1]),
-        title: m[2].trim(),
-        summary: m[3].trim(),
-      });
-    }
+    if (m) sceneTitles.push({ id: parseInt(m[1]), title: m[2].trim(), summary: m[3].trim() });
   }
-
-  if (sceneTitles.length === 0) {
-    await log.write(ch.id, "SKELETON", "Failed to parse scene list. Aborting.");
-    return false;
-  }
-
-  await log.write(ch.id, "SKELETON", `Architecting ${sceneTitles.length} scenes...`);
+  if (sceneTitles.length === 0) return false;
 
   // PHASE 2: Depth
   const sceneNotes: Map<number, string> = new Map();
   for (const s of sceneTitles) {
-    const depthPrompt = `You are a story architect. Provide deep, vivid notes for Scene ${s.id} of Chapter ${ch.id}.
+    const depthPrompt = `Story architect mode. Detail Scene ${s.id}: "${s.title}" for Ch${ch.id}.
+Summary: ${s.summary}
+${lore}
 
-CHAPTER: "${ch.title}"
-SCENE: "${s.title}"
-SUMMARY: ${s.summary}
-
-WRITE DEEP NOTES FOR:
-- **Setting**: [Atmospheric, sensory description]
-- **Characters**: [Emotional state, goals]
-- **Action**: [Beat-by-beat what happens]
-- **Dialogue Beat**: [Key lines or subtext]
-- **Sensory Detail**: [Sights, sounds, smells, textures]
-- **Thematic Hook**: [Connection to core theme]
-
-Format:
-**Scene ${s.id}: ${s.title}**
-- **Setting**: ...
-- **Characters**: ...
+WRITE DEEP NOTES (Setting, Characters, Action, Dialogue Subtext, Sensory detail, Thematic hook).
+Format: **Scene ${s.id}: ${s.title}**
 ...
-
-Do NOT write prose. Just detailed notes. Then STOP.`;
-
-    const notes = await captureWithRetry(
-      marie,
-      depthPrompt,
-      log,
-      ch.id,
-      "SKELETON",
-      `Notes: ${s.title}`,
-      100,
-    );
-
+STOP.`;
+    const notes = await captureWithRetry(marie, depthPrompt, log, ch.id, "SKELETON", `Notes: ${s.title}`, 100);
     if (notes) sceneNotes.set(s.id, notes);
     await sleep(3000);
   }
 
-  // PHASE 3: Thematic Metadata
-  const metaPrompt = `Finalize the chapter architecture for Chapter ${ch.id}: "${ch.title}".
-Write the thematic core, foreshadowing, and character arc progression.
-
-FORMAT:
-**Chapter Thematic Core**: [Theme]
-**Foreshadowing**: [Clues for later]
-**Character Arcs**: [How they change]
-
-Output directly. Then STOP.`;
-
-  const metaRaw = await captureWithRetry(
-    marie,
-    metaPrompt,
-    log,
-    ch.id,
-    "SKELETON",
-    "Metadata",
-    50,
-  );
+  // PHASE 3: Metadata
+  const metaPrompt = `Write Chapter ${ch.id} thematic core, foreshadowing, and character arcs. STOP.`;
+  const metaRaw = await captureWithRetry(marie, metaPrompt, log, ch.id, "SKELETON", "Metadata", 50);
 
   // PHASE 4: Assembly
   const assembled: string[] = [`# Chapter ${ch.id}: ${ch.title} — SKELETON\n\n`];
   for (const s of sceneTitles) {
-    const notes = sceneNotes.get(s.id);
-    if (notes) {
-      assembled.push(notes + "\n\n---\n\n");
-    } else {
-      assembled.push(`**Scene ${s.id}: ${s.title}**\n*(Notes missing)*\n\n---\n\n`);
-    }
+    assembled.push(sceneNotes.get(s.id) || `**Scene ${s.id}: ${s.title}**\n*(Notes missing)*`);
+    assembled.push("\n\n---\n\n");
   }
-  if (metaRaw) {
-    assembled.push(metaRaw);
-  }
+  if (metaRaw) assembled.push(metaRaw);
 
-  const finalContent = assembled.join("");
-  await fs.writeFile(targetPath, finalContent);
-
-  const finalWords = countWords(finalContent);
-  await log.write(
-    ch.id,
-    "SKELETON",
-    `Complete: ${sceneNotes.size}/${sceneTitles.length} detailed scenes`,
-    finalWords,
-  );
-
+  await fs.writeFile(targetPath, assembled.join(""));
   return sceneNotes.size > 0;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  PASS: FLESH (Stream Capture — scene by scene)
-// ═══════════════════════════════════════════════════════════════
-
+/**
+ * Pass: FLESH (Scene by Scene)
+ */
 async function passFlesh(
   marie: MarieCLI,
   ch: any,
   targetPath: string,
   log: Log,
   prevSummaries: string,
+  lore: string,
+  feedback: string = "",
 ): Promise<boolean> {
-  await log.write(ch.id, "FLESH", "Starting — stream capture mode");
-
   const skeleton = await readSafe(targetPath);
-  let scenes = parseScenes(skeleton);
+  const scenes = parseScenes(skeleton);
   const thematic = extractThematicNotes(skeleton);
-
-  if (scenes.length === 0) {
-    await log.write(ch.id, "FLESH", "No scenes in skeleton. Using whole file as 1 scene.");
-    scenes = [{ id: 1, title: ch.title, notes: skeleton }];
-  }
-
-  await log.write(ch.id, "FLESH", `${scenes.length} scenes to write`);
+  const targetScenes = scenes.length > 0 ? scenes : [{ id: 1, title: ch.title, notes: skeleton }];
 
   const sceneProse: Map<number, string> = new Map();
+  let lastSnippet = "";
 
-  for (const scene of scenes) {
-    const prompt = `You are a novelist. Write prose fiction for this scene.
+  for (const scene of targetScenes) {
+    const prompt = `Novelist mode. Write prose for Ch${ch.id}, Scene ${scene.id}: "${scene.title}".
+${lore}
+${prevSummaries ? `STORY SO FAR:\n${prevSummaries}\n` : ""}
+${thematic ? `THEMATIC CONTEXT:\n${thematic}\n` : ""}
+${feedback ? `EDITOR FEEDBACK:\n${feedback}\n` : ""}
+${lastSnippet ? `PREVIOUS SCENE ENDED:\n"...${lastSnippet}"\n` : ""}
 
-CHAPTER: "${ch.title}"
-${prevSummaries ? `\nSTORY SO FAR:\n${prevSummaries}` : ""}
-${thematic ? `\nTHEMATIC CONTEXT:\n${thematic}` : ""}
+NOTES: ${scene.notes.trim()}
 
-SCENE TO WRITE — Scene ${scene.id}: "${scene.title}"
-${scene.notes.trim()}
+Write 400-600 words of immersive prose. STOP.`;
 
-INSTRUCTIONS:
-Write 400-600 words of immersive fiction. Include:
-- Vivid sensory detail (sights, sounds, smells, textures, temperature)
-- Natural dialogue with action beats
-- Character interiority (thoughts, feelings, physical sensations)
-- Atmospheric world-building woven into action
-
-Write ONLY prose paragraphs. No headers. No bullets. No metadata.
-Do NOT use any tools — just write the prose directly. Then STOP.`;
-
-    const captured = await captureWithRetry(
-      marie,
-      prompt,
-      log,
-      ch.id,
-      "FLESH",
-      `Scene ${scene.id}: ${scene.title}`,
-      100,
-    );
-
-    if (captured && countWords(captured) > 50) {
+    const captured = await captureWithRetry(marie, prompt, log, ch.id, "FLESH", `Scene ${scene.id}`, 100);
+    if (captured) {
       sceneProse.set(scene.id, captured);
+      const w = captured.split(/\s+/);
+      lastSnippet = w.slice(-300).join(" ");
     }
-
     await sleep(4000);
   }
 
-  // Concatenate
-  await log.write(ch.id, "FLESH", `Concatenating ${sceneProse.size}/${scenes.length} scenes...`);
-
-  const parts: string[] = [`# Chapter ${ch.id}: ${ch.title}\n\n`];
-  let gaps = 0;
-
-  for (const scene of scenes) {
-    parts.push(`## Scene ${scene.id}: ${scene.title}\n\n`);
-    const prose = sceneProse.get(scene.id);
-    if (prose) {
-      parts.push(prose + "\n\n---\n\n");
-    } else {
-      gaps++;
-      parts.push(`*[Scene pending]*\n\n---\n\n`);
-    }
+  const parts = [`# Chapter ${ch.id}: ${ch.title}\n\n`];
+  for (const scene of targetScenes) {
+    parts.push(`## Scene ${scene.id}: ${scene.title}\n\n${sceneProse.get(scene.id) || "*[Pending]*"}\n\n---\n\n`);
   }
-
-  const assembled = parts.join("");
-  await fs.writeFile(targetPath, assembled);
-
-  const totalWords = countWords(assembled);
-  await log.write(
-    ch.id,
-    "FLESH",
-    `Assembly done. ${gaps > 0 ? `${gaps} gaps.` : "All present."}`,
-    totalWords,
-  );
-
+  await fs.writeFile(targetPath, parts.join(""));
   return true;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  PASS: NERVE (Stream Capture — section by section)
-// ═══════════════════════════════════════════════════════════════
-
+/**
+ * Pass: NERVE (Expansion with Self-Critique)
+ */
 async function passNerve(
   marie: MarieCLI,
   ch: any,
   targetPath: string,
   log: Log,
+  lore: string,
+  feedback: string = "",
 ): Promise<boolean> {
   const content = await readSafe(targetPath);
-  const startWords = countWords(content);
-  await log.write(ch.id, "NERVE", `Starting. ${startWords}w. Target: +30%`);
-
   const sections = splitSections(content);
-  if (sections.length === 0) {
-    await log.write(ch.id, "NERVE", "No sections. Skipping.");
-    return true;
-  }
-
   const expanded: string[] = [];
 
   for (const section of sections) {
-    const sectionWords = countWords(section.content);
-    if (sectionWords < 30) {
-      expanded.push(section.content);
-      continue;
-    }
-
-    const prompt = `You are a literary editor. EXPAND the following prose section by weaving in 200-400 NEW words.
-
-SECTION TO EXPAND:
+    const prompt = `Editor mode. EXPAND this prose (+200-400 words).
+${lore}
+${feedback ? `EDITOR FEEDBACK: ${feedback}\n` : ""}
+PROSE:
 ---
 ${section.content}
 ---
+RULES: Add sensory depth, subtext, world-building. Keep original text.
+SELF-CRITIQUE: Before finishing, ensure you added at least 3 new sensory details.
+Output expanded prose only. STOP.`;
 
-ADD to the existing text:
-- A new sensory layer
-- Subtext in dialogue
-- Internal conflict or doubt
-- Environmental storytelling
-
-RULES:
-- Keep ALL existing text — only ADD to it
-- Keep the ## header if present
-- Output the EXPANDED section directly. Then STOP.`;
-
-    const captured = await captureWithRetry(
-      marie,
-      prompt,
-      log,
-      ch.id,
-      "NERVE",
-      `Expand: ${section.header.substring(0, 40)}`,
-      sectionWords, 
-    );
-
-    if (captured && countWords(captured) > sectionWords) {
-      expanded.push(captured);
-    } else {
-      expanded.push(section.content); 
-    }
-
+    const captured = await captureWithRetry(marie, prompt, log, ch.id, "NERVE", `Expand ${section.id}`, countWords(section.content));
+    expanded.push(captured || section.content);
     await sleep(4000);
   }
 
-  const reassembled = expanded.join("\n\n");
-  await fs.writeFile(targetPath, reassembled);
-
-  const endWords = countWords(reassembled);
-  await log.write(
-    ch.id,
-    "NERVE",
-    `Done: ${startWords}w → ${endWords}w (+${endWords - startWords}w)`,
-    endWords,
-  );
-
+  await fs.writeFile(targetPath, expanded.join("\n\n"));
   return true;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  PASS: SOUL (Stream Capture — section by section)
-// ═══════════════════════════════════════════════════════════════
-
+/**
+ * Pass: SOUL (Polish with Voice Alignment)
+ */
 async function passSoul(
   marie: MarieCLI,
   ch: any,
   targetPath: string,
   log: Log,
+  lore: string,
+  feedback: string = "",
 ): Promise<boolean> {
   const content = await readSafe(targetPath);
-  const startWords = countWords(content);
-  await log.write(ch.id, "SOUL", `Starting polish. ${startWords}w`);
-
   const sections = splitSections(content);
-  if (sections.length === 0) {
-    await log.write(ch.id, "SOUL", "No sections. Skipping.");
-    return true;
-  }
-
   const polished: string[] = [];
 
-  for (let i = 0; i < sections.length; i++) {
-    const section = sections[i];
-    const sectionWords = countWords(section.content);
-    if (sectionWords < 30) {
-      polished.push(section.content);
-      continue;
-    }
-
-    const isFirst = i === 0;
-    const isLast = i === sections.length - 1;
-
-    const prompt = `You are a literary editor doing a FINAL POLISH. Refine this prose section.
-
-SECTION TO POLISH:
+  for (const section of sections) {
+    const prompt = `Literary Alchemist mode. POLISH this prose.
+${lore}
+${feedback ? `EDITOR FEEDBACK: ${feedback}\n` : ""}
+PROSE:
 ---
 ${section.content}
 ---
+ALIGNMENT: Ensure narrative voice matches Lore. Strengthen hooks.
+SELF-CRITIQUE: Check for clichés and redundancies.
+Output polished prose only. STOP.`;
 
-${isFirst ? "This is the OPENING — craft a powerful hook.\n" : ""}${isLast ? "This is the CLOSING — craft a compelling final line.\n" : ""}
-POLISH:
-- Replace clichés
-- Ensure consistent voice
-- Vary sentence length
-- Fix redundancies
-
-Output the POLISHED section directly. Then STOP.`;
-
-    const captured = await captureWithRetry(
-      marie,
-      prompt,
-      log,
-      ch.id,
-      "SOUL",
-      `Polish: ${section.header.substring(0, 40)}`,
-      Math.floor(sectionWords * 0.8), 
-    );
-
-    if (captured && countWords(captured) >= sectionWords * 0.8) {
-      polished.push(captured);
-    } else {
-      polished.push(section.content);
-    }
-
+    const captured = await captureWithRetry(marie, prompt, log, ch.id, "SOUL", `Polish ${section.id}`, Math.floor(countWords(section.content) * 0.8));
+    polished.push(captured || section.content);
     await sleep(4000);
   }
 
-  const reassembled = polished.join("\n\n");
-  await fs.writeFile(targetPath, reassembled);
-
-  const endWords = countWords(reassembled);
-  await log.write(
-    ch.id,
-    "SOUL",
-    `Done: ${startWords}w → ${endWords}w`,
-    endWords,
-  );
-
+  await fs.writeFile(targetPath, polished.join("\n\n"));
   return true;
 }
 
@@ -667,21 +468,16 @@ async function advanceDirect(
   pass: string,
   summary: string,
   force: boolean = false,
-): Promise<boolean> {
+): Promise<{ success: boolean; message: string }> {
   try {
     const svc = new NovelProductionService(workingDir);
     await svc.initialize();
     const result = await svc.advancePass(summary, force);
-    if (result.success) {
-      await log.write(ch.id, pass, `✅ ADVANCED: ${result.message}`);
-      return true;
-    } else {
-      await log.write(ch.id, pass, `⚠️ Rejected: ${result.message}`);
-      return false;
-    }
+    if (result.success) await log.write(ch.id, pass, `✅ ADVANCED: ${result.message}`);
+    else await log.write(ch.id, pass, `⚠️ Rejected: ${result.message}`);
+    return result;
   } catch (err: any) {
-    await log.write(ch.id, pass, `❌ Advance error: ${err.message}`);
-    return false;
+    return { success: false, message: err.message };
   }
 }
 
@@ -694,9 +490,8 @@ async function main() {
   const structurePath = path.join(workingDir, ".marie", "novel_structure.json");
   const log = new Log(workingDir);
 
-  process.stdout.write("🔮 Novel Pipeline v4 — Stream Capture Architecture\n\n");
+  process.stdout.write("🔮 Novel Pipeline v4 — Lore-Aware Production Engine\n\n");
 
-  // Init MarieCLI
   let marie: MarieCLI;
   try {
     marie = new MarieCLI(workingDir);
@@ -706,167 +501,80 @@ async function main() {
     process.exit(1);
   }
 
-  // Init novel structure
+  // Init structure from lightnovel.md if missing
   try {
     await fs.access(structurePath);
-    process.stdout.write("✅ Novel structure found.\n");
   } catch {
     process.stdout.write("🚀 Initializing from lightnovel.md...\n");
-    try {
-      const outline = await fs.readFile(
-        path.join(workingDir, "lightnovel.md"),
-        "utf-8",
-      );
-      const chapters: { title: string; description: string }[] = [];
-      let cur: { title: string; description: string } | null = null;
-
-      for (const line of outline.split("\n")) {
-        const m = line.match(/^Chapter \d+ — (.+)/);
-        if (m) {
-          if (cur) chapters.push(cur);
-          cur = { title: m[1], description: "" };
-        } else if (cur && line.trim() && !line.startsWith("Arc")) {
-          cur.description += line.trim() + " ";
-        }
-      }
-      if (cur) chapters.push(cur);
-
-      const svc = new NovelProductionService(workingDir);
-      (svc as any).structure = {
-        volumes: [
-          {
-            id: 1,
-            title: "Volume I: The Rollback",
-            status: "DRAFT",
-            chapters: [],
-          },
-        ],
-      };
-      await svc.save();
-      for (const c of chapters) {
-        await svc.startNewChapter(c.title, c.description.trim());
-      }
-      process.stdout.write(`✅ ${chapters.length} chapters initialized.\n`);
-    } catch (err: any) {
-      process.stderr.write(`❌ Init: ${err.message}\n`);
-      process.exit(1);
+    const outline = await fs.readFile(path.join(workingDir, "lightnovel.md"), "utf-8");
+    const chapters: any[] = [];
+    let cur: any = null;
+    for (const line of outline.split("\n")) {
+      const m = line.match(/^Chapter \d+ — (.+)/);
+      if (m) { if (cur) chapters.push(cur); cur = { title: m[1], description: "" }; }
+      else if (cur && line.trim() && !line.startsWith("Arc")) cur.description += line.trim() + " ";
     }
+    if (cur) chapters.push(cur);
+    const svc = new NovelProductionService(workingDir);
+    (svc as any).structure = { volumes: [{ id: 1, title: "Volume I", status: "DRAFT", chapters: [] }] };
+    await svc.save();
+    for (const c of chapters) await svc.startNewChapter(c.title, c.description.trim());
   }
 
-  // ─── PRODUCTION LOOP ───────────────────────────────────────
   const attempts = new Map<string, number>();
+  let lastCritique = "";
 
   while (true) {
-    let structure;
-    try {
-      structure = JSON.parse(await fs.readFile(structurePath, "utf-8"));
-    } catch (err: any) {
-      process.stderr.write(`❌ Read: ${err.message}\n`);
-      process.exit(1);
-    }
-
+    let structure = JSON.parse(await fs.readFile(structurePath, "utf-8"));
     const vol = structure.volumes.find((v: any) => v.status === "DRAFT");
-    if (!vol) {
-      process.stdout.write("🏁 No draft volumes. Done.\n");
-      break;
-    }
-
+    if (!vol) break;
     const ch = vol.chapters.find((c: any) => c.currentPass !== "CANON");
-    if (!ch) {
-      process.stdout.write("🏁 All chapters Canon. Done!\n");
-      break;
-    }
+    if (!ch) break;
 
     const pass = ch.currentPass as string;
     const key = `${ch.id}:${pass}`;
     const attempt = (attempts.get(key) || 0) + 1;
     attempts.set(key, attempt);
 
-    // Circuit breaker
     if (attempt > 3) {
-      await log.write(ch.id, pass, `CIRCUIT BREAKER: attempt ${attempt}. Force-advance.`);
+      await log.write(ch.id, pass, `CIRCUIT BREAKER: Force-advance.`);
       await advanceDirect(workingDir, log, ch, pass, `FORCED after ${attempt} attempts.`, true);
       attempts.delete(key);
+      lastCritique = "";
       continue;
     }
 
-    // Build paths
-    const sanitized = ch.title.replace(/[^a-zA-Z0-9]/g, "_");
-    const filename = `Chapter_${ch.id}_${sanitized}.md`;
-    const targetPath = path.join(
-      workingDir,
-      ".vault",
-      "novel",
-      "chapters",
-      filename,
-    );
+    const targetPath = path.join(workingDir, ".vault", "novel", "chapters", `Chapter_${ch.id}_${ch.title.replace(/[^a-zA-Z0-9]/g, "_")}.md`);
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
 
-    // Previous chapter summaries
-    const prevSummaries = vol.chapters
-      .filter(
-        (c: any) => c.id < ch.id && c.continuityLedger.length > 0,
-      )
-      .map(
-        (c: any) =>
-          `Ch${c.id} "${c.title}": ${c.continuityLedger[c.continuityLedger.length - 1]?.summary || ""}`,
-      )
+    const lore = await getLore(workingDir);
+    const prevSummaries = vol.chapters.filter((c: any) => c.id < ch.id && c.continuityLedger.length > 0)
+      .map((c: any) => `Ch${c.id} "${c.title}": ${c.continuityLedger[c.continuityLedger.length - 1]?.summary || ""}`)
       .join("\n");
 
-    // Header
-    process.stdout.write(`\n${"═".repeat(67)}\n`);
-    process.stdout.write(
-      `📖 Ch${ch.id}: "${ch.title}" | ${pass} | Attempt ${attempt}/3\n`,
-    );
-    process.stdout.write(`${"═".repeat(67)}\n\n`);
+    process.stdout.write(`\n📖 Ch${ch.id}: "${ch.title}" | ${pass} | Attempt ${attempt}/3\n\n`);
 
-    // Execute pass
     let passOk = false;
     try {
       switch (pass) {
-        case "SKELETON":
-          passOk = await passSkeleton(marie, ch, targetPath, log);
-          break;
-        case "FLESH":
-          passOk = await passFlesh(marie, ch, targetPath, log, prevSummaries);
-          break;
-        case "NERVE":
-          passOk = await passNerve(marie, ch, targetPath, log);
-          break;
-        case "SOUL":
-          passOk = await passSoul(marie, ch, targetPath, log);
-          break;
-        default:
-          await log.write(ch.id, pass, `Unknown pass. Skipping.`);
-          passOk = true;
+        case "SKELETON": passOk = await passSkeleton(marie, ch, targetPath, log, lore, lastCritique); break;
+        case "FLESH":    passOk = await passFlesh(marie, ch, targetPath, log, prevSummaries, lore, lastCritique); break;
+        case "NERVE":    passOk = await passNerve(marie, ch, targetPath, log, lore, lastCritique); break;
+        case "SOUL":     passOk = await passSoul(marie, ch, targetPath, log, lore, lastCritique); break;
+        default: passOk = true;
       }
-    } catch (err: any) {
-      await log.write(ch.id, pass, `Error: ${err.message}`);
-    }
+    } catch (err: any) { await log.write(ch.id, pass, `Error: ${err.message}`); }
 
-    // Advance
     if (passOk) {
-      const words = countWords(await readSafe(targetPath));
-      const advanced = await advanceDirect(
-        workingDir,
-        log,
-        ch,
-        pass,
-        `${pass} complete. ${words} words.`,
-      );
-      if (advanced) attempts.delete(key);
+      const result = await advanceDirect(workingDir, log, ch, pass, `${pass} complete. ${countWords(await readSafe(targetPath))} words.`);
+      if (result.success) { attempts.delete(key); lastCritique = ""; }
+      else lastCritique = result.message;
     }
-
-    // Cooldown
-    process.stdout.write("⏸️ Cooldown 8s...\n");
     await sleep(8000);
   }
-
-  process.stdout.write("\n✨ Novel production finished.\n");
 }
 
-main().catch((err) => {
+main().catch(err => {
   process.stderr.write(`\n💥 Fatal: ${err.message || err}\n`);
-  if (err.stack) process.stderr.write(`${err.stack}\n`);
   process.exit(1);
 });
