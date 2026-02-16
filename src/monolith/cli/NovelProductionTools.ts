@@ -10,6 +10,7 @@ import {
 } from "../services/NarrativeAutomationServiceCLI.js";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { WorldService } from "../infrastructure/ai/narrative/WorldService.js";
 
 export function registerNovelTools(
   registry: ToolRegistry,
@@ -143,5 +144,172 @@ export function registerNovelTools(
     execute: async () => {
       return novelService.getActiveContext();
     },
+  });
+
+  // ─── World Building Tools ────────────────────────────────────
+
+  const worldService = new WorldService(workingDir);
+
+  registry.register({
+    name: "add_world_entity",
+    description: "Add a new entity (Location, Character, Faction, etc.) to the World Bible.",
+    input_schema: {
+      type: "object",
+      properties: {
+        name: { type: "string" },
+        type: { type: "string", enum: ["LOCATION", "FACTION", "CHARACTER", "OBJECT", "EVENT", "CONCEPT"] },
+        description: { type: "string" },
+        attributes: { type: "object", description: "Key-value pairs of attributes" },
+        tags: { type: "array", items: { type: "string" } }
+      },
+      required: ["name", "type", "description"]
+    },
+    execute: async (args) => {
+      await worldService.initialize();
+      const name = getStringArg(args, "name");
+      const type = getStringArg(args, "type");
+      const description = getStringArg(args, "description");
+      const attributes = (args.attributes as Record<string, string>) || {};
+      const tags = (args.tags as string[]) || [];
+
+      const id = `ent_${name.toLowerCase().replace(/\s+/g, "_")}_${Date.now().toString(36)}`;
+
+      await worldService.addEntity({
+        id,
+        name,
+        type: type as any,
+        description,
+        attributes,
+        relationships: [],
+        tags
+      });
+
+      return `Added world entity: ${name} (${type})`;
+    }
+  });
+
+  registry.register({
+    name: "view_world_bible",
+    description: "View the current state of the World Bible.",
+    input_schema: {
+      type: "object",
+      properties: {
+        filterType: { type: "string", description: "Filter by entity type" }
+      }
+    },
+    execute: async (args) => {
+      await worldService.initialize();
+      const bible = worldService.getBible();
+      const filterType = getStringArg(args, "filterType");
+
+      let output = `[WORLD BIBLE: ${bible.name}]\n${bible.overview}\n\n`;
+
+      if (bible.entities.length === 0) {
+        output += "No entities defined yet.";
+      } else {
+        output += "ENTITIES:\n";
+        const entitieser = filterType
+          ? bible.entities.filter(e => e.type === filterType)
+          : bible.entities;
+
+        entitieser.forEach(e => {
+          output += `\n[${e.type}] ${e.name}\n${e.description}\n`;
+          if (Object.keys(e.attributes).length > 0) {
+            output += `Attributes: ${JSON.stringify(e.attributes)}\n`;
+          }
+        });
+      }
+
+      return output;
+    }
+  });
+
+  registry.register({
+    name: "update_world_state",
+    description: "Apply a JSON delta to the World Bible (New Entities, Events, etc.).",
+    input_schema: {
+      type: "object",
+      properties: {
+        delta: {
+          type: "object",
+          description: "The WorldDelta JSON object",
+          properties: {
+            newEntities: { type: "array" },
+            updatedEntities: { type: "array" },
+            newEvents: { type: "array" },
+            relationshipChanges: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  sourceId: { type: "string" },
+                  targetId: { type: "string" },
+                  newType: { type: "string" },
+                  description: { type: "string" }
+                },
+                required: ["sourceId", "targetId", "newType"]
+              }
+            }
+          }
+        }
+      },
+      required: ["delta"]
+    },
+    execute: async (args) => {
+      await worldService.initialize();
+      const delta = args.delta;
+      await worldService.applyWorldDelta(delta);
+      return "World state updated successfully.";
+    }
+  });
+
+  registry.register({
+    name: "advance_world_time",
+    description: "Advance the world clock by a number of days.",
+    input_schema: {
+      type: "object",
+      properties: {
+        days: { type: "number", description: "Number of days to advance" }
+      },
+      required: ["days"]
+    },
+    execute: async (args) => {
+      await worldService.initialize();
+      const days = Number(args.days);
+      await worldService.advanceTime(days);
+      const season = worldService.getCurrentSeason();
+      const date = worldService.getBible().currentDate;
+      return `Time advanced by ${days} days. It is now ${season}, Year ${date?.year} Month ${date?.month} Day ${date?.day}.`;
+    }
+  });
+
+  registry.register({
+    name: "check_world_consistency",
+    description: "Check a text or file for consistency against the World Bible.",
+    input_schema: {
+      type: "object",
+      properties: {
+        text: { type: "string" },
+        filePath: { type: "string" }
+      }
+    },
+    execute: async (args) => {
+      await worldService.initialize();
+      let content = "";
+      if (args.filePath) {
+        const fullPath = path.isAbsolute(args.filePath as string) ? args.filePath as string : path.join(workingDir, args.filePath as string);
+        content = await fs.readFile(fullPath, "utf-8");
+      } else if (args.text) {
+        content = args.text as string;
+      } else {
+        return "Error: Must provide text or filePath.";
+      }
+
+      const issues = await worldService.validateConsistency(content);
+      if (issues.length === 0) {
+        return "No consistency issues found.";
+      }
+      return `Consistency Issues Found:\n${issues.join("\n")}`;
+    }
   });
 }

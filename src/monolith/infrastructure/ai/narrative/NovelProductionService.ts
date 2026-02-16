@@ -1,15 +1,16 @@
 import * as fs from "node:fs/promises";
 import * as path from "path";
-import { CritiqueService } from "./CritiqueService.js";
 import { IProductionStrategy } from "./strategies/IProductionStrategy.js";
 import { EssayProductionStrategy } from "./strategies/EssayStrategy.js";
 import { StructuredProductionStrategy } from "./strategies/StructuredStrategy.js";
+import { WorldService } from "./WorldService.js";
 
 // ─── Pass Phases ───────────────────────────────────────────────
 // Kept for backward compatibility and type referencing in strategies
-export type PassPhase = "SKELETON" | "FLESH" | "NERVE" | "SOUL" | "CANON" | string;
+export type PassPhase = "BLUEPRINT" | "SKELETON" | "FLESH" | "NERVE" | "SOUL" | "CANON" | string;
 
 export const PASS_ORDER: PassPhase[] = [
+  "BLUEPRINT",
   "SKELETON",
   "FLESH",
   "NERVE",
@@ -18,13 +19,16 @@ export const PASS_ORDER: PassPhase[] = [
 ];
 
 export const PASS_ZONE_MAP: Record<string, string> = {
-  SKELETON: "STRUCTURE",
+  BLUEPRINT: "STRUCTURE",
+  SKELETON: "OUTLINE",
   FLESH: "PROSE",
   NERVE: "TENSION",
   SOUL: "THEME",
 };
 
 export const PASS_PERSONA: Record<PassPhase, string> = {
+  BLUEPRINT:
+    "MODE: ARCHITECT. You are the Narrative Strategist. Create a rigorous structural blueprint. Define scene pacing, character motivations, and thematic arcs BEFORE writing any prose.",
   SKELETON:
     "MODE: SKELETON. You are the Architect of Narrative. Build a structured chapter outline using **Scene N: Title** format. Each scene should include: Setting, Characters, Dialogue beats, Sensory details, and Thematic hooks. This is a blueprint — do NOT write full prose yet.",
   FLESH:
@@ -72,11 +76,13 @@ export class NovelProductionService {
   private static readonly NOVEL_FILE = ".marie/novel_structure.json";
   private structure: { volumes: NovelVolume[] } = { volumes: [] };
   private strategies: Map<string, IProductionStrategy> = new Map();
+  private worldService: WorldService;
 
   constructor(private rootPath: string) {
+    this.worldService = new WorldService(rootPath);
     // Register strategies
     this.registerStrategy(new EssayProductionStrategy());
-    this.registerStrategy(new StructuredProductionStrategy());
+    this.registerStrategy(new StructuredProductionStrategy(this.worldService));
   }
 
   private registerStrategy(strategy: IProductionStrategy) {
@@ -88,6 +94,7 @@ export class NovelProductionService {
   }
 
   public async initialize() {
+    await this.worldService.initialize();
     try {
       const data = await fs.readFile(
         path.join(this.rootPath, NovelProductionService.NOVEL_FILE),
@@ -109,6 +116,7 @@ export class NovelProductionService {
                 description: "Initial scaffolding and prompt engineering.",
                 currentPass: "CANON",
                 completedPasses: [
+                  "BLUEPRINT",
                   "SKELETON",
                   "FLESH",
                   "NERVE",
@@ -195,6 +203,7 @@ export class NovelProductionService {
     description: string,
     modeOverride?: string
   ): Promise<NovelChapter> {
+    await this.worldService.initialize();
     const activeVol =
       this.structure.volumes.find((v) => v.status === "DRAFT") ||
       this.structure.volumes[0];
@@ -207,7 +216,7 @@ export class NovelProductionService {
       title,
       description
     );
-    // Explicitly set the mode on the chapter
+    // Explicitly set the mode on the chapter 
     newChapter.mode = mode;
 
     activeVol.chapters.push(newChapter);

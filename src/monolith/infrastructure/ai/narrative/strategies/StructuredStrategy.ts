@@ -3,10 +3,12 @@ import {
     LedgerEntry,
 } from "../NovelProductionService.js";
 import { IProductionStrategy } from "./IProductionStrategy.js";
+import { WorldService } from "../WorldService.js";
 import * as path from "path";
 import * as fs from "fs/promises";
 
 export type StructuredPhase =
+    | "SIMULATION"
     | "FOUNDATION"
     | "BEATS"
     | "DRAFT"
@@ -14,6 +16,7 @@ export type StructuredPhase =
     | "CANON";
 
 export const STRUCTURED_ORDER: StructuredPhase[] = [
+    "SIMULATION",
     "FOUNDATION",
     "BEATS",
     "DRAFT",
@@ -22,20 +25,24 @@ export const STRUCTURED_ORDER: StructuredPhase[] = [
 ];
 
 export const STRUCTURED_PERSONA: Record<StructuredPhase, string> = {
+    SIMULATION:
+        "MODE: SIMULATION. You are the Dungeon Master. Review the 'Active Factions' and their goals. Based on previous events, simulate their off-screen actions. Output a JSON 'worldDelta' with updates to their state, resources, or new events/relationships. Do NOT write prose.",
     FOUNDATION:
-        "MODE: FOUNDATION. You are the World Architect. Establish the constraints, world state, and narrative arc for this chapter. Output a JSON object with: { worldState: string, narrativeArc: string, constraints: string[] }.",
+        "MODE: FOUNDATION. You are the World Architect. Establish the constraints, world state, and narrative arc for this chapter. Output a JSON object with: { worldState: string, narrativeArc: string, constraints: string[], worldDelta: WorldDelta }. The 'worldDelta' should include any NEW entities or events you are introducing.",
     BEATS:
-        "MODE: BEATS. You are the Scene Director. Create a detailed beat sheet for the chapter. Each beat must advance the plot and reveal character. Ensure strict adherence to the Foundation.",
+        "MODE: BEATS. You are the Scene Director. Create a detailed beat sheet for the chapter. Each beat must advance the plot and reveal character. Ensure strict adherence to the Foundation and World Bible.",
     DRAFT:
         "MODE: DRAFT. You are the Storyteller. Write the full chapter prose. Focus on flow, voice, and immersion. Adhere strictly to the Beat Sheet.",
     COHESION:
-        "MODE: COHESION. You are the Editor-in-Chief. Review the composition against the World Bible and previous chapters. Fix continuity errors, strengthen themes, and polish prose.",
+        "MODE: COHESION. You are the Editor-in-Chief. Review the composition against the World Bible and previous chapters. Fix continuity errors. You have access to 'check_world_consistency' tool.",
     CANON:
         "MODE: ARCHIVIST. The chapter is Canon. All passes complete. This text is immutable. Read-only.",
 };
 
 export class StructuredProductionStrategy implements IProductionStrategy {
     public readonly mode = "STRUCTURED";
+
+    constructor(private worldService: WorldService) { }
 
     public initializeChapter(
         chapterId: number,
@@ -46,7 +53,7 @@ export class StructuredProductionStrategy implements IProductionStrategy {
             id: chapterId,
             title,
             description,
-            currentPass: "FOUNDATION",
+            currentPass: "SIMULATION",
             completedPasses: [],
             continuityLedger: [],
             files: [],
@@ -63,6 +70,9 @@ export class StructuredProductionStrategy implements IProductionStrategy {
         if (chapter.currentPass === "CANON") {
             return { success: false, message: "Chapter is already Canon." };
         }
+
+        // Initialize world service if not already
+        await this.worldService.initialize();
 
         // AUTO-DISCOVERY specific to structured mode if needed
         // For now, assume similar file structure or adapt as needed
@@ -117,6 +127,9 @@ ${STRUCTURED_PERSONA.CANON}
         `.trim();
         }
 
+        // Inject World Context
+        const worldContext = this.worldService.getWorldContext();
+
         const persona = STRUCTURED_PERSONA[phase];
 
         return `
@@ -129,12 +142,16 @@ Completed Passes: ${chapter.completedPasses.join(" → ") || "None"}
 [CONTINUITY LEDGER — What previous passes established]
 ${history}
 
+${worldContext}
+
 [PERSONA INSTRUCTION]
 ${persona}
 
 [PASS RULES]
 - Build ON TOP of what previous passes established. Reference the Continuity Ledger.
+- CONSISTENCY: You must adhere to the World Bible constraints and entity descriptions.
 - When this pass is complete, call advancePass() to lock your work and proceed.
     `.trim();
     }
 }
+
